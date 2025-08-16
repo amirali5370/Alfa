@@ -1,0 +1,11 @@
+# Virtual environment
+venv/
+
+# Python cache files
+__pycache__/
+
+# Config file (local settings)
+config.py
+
+# VS Code settings
+.vscode/
