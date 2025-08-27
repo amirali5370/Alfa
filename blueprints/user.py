@@ -8,5 +8,4 @@ app = Blueprint("user" , __name__)
 def login():
 
     # login_user(user)
-
     return "login"

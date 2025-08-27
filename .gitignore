@@ -9,3 +9,6 @@ config.py
 
 # VS Code settings
 .vscode/
+
+# DB file
+database.db
