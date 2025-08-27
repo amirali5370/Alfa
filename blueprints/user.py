@@ -3,6 +3,11 @@ from flask_login import login_user, login_required, current_user, logout_user
 
 app = Blueprint("user" , __name__)
 
+
+@app.route("/", methods = ["POST","GET"],  strict_slashes=False)
+def home():
+    return render_template("home.html", login=True)
+
 #login page
 @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)
 def login():

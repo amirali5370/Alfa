@@ -1,0 +1,511 @@
+@import url('./fonts.css');
+body{
+    font-family: Tanha;
+    padding: 0px;
+    margin: 0px;
+}
+#body_co{
+    display: flex;
+    justify-content: center;
+    width: inherit;
+
+}
+img{
+    user-select: none;  /* اصلی‌ترین خاصیت */
+    -webkit-user-select: none; /* برای مرورگرهای WebKit */
+    -moz-user-select: none;    /* برای فایرفاکس قدیمی */
+    -ms-user-select: none;     /* برای IE/Edge قدیمی */
+}
+#navbar{
+    position: fixed;
+    top: 0;
+    height: 60px;
+    margin-top: 10px;
+    width: 75%;
+    border: 4px solid rgb(213, 140, 4);
+    border-radius: 25px;
+    background-color: white;
+    transition: top 0.3s;
+    box-shadow:0px 0px 7px 0px rgb(213, 140, 4), inset 1px -4px 9px 1px #00000038;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+#menu_bar{
+    display: flex;
+    justify-content: flex-start;
+    gap: 30px;
+    padding-right: 30px;
+}
+#menu_bar>*{
+    font-size: 18px;
+    font-weight: bold;
+}
+#menu_bar>*:hover{
+    cursor: pointer;
+}
+#nav_icon{
+    font-size: 24px;
+    font-family: a;
+    background: linear-gradient(90deg, #FF6A00, #0076FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    margin-left: 15px;
+}
+ul{
+    list-style: none;
+}
+a{
+    color: black;
+    text-decoration: none;
+}
+#user_bar{
+    display: flex;
+}
+
+
+
+
+/* user */
+#user_bar{
+    gap: 20px;
+    align-items: center;
+}
+#user_co{
+    display: flex;
+    align-items: center;
+    margin-left: 25px;
+    cursor: pointer;
+}
+#user_name{
+    margin-right: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+#profile{
+    height: 40px;
+    border-radius: 40px;
+    border: 1px solid black;
+}
+#bell{
+    height: 30px;
+    width: 30px;
+}
+#coins{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+#coins>span{
+    font-weight: 600;
+}
+#coins_logo{
+    width: 40px;
+    height: 40px;
+}
+#bell_co{
+    display: flex;
+    cursor: pointer;
+    position: relative;
+}
+#num_bell{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    color: white;
+    background-color: red;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 18px;
+    bottom: 15px;
+}
+
+
+
+
+#footer{
+    background-color: #1a2a2a;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    padding: 50px 40px 50px 40px;
+    gap: 30px;
+}
+section.fot_part{
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+}
+h1:not(:last-child){
+    display: inline;
+    font-size: 40px;
+    font-family: a;
+    background: linear-gradient(90deg, #FF6A00, #0076FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    margin-left: 15px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+.fo_name_co{
+    position: relative;
+    display: block;
+}
+.copy_name{
+    font-size: 40px;
+    font-family: a;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 0%;
+    margin: 0;
+    transform: scale(1.02);
+    text-shadow: 1px -2px 9px #ffffff;
+}
+#fo_about_us{
+    color: #f3e8e8;
+    font-size: 16px;
+    margin-top: 15px;
+}
+.fo_head{
+    color: white;
+    font-weight: bold;
+    font-size: 21px;
+    margin-bottom: 25px;
+}
+.fo_text{
+    color: white;
+    font-size: 19px;
+}
+form{
+    display: inline-flex;
+    background-color: #343131;
+    max-width: 450px;
+    margin: 15px 0;
+    padding: 0;
+    justify-content: end;
+    align-items: center;
+}
+input {
+    /* height: 100%; */
+    width: 80%;
+    background-color: inherit;
+    outline: none;
+    border: none;
+    padding: 20px 15px;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.624);
+}
+input::placeholder {
+    /* height: 100%; */
+    font-size: 18px;
+    color: #6d6b6b;
+}
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button,
+input::-ms-reveal {
+  display: none !important;
+}
+.button {
+    height: 100%;
+    width: 20%;
+    color: yellow;
+    margin-right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+.button>span{
+    cursor: pointer;
+}
+.fo_sug{
+    margin: 4px 0;
+}
+.fo_sug_li{
+    color: rgba(255, 255, 255, 0.798);
+    font-size: 17px;
+    font-weight: bold;
+}
+.fo_addres{
+    font-size: 16px;
+    max-width: 400px;
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 0.798);
+    margin-bottom: 10px;
+}
+.fo_data{
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.798);
+    margin: 7px 0;
+}
+
+
+
+
+
+@media only screen and (max-width: 1440px) {
+    #menu_bar{
+        gap: 20px;
+        padding-right: 25px;
+    }
+    #menu_bar>*:not(#nav_icon) {
+        font-size: 17px;
+    }
+    #navbar{
+        width: 85%;
+    }
+    #user_bar {
+        gap: 16px;
+    }
+    #coins_logo {
+        width: 35px;
+        height: 35px;
+    }
+    #coins>span{
+        font-size: 15px;
+    }
+    #user_co {
+        margin-left: 20px;
+    }
+    #profile {
+        height: 36px;
+        border-radius: 36px;
+    }
+    #user_name {
+        margin-right: 4px;
+        font-size: 15px;
+    }
+    #nav_icon{
+        font-size: 22px;
+        margin-left: 8px;
+    }
+}
+@media only screen and (max-width: 1400px) and (min-width: 1280px) {
+    input {
+        padding: 16px 12px;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.624);
+        width: 85%;
+    }
+    .button {
+        height: 100%;
+        width: 15%;
+        color: yellow;
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    input::placeholder {
+        font-size: 17px;
+    }
+    #fo_about_us {
+        font-size: 14px;
+        margin-top: 14px;
+    }
+    #footer{
+        padding: 45px 30px 45px 30px;
+    }
+}
+@media only screen and (max-width: 1280px) {
+    #footer{
+        padding: 30px 30px 40px 30px;
+        grid-template-columns: auto auto;
+        row-gap: 60px;
+    }
+    .fo_head {
+        margin-bottom: 14px;
+    }
+}
+@media only screen and (max-width: 1100px) {
+    input {
+        padding: 16px 12px;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.624);
+        width: 85%;
+        font-size: 17px;
+    }
+    .button {
+        height: 100%;
+        width: 15%;
+        color: yellow;
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    input::placeholder {
+        font-size: 17px;
+    }
+    #fo_about_us {
+        font-size: 14px;
+        margin-top: 14px;
+    }
+    #menu_bar{
+        gap: 14px;
+        padding-right: 15px;
+    }
+    #menu_bar>*:not(#nav_icon) {
+        display: flex;
+    }
+    #menu_bar>*:not(#nav_icon) {
+        align-items: center;
+        font-size: 15px;
+    }
+    #navbar{
+        width: 95%;
+    }
+    #user_bar {
+        gap: 14px;
+    }
+    #coins_logo {
+        width: 30px;
+        height: 30px;
+    }
+    #coins>span{
+        font-size: 14px;
+    }
+    #user_co {
+        margin-left: 12px;
+    }
+    #profile {
+        height: 36px;
+        border-radius: 36px;
+    }
+    #nav_icon{
+        font-size: 20px;
+        margin-left: 8px;
+    }
+}
+@media only screen and (max-width: 768px) {
+    #footer{
+        display: flex;
+        flex-direction: column;
+        padding: 20px 7.1% 50px 8%;
+        row-gap: 35px;
+    }
+}
+@media only screen and (max-width: 630px) {
+    #navbar{
+        height: 50px;
+    }
+    #menu_bar {
+        gap: 12px;
+        padding-right: 9px;
+    }
+    #profile {
+        height: 33px;
+        border-radius: 33px;
+    }
+    #menu_bar>*:not(#nav_icon) {
+        align-items: center;
+        font-size: 14px;
+    }
+    #nav_icon {
+        font-size: 18px;
+        margin: 0;
+    }
+    #user_name {
+        display: none;
+    }
+}
+@media only screen and (max-width: 500px) {
+
+    #menu_bar {
+        padding-right: 16px;
+    }
+    
+}
+@media only screen and (max-width: 455px) {
+    #footer{
+        row-gap: 40px;
+    }
+    .fo_head {
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+    .fo_sug {
+        margin: 1px 0;
+    }
+    .fo_sug_li {
+        font-size: 14px;
+        font-weight: bold;
+    }
+    h1{
+        font-size: 30px;
+    }
+    .copy_name{
+        transform: scale(1.01);
+    }
+    #fo_about_us {
+        font-size: 13px;
+        margin-top: 8px;
+    }
+    .fo_addres {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+    .fo_data {
+        font-size: 14px;
+        margin: 3px 0;
+    }
+    .fo_text {
+        font-size: 15px;
+    }
+    form{
+        width: 84%;
+        align-self: center;
+    }
+    input{
+        padding: 12px 8px;
+        font-size: 16px;
+    }
+    input::placeholder{
+        font-size: 14px;
+    }
+    .button {
+        font-size: 14px;
+    }
+    #menu_bar>*:not(#nav_icon) {
+        font-size: 11px;
+    }
+    #profile {
+        height: 28px;
+        border-radius: 28px;
+    }
+    #navbar{
+        height: 40px;
+    }
+    #menu_bar{
+        gap: 9px;
+        padding-right: 10px;
+    }
+    #user_co {
+        margin-left: 10px;
+    }
+    #nav_icon{
+        font-size: 13px;
+    }
+    #coins_logo {
+        width: 27px;
+        height: 27px;
+    }
+    #coins>span {
+        font-size: 11px;
+    }
+    #user_bar {
+        gap: 5px;
+    }
+}
+@media only screen and (max-width: 338px) {
+    #coins_logo {
+        display: none;
+    }
+}

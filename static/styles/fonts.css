@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'Tanha';
+    src:   url('../fonts/Tanha/TanhaRegular.woff2') format('woff2'),
+           url('../fonts/Tanha/TanhaRegular.woff') format('woff'), 
+           url('../fonts/Tanha/TanhaRegular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'a';
+    src: 
+           url('../fonts/a/LalezarRegular.woff2') format('woff2'),
+           url('../fonts/a/LalezarRegular.woff') format('woff'), 
+           url('../fonts/a/LalezarRegular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'vazir';
+    src: 
+           url('../fonts/vazir/Vazir.ttf') format('truetype');
+  }
