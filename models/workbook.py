@@ -8,7 +8,6 @@ class Workbook(db.Model):
     id = Column(Integer, primary_key=True)
     auth = Column(String, nullable=False, index=True)
     is_degree = Column(Integer, nullable=False, default=0, index=True)
-    status = Column(String, nullable=False, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     quiz_id = Column(Integer, ForeignKey('quizes.id'), nullable=True, index=True)
 

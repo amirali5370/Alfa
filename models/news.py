@@ -11,4 +11,6 @@ class News(db.Model):
     auth = Column(String, nullable=False)
     is_event = Column(Integer, nullable=False, index=True)
     grade_bits = Column(Integer, nullable=False)
+    jalali_date = Column(String, nullable=False)
+
 

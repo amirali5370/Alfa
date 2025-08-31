@@ -138,7 +138,95 @@
 .user_co:last-child{
     display: none;
 }
+#faq {
+    padding: 20px;
+    font-family: 'Vazir', sans-serif;
+    background-color: #dfe2e6;
+    width: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .faq-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: #333;
+  }
+  
+  /* کارت مستقل */
+  .faq-item {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    width: 90%;
+    max-width: 1000px;
+  }
+  
+  .faq-item:hover {
+    transform: translateY(-3px);
+  }
+  
+  .faq-question {
+    width: 100%;
+    background: #f9f9f9;
+    border: none;
+    outline: none;
+    padding: 15px 20px;
+    text-align: right;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+    font-family: "Vazir";
+  }
+  
+  .faq-question:hover {
+    background: #f0f0f0;
+  }
+  
+  /* فلش */
+  .arrow {
+    transition: transform 0.3s ease;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* جواب */
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.3s ease;
+    padding: 0 20px;
+  }
+  
+  .faq-answer p {
+    margin: 10px 0;
+    color: #444;
+    line-height: 1.7;
+  }
+  
+  .faq-item.active .faq-answer {
+    max-height: 300px;
+    padding: 15px 20px;
+  }
+  
+  .faq-item.active .arrow {
+    transform: rotate(-180deg);
+  }
+  .faq-answer p{
+    font-size: 14px;
+  }
 @media only screen and (max-width: 1100px) {
+    #tops {
+        padding-bottom: 15px;
+    }
     .top_img {
         border-radius: 120px;
         width: 120px;
@@ -275,5 +363,11 @@
     #tops_head{
         font-size: 22px;
         margin: 18px 0;
+    }
+    .faq-question{
+        padding: 12px 10px;
+    }
+    .faq-question{
+        font-size: 14px;
     }
 }

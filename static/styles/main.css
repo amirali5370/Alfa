@@ -185,7 +185,7 @@ h1:not(:last-child){
     color: white;
     font-size: 19px;
 }
-form{
+form:not(.log){
     display: inline-flex;
     background-color: #343131;
     max-width: 450px;
@@ -459,7 +459,7 @@ input::-ms-reveal {
     .fo_text {
         font-size: 15px;
     }
-    form{
+    form:not(.log){
         width: 84%;
         align-self: center;
     }
