@@ -1,12 +1,12 @@
 {% extends "main.html" %}
 {% block head %}
     <meta name="more_of_page" content="{{ csrf_token() }}">
-    <title>خانه</title>
+    <title>رهبران پیشتاز | بلاگ</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/blog.css') }}">
 {% endblock %}
 {% block body %}
 <header>
-    <h1>اخبار و تازه‌ها</h1>
+    <h1>اخبار و مقالات</h1>
 </header>
 
 <main class="news-container" data-current-page="{{ news.page }}" data-has-next="{{ 'true' if news.has_next else 'false' }}">
@@ -15,8 +15,9 @@
         <img src="{{ url_for('static', filename='img/news/' ~ n.auth ~ '.jpg') }}" alt="خبر {{n.id}}">
         <div class="news-content">
             <h2 class="news-title">{{n.title}}</h2>
-            <p class="news-desc">{{ n.description or '' }}</p>
+            <p class="news-desc multi-line">{{ n.description or '' }}</p>
             <a href="{{ url_for('user.single_blog', news_link=n.prima_link) }}" class="read-more">ادامه مطلب</a>
+            <span class="news-date">منتشر شده در {{n.jalali_date}}</span> 
         </div>
     </article>
     {% endfor %}

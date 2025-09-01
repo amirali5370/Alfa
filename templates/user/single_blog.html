@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{% block head %}
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/single_blog.css') }}">
+    <title>رهبران پیشتاز | {{news.title}}</title>
+{% endblock %}
+{% block body %}
+<main id="single_blog">
+    <div id="head"></div>
+    <article class="blog_post">
+        <h1 class="blog_title">{{news.title}}</h1>
+        <div class="meta_info">
+            <span>منتشر شده در {{news.jalali_date}}</span> 
+        </div>
+        <div class="thumb_wrapper">
+            <img src="{{ url_for('static', filename='img/news/' ~ news.auth ~ '.jpg') }}" alt="cover" class="blog_cover">
+        </div>
+        <div class="blog_content">
+        {{news.content}}
+        </div>
+    </article>
+</main>
+
+{% endblock %}

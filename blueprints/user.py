@@ -148,7 +148,8 @@ def blog_api():
                 "title": item.title,
                 "description": item.description if item.description else "",
                 "url": url_for('user.single_blog', news_link=item.prima_link),
-                "image": url_for('static', filename='img/news/' + str(item.auth) + '.jpg')
+                "image": url_for('static', filename='img/news/' + str(item.auth) + '.jpg'),
+                "jalali_date": item.jalali_date
             }
             for item in news.items
         ],
@@ -161,7 +162,7 @@ def blog_api():
 @app.route("/blog/<news_link>",  strict_slashes=False)
 def single_blog(news_link):
     news = News.query.filter_by(prima_link=news_link).first_or_404()
-    return render_template("user/blog.html", current_user=current_user, news=news)
+    return render_template("user/single_blog.html", current_user=current_user, news=news)
 
 
 

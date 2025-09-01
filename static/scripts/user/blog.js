@@ -39,6 +39,7 @@ function loadMore() {
                     <h2 class="news-title">${item.title}</h2>
                     <p class="news-desc">${item.description}</p>
                     <a href="${item.url}" class="read-more">ادامه مطلب</a>
+                    <span class="news-date">منتشر شده در ${item.jalali_date}</span> 
                 </div>
             `;
             container.appendChild(article);
