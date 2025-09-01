@@ -1,0 +1,77 @@
+{% extends "main.html" %}
+{% block head %}
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/support.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <title>رهبران پیشتاز | پشتیبانی</title>
+{% endblock %}
+{% block body %}
+<header>پشتیبانی</header>
+
+            <!-- فرم تماس -->
+<section>
+    <h2>تماس با ما</h2>
+    <form class="log" action="#" method="post" id="support">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="text" name="name" class="log" placeholder="نام و نام خانوادگی" required>
+        <input type="number" name="code" class="log" placeholder="کدملی" required pattern="\d{11}" title="کدملی نامعتبر!">
+        <input type="number" name="phone" class="log" placeholder="شماره تلفن" required pattern="\d{11}" title="کدملی نامعتبر!">
+        <textarea form="support" name="message" placeholder="پیام شما..." required></textarea>
+        <button type="submit">ارسال پیام</button>
+    </form>
+</section>
+
+<!-- درباره ما -->
+<section class="about">
+    <h2>درباره ما</h2>
+    <p>
+    ما یک تیم جوان و پرانرژی هستیم که هدفمان ایجاد بستری برای برگزاری مسابقات آنلاین جذاب و هیجان‌انگیز است.
+    تلاش می‌کنیم تجربه‌ای متفاوت و سرگرم‌کننده برای کاربران خود فراهم کنیم.
+    </p>
+    <p>
+    ماموریت ما فراهم کردن محیطی عادلانه، شفاف و لذت‌بخش برای همه شرکت‌کنندگان است.  
+    هر روز در حال توسعه و بهبود خدمات خود هستیم تا شما بهترین تجربه ممکن را داشته باشید.
+    </p>
+</section>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == "ticket_add_success"%}
+            <script type="module">
+            Swal.fire({
+                title: 'تیکت شما با موفقیت ثبت شد!',
+                html: 'بعد از بررسی شدن، در صورت نیاز با شما تماس برقرار خواهد شد.',
+                icon: 'success',
+                confirmButtonColor: '#3f9b0b',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% elif message == "ticket_add_error" %}
+            <script type="module">
+            Swal.fire({
+                title: 'تیکت شما ثبت نشد!',
+                html: 'بعد از چند دقیقه مجددا اقدام فرمائید.<br>در صورت بر طرف نشدن مشکل با ما تماس برقرار کنید',
+                icon: 'error',
+                confirmButtonColor: '#dc1225',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+{% endblock %}

@@ -8,6 +8,7 @@ from scoring import *
 from models.user import User
 from models.invite import Invite
 from models.news import News
+from models.ticket import Ticket
 
 app = Blueprint("user" , __name__)
 
@@ -122,7 +123,7 @@ def panel():
 
 
 
-@app.route("/", methods = ["POST","GET"],  strict_slashes=False)
+@app.route("/",  strict_slashes=False)
 def home():
     top_users = User.query.filter(User.completion == 1).order_by(User.coins.desc()).limit(9).all()
     return render_template("home.html", current_user=current_user, top_users=top_users)
@@ -167,7 +168,22 @@ def guide():
 
 @app.route("/support", methods = ["POST","GET"],  strict_slashes=False)
 def support():
-    return render_template("home.html", current_user=current_user)
+    if request.method == "POST":
+        name = request.form.get('name',None)
+        code = request.form.get('code',None)
+        phone = request.form.get('phone',None)
+        message = request.form.get('message',None)
+        try:
+            tick = Ticket(name=name, code=code, phone=phone, message=message)
+            db.session.add(tick)
+            db.session.commit()
+            flash("ticket_add_success")
+        except:
+            flash("ticket_add_error")
+
+        return redirect(request.url)
+    else:
+        return render_template("user/support.html", current_user=current_user)
 
 # #login page
 # @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)

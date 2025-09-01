@@ -3,7 +3,6 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/register.css') }}">
-    <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <meta name="more_of_page" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
@@ -49,6 +48,29 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
     <script src="{{ url_for('static', filename='scripts/user/register.js') }}"></script>
-    {% include 'public_alert.html' %}
+    
+    
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == "کدملی یا رمز عبور اشتباه است!"%}
+            <script type="module">
+            Swal.fire({
+                title: 'کدملی یا رمز عبور اشتباه است!',
+                html: '',
+                icon: 'error',
+                confirmButtonColor: '#dc1225',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 </body>
 </html>
