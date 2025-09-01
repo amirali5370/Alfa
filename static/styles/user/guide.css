@@ -1,0 +1,109 @@
+#content {
+    font-family: vazir;
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    color: #333;
+    line-height: 1.8;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth; /* اسکرول نرم */
+  }
+
+  /* هدر */
+  .guide-header {
+    background: linear-gradient(90deg, #FF6A00, #0076FF);
+    color: #fff;
+    text-align: center;
+    padding: 90px 15px 20px;
+            font-size: 26px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  }
+
+  /* فهرست مطالب */
+  .toc {
+    background: #fff;
+    max-width: 900px;
+    margin: 25px 10px;
+    padding: 15px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 80%;
+    align-self: center;
+    justify-content: center;
+  }
+
+  .toc a {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0076FF;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .toc a:hover {
+    background: #0076FF;
+    color: #fff;
+  }
+
+  /* محتوای اصلی */
+  .guide-content {
+    max-width: 900px;
+    margin: 20px auto 50px auto;
+    padding: 0 20px;
+  }
+
+  .guide-content h2 {
+    font-size: 22px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    color: #0076FF;
+    font-weight: 700;
+  }
+
+  .guide-content p {
+    font-size: 16px;
+    margin: 0 0 20px;
+    text-align: justify;
+    color: #444;
+  }
+
+  /* نکات مهم */
+  .highlight {
+    background: #fff7e6;
+    border-right: 5px solid #FF6A00;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin: 25px 0;
+    color: #444;
+    font-size: 15px;
+  }
+
+  /* واکنش‌گرا */
+  @media (max-width: 600px) {
+    .guide-header {
+      font-size: 20px;
+      padding: 70px 10px 20px;
+    }
+    .guide-content h2 {
+      font-size: 18px;
+    }
+    .guide-content p {
+      font-size: 14px;
+    }
+    .toc {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .toc a {
+      font-size: 14px;
+      padding: 5px 10px;
+    }
+  }

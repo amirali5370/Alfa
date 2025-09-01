@@ -156,24 +156,15 @@ def blog_api():
         "has_next": news.has_next
     }
 
-
-
-
 @app.route("/blog/<news_link>",  strict_slashes=False)
 def single_blog(news_link):
     news = News.query.filter_by(prima_link=news_link).first_or_404()
     return render_template("user/single_blog.html", current_user=current_user, news=news)
 
-
-
-
-
-
-
-
 @app.route("/guide", methods = ["POST","GET"],  strict_slashes=False)
 def guide():
-    return render_template("home.html", current_user=current_user)
+    return render_template("user/guide.html", current_user=current_user)
+
 @app.route("/support", methods = ["POST","GET"],  strict_slashes=False)
 def support():
     return render_template("home.html", current_user=current_user)
