@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/register.css') }}">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page (FrontEnd)</title>
+</head>
+<body>
+    <div id="body_co">
+        <nav id="navbar">
+            <ul id="menu_bar">
+                <a href="{{ url_for('user.home') }}" id="nav_icon">رهبران آینده ساز</a>
+                <li><a href="{{ url_for('user.blog') }}">بلاگ</a></li>
+                <li><a href="{{ url_for('user.guide') }}">راهنما</a></li>
+                <li><a href="{{ url_for('user.support') }}">پشتیبانی</a></li>
+            </ul>
+        </nav>
+
+        <div id="content">
+            <div class="login-card">
+                <div class="login-header">ایجاد حساب کاربری</div>
+                <form class="log" action="#" method="post" onsubmit="return checking(event)" data-check-url="{{ url_for('user.is_repetitive') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="form-group">
+                        <label for="code">کدملی</label>
+                        <input name="code" type="text" id="code" class="log" placeholder="مثال: 037xxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">رمز عبور</label>
+                        <input name="password" type="password" id="password" class="log" placeholder="******" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password2">تکرار رمز عبور</label>
+                        <input type="password" id="password2" class="log" placeholder="******" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="invite_code">کد دعوت</label>
+                        <input name="invite" type="text" id="invite_code" class="log" placeholder="مثال: abc123">
+                    </div>
+                    <button type="submit" class="login-btn">ثبت نام</button>
+                </form>
+                <div class="login-footer">
+                    <a href="{{ url_for('user.login') }}">قبلا اینجا حساب کاربری داشتم</a>
+                    <!-- <a href="#">فراموشی رمز عبور</a> -->
+                </div>
+            </div>
+        </div>
+
+            
+    </div>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ url_for('static', filename='scripts/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/user/register.js') }}"></script>
+    {% include 'public_alert.html' %}
+</body>
+</html>

@@ -30,6 +30,27 @@
         </svg>
     </span>
     <div id="tops_co">
+        {% for u in top_users %}
+        <div class="user_co">
+            <div class="top_user">
+                <div class="up_top_user"></div>
+                <div class="top_img circle boy">
+                    <img src="/static/img/users/{{u.id}}.jpg" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/user.jpg') }}`;" alt="">
+                </div>
+                <div class="content_top_user">
+                    <span class="top_name">{{u.first_name}} {{u.last_name}}</span>
+                    <div class="top_bio">
+                        <span class="top_grid">پایه {{u.grade_name}}</span>
+                        <span class="top_school">{{u.school_name}}</span>
+                        <div class="top_coin_co">
+                            <span class="top_coin_num">{{u.coins}}</span>
+                            {% include 'svg_html/bank.html' %}
+                        </div>
+                    </div>                                
+                </div>
+            </div>
+        </div>
+        {% endfor %}
         <div class="user_co">
             <div class="top_user">
                 <div class="up_top_user"></div>

@@ -87,6 +87,7 @@ a{
 }
 #profile{
     height: 40px;
+    width: 40px;
     border-radius: 40px;
     border: 1px solid black;
 }
@@ -202,6 +203,8 @@ input {
     border: none;
     padding: 20px 15px;
     font-size: 20px;
+}
+input:not(.log){
     color: rgba(255, 255, 255, 0.624);
 }
 input::placeholder {
@@ -278,6 +281,7 @@ input::-ms-reveal {
     }
     #profile {
         height: 36px;
+        width: 36px;
         border-radius: 36px;
     }
     #user_name {
@@ -293,7 +297,6 @@ input::-ms-reveal {
     input {
         padding: 16px 12px;
         font-size: 20px;
-        color: rgba(255, 255, 255, 0.624);
         width: 85%;
     }
     .button {
@@ -328,7 +331,6 @@ input::-ms-reveal {
     input {
         padding: 16px 12px;
         font-size: 20px;
-        color: rgba(255, 255, 255, 0.624);
         width: 85%;
         font-size: 17px;
     }
@@ -375,6 +377,7 @@ input::-ms-reveal {
     }
     #profile {
         height: 36px;
+        width: 36px;
         border-radius: 36px;
     }
     #nav_icon{
@@ -400,6 +403,7 @@ input::-ms-reveal {
     }
     #profile {
         height: 33px;
+        width: 33px;
         border-radius: 33px;
     }
     #menu_bar>*:not(#nav_icon) {
@@ -478,6 +482,7 @@ input::-ms-reveal {
     }
     #profile {
         height: 28px;
+        width: 28px;
         border-radius: 28px;
     }
     #navbar{
@@ -504,8 +509,8 @@ input::-ms-reveal {
         gap: 5px;
     }
 }
-@media only screen and (max-width: 338px) {
+/* @media only screen and (max-width: 338px) {
     #coins_logo {
         display: none;
     }
-}
+} */

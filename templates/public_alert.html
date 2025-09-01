@@ -1,0 +1,133 @@
+<script type="module">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if message == "payment_success"%}
+                Swal.fire({
+                    title: 'پرداخت موفقیت آمیز بود!',
+                    html: 'میتوانید از طریق پنل کاربری خود، مشخصات پرداخت را مشاهده فرمائید',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% elif message == "payment_failed" %}
+                Swal.fire({
+                    title: 'پرداخت ناموفق!',
+                    html: "اگر وجه از حساب شما کم شده است، ظرف 72 ساعت آینده باز خواهد گشت.",
+                    icon: 'error',
+                    confirmButtonColor: '#dc1225',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% endif %}
+
+
+                {% if message == "confirmation_suc"%}
+                Swal.fire({
+                    title: 'شماره تلفن شما تائید شد!',
+                    html: '',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% elif message == "confirmation_fil" %}
+                Swal.fire({
+                    title: 'کد ورود اشتباه است',
+                    html: "",
+                    icon: 'error',
+                    confirmButtonColor: '#dc1225',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% endif %}
+
+
+                {% if message == "comment_add_success"%}
+                Swal.fire({
+                    title: 'نظر شما با موفقیت ثبت شد!',
+                    html: 'بعد از بررسی شدن، نظر شما قابل مشاهده خواهد بود',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% elif message == "activism_add_success" %}
+                Swal.fire({
+                    title: 'کنش شما با موفقیت ثبت شد!',
+                    html: 'بعد از بررسی شدن، کنش شما قابل مشاهده خواهد بود',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% elif message == "replay_add_success" %}
+                Swal.fire({
+                    title: 'پاسخ شما با موفقیت ثبت شد!',
+                    html: 'بعد از بررسی شدن، پاسخ شما قابل مشاهده خواهد بود',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% endif %}
+
+
+                {% if message == "کدملی یا رمز عبور اشتباه است!"%}
+                Swal.fire({
+                    title: 'کدملی یا رمز عبور اشتباه است!',
+                    html: '',
+                    icon: 'error',
+                    confirmButtonColor: '#dc1225',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% endif %}
+                
+                {% if message == "quiz_more_2"%}
+                Swal.fire({
+                    title: 'شما تمام فرصت های خود را برای شرکت در این آزمون استفاده کرده‌اید!',
+                    html: 'میتوانید در آزمون سایر کتاب ها شرکت کرده و امتیاز کسب کنید.',
+                    icon: 'error',
+                    confirmButtonColor: '#dc1225',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% endif %}
+
+                {% if 'امتیاز' in message %}
+                Swal.fire({
+                    title: '{{message}} به شما تعلق گرفت!',
+                    html: "با توجه به نتایج این نوبت و محاسبه بهترین نتیجه شما برای این آزمون، {{message}} به حساب شما اضافه شد.",
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                {% endif %}
+
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</script>
