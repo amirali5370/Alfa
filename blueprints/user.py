@@ -7,6 +7,7 @@ from functions.code_generators import invite_generator, auth_generator
 from scoring import *
 from models.user import User
 from models.invite import Invite
+from models.news import News
 
 app = Blueprint("user" , __name__)
 
@@ -28,8 +29,9 @@ def register():
 
         invite_code = invite_generator()
         sub_invite_code = invite_generator()
+        auth = auth_generator(User)
 
-        user = User(first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=code, invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01)
+        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=code, invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01)
 
         assistant = False
         if inv_link != None:
@@ -120,17 +122,54 @@ def panel():
 
 
 
-
-
 @app.route("/", methods = ["POST","GET"],  strict_slashes=False)
 def home():
     top_users = User.query.filter(User.completion == 1).order_by(User.coins.desc()).limit(9).all()
     return render_template("home.html", current_user=current_user, top_users=top_users)
 
 
-@app.route("/blog", methods = ["POST","GET"],  strict_slashes=False)
+
+
+@app.route("/blog", strict_slashes=False)
 def blog():
-    return render_template("home.html", current_user=current_user)
+    page = request.args.get("page", 1, type=int)
+    news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=12, error_out=False)
+    return render_template("user/blog.html", current_user=current_user, news=news)
+
+
+@app.route("/api/blog", strict_slashes=False)
+def blog_api():
+    page = request.args.get("page", 1, type=int)
+    news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=12, error_out=False)
+    return {
+        "items": [
+            {
+                "id": item.id,
+                "title": item.title,
+                "description": item.description if item.description else "",
+                "url": url_for('user.single_blog', news_link=item.prima_link),
+                "image": url_for('static', filename='img/news/' + str(item.auth) + '.jpg')
+            }
+            for item in news.items
+        ],
+        "has_next": news.has_next
+    }
+
+
+
+
+@app.route("/blog/<news_link>",  strict_slashes=False)
+def single_blog(news_link):
+    news = News.query.filter_by(prima_link=news_link).first_or_404()
+    return render_template("user/blog.html", current_user=current_user, news=news)
+
+
+
+
+
+
+
+
 @app.route("/guide", methods = ["POST","GET"],  strict_slashes=False)
 def guide():
     return render_template("home.html", current_user=current_user)

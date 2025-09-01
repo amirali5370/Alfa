@@ -11,11 +11,11 @@ def invite_generator():
     return code
 
 
-def auth_generator():
+def auth_generator(model):
     string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     while True:
         code = ''.join(random.choice(string) for x in range(36))
-        x = User.query.filter(User.invite_auth==code).first()
+        x = model.query.filter_by(auth=code).first()
         if x == None:
             break
     return code

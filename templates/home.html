@@ -35,7 +35,7 @@
             <div class="top_user">
                 <div class="up_top_user"></div>
                 <div class="top_img circle boy">
-                    <img src="/static/img/users/{{u.id}}.jpg" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/user.jpg') }}`;" alt="">
+                    <img src="{{ url_for('static', filename='img/users/' ~ u.auth ~ '.jpg') }}" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/user.jpg') }}`;" alt="">
                 </div>
                 <div class="content_top_user">
                     <span class="top_name">{{u.first_name}} {{u.last_name}}</span>

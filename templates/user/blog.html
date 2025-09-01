@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+{% block head %}
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <title>خانه</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/blog.css') }}">
+{% endblock %}
+{% block body %}
+<header>
+    <h1>اخبار و تازه‌ها</h1>
+</header>
+
+<main class="news-container" data-current-page="{{ news.page }}" data-has-next="{{ 'true' if news.has_next else 'false' }}">
+    {% for n in news %}
+    <article class="news-card">
+        <img src="{{ url_for('static', filename='img/news/' ~ n.auth ~ '.jpg') }}" alt="خبر {{n.id}}">
+        <div class="news-content">
+            <h2 class="news-title">{{n.title}}</h2>
+            <p class="news-desc">{{ n.description or '' }}</p>
+            <a href="{{ url_for('user.single_blog', news_link=n.prima_link) }}" class="read-more">ادامه مطلب</a>
+        </div>
+    </article>
+    {% endfor %}
+</main>
+<span id="loading" style="display: none;">در حال بارگذاری ...</span>
+<script src="{{ url_for('static', filename='scripts/user/blog.js') }}"></script>
+
+{% endblock %}
