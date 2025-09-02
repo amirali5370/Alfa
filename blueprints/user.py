@@ -14,6 +14,7 @@ from models.news import News
 from models.ticket import Ticket
 from models.quiz import Quiz
 from models.workbook import Workbook
+from models.pamphlet import Pamphlet
 
 app = Blueprint("user" , __name__)
 
@@ -311,3 +312,25 @@ def event():
         return redirect(url_for("user.dashboard"))
     events = News.query.filter((News.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
     return render_template("user/event.html", current_user=current_user, events=events)
+
+
+@app.route("/pamphlet",  strict_slashes=False)
+@login_required
+def pamphlet():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    pamphlets = Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    return render_template("user/pamphlet.html", current_user=current_user, pamphlets=pamphlets)
+
+#books' file
+@app.route('/download/pamphlet/<pamphlet_auth>')
+@login_required
+def single_pamphlet(pamphlet_auth):
+    if current_user.completion == 0 or current_user.pay == 0:
+        return abort(404)
+    Pamphlet.query.filter(Pamphlet.auth==pamphlet_auth , (Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).first()
+    path = f"{STATIC_SAVE_PATH}/files/pamphlets/{pamphlet_auth}.pdf"
+    try:
+        return send_file(path, as_attachment=True)
+    except:
+        return abort(404)
