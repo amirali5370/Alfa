@@ -1,0 +1,25 @@
+{% extends "user/panel.html" %}
+{% block head %}
+    <title>دوره‌ها | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/course.css') }}">
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>دوره‌های من</h2>
+</div>
+  
+<section class="courses-section">
+    <div class="courses-grid">
+        {% for c in courses %}
+        <a href="{{c.content_link}}" class="course-card">
+            <h4>{{c.title}}</h4>
+            <p>توضیح: {{c.title}}</p>
+        </a>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">دوره ای برای شما وجود ندارد!</h3>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

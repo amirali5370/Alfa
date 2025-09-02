@@ -17,6 +17,7 @@ from models.quiz import Quiz
 from models.workbook import Workbook
 from models.pamphlet import Pamphlet
 from models.webinar import Webinar
+from models.course import Course
 
 app = Blueprint("user" , __name__)
 
@@ -358,12 +359,13 @@ def quiz():
     return render_template("user/quiz.html", current_user=current_user, past=past, running=running, upcoming=upcoming)
 
 
-# @app.route("/quiz/<quiz_id>",  strict_slashes=False)
-# @login_required
-# def single_quiz(quiz_id):
-#     if current_user.completion == 0 or current_user.pay == 0:
-#         return redirect(url_for("user.dashboard"))
-#     return "Sd"
+@app.route("/quiz/<quiz_auth>",  strict_slashes=False)
+@login_required
+def single_quiz(quiz_auth):
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    # quiz = Quiz.query.filter_by()
+    return "Sd"
 
 
 @app.route("/webinar",  strict_slashes=False)
@@ -383,3 +385,13 @@ def webinar():
             running.append(item)
 
     return render_template("user/webinar.html", current_user=current_user, past=past, running=running, upcoming=upcoming)
+
+
+@app.route("/course",  strict_slashes=False)
+@login_required
+def course():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+
+    return render_template("user/course.html", courses=courses)

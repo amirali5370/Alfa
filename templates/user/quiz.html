@@ -16,7 +16,7 @@
         <div class="exam-card live">
             <h4>{{r.title}}</h4>
             <p>زمان شروع: {{r.start_jalali}}<br>زمان پایان: {{r.end_jalali}}</p>
-            <a href="#"><button class="exam-btn enter">ورود به آزمون</button></a>
+            <a href="{{ url_for('user.single_quiz', quiz_auth=r.auth) }}"><button class="exam-btn enter">ورود به آزمون</button></a>
         </div>
         {% else %}
         <div class="page-title">
