@@ -17,3 +17,9 @@ window.addEventListener("scroll",() => {
 },
 {passive: true}
 );
+
+document.querySelector(".form_fo>.button").addEventListener("click", function(e) {
+    const inputs = this.parentNode.querySelectorAll("input, textarea");
+    inputs.forEach(input => input.value = "");
+});
+

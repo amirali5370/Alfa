@@ -45,7 +45,7 @@
                     <button type="submit" class="login-btn">ثبت نام</button>
                 </form>
                 <div class="login-footer">
-                    <a href="{{ url_for('user.login') }}">قبلا اینجا حساب کاربری داشتم</a>
+                    <a href="{{ url_for('user.login') }}{% if next is not none %}?next={{ next }}{% endif %}">قبلا اینجا حساب کاربری داشتم</a>
                     <!-- <a href="#">فراموشی رمز عبور</a> -->
                 </div>
             </div>

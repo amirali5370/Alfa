@@ -17,8 +17,11 @@ app = Blueprint("user" , __name__)
 @app.route("/register", methods = ["POST","GET"],  strict_slashes=False)
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("user.panel"))
-    # next = request.args.get('next',None)
+        if next != None:
+            return redirect(next)
+        return redirect(url_for("user.dashboard"))
+    
+    next = request.args.get('next',None)
     inv_link = request.args.get('invite',None)
     if request.method == "POST":
 
@@ -51,23 +54,23 @@ def register():
             return redirect(request.url)
 
         if inviter != None:
-                inv = Invite(inviter_id=inviter.id , invitee_id=user.id , assistant=assistant)
-                inviter.coins += coin_02
-                db.session.add(inv)
-                db.session.commit()
+            inv = Invite(inviter_id=inviter.id , invitee_id=user.id , assistant=assistant)
+            inviter.coins += coin_02
+            db.session.add(inv)
+            db.session.commit()
         login_user(user)
 
-        # if next != None:
-        #     return redirect(next)
-        return redirect(url_for("user.panel"))
-
+        if next != None:
+            return redirect(next)
+        return redirect(url_for("user.dashboard"))
     else:
         if inv_link != None:
             inviting = False
         else:
             inviting = True
-        return render_template("user/register.html", inviting=inviting , current_user=current_user)
+        return render_template("user/register.html", inviting=inviting, current_user=current_user, next=next)
     
+
 #is_repetitive API
 @app.route('/is_repetitive', methods=['POST'])
 def is_repetitive():
@@ -84,7 +87,12 @@ def is_repetitive():
 #login page
 @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)
 def login():
-    # next = request.args.get('next',None)
+    next = request.args.get('next',None)
+    if current_user.is_authenticated:
+        if next != None:
+            return redirect(next)
+        return redirect(url_for("user.dashboard"))
+    
     if request.method == "POST":
         code = request.form.get('code',None)
         password = request.form.get('password',None)
@@ -94,9 +102,9 @@ def login():
             return redirect(request.url)      
         elif sha256_crypt.verify(password, user.password):
             login_user(user)
-            # if next != None:
-            #     return redirect(next)
-            return redirect(url_for("user.panel"))
+            if next != None:
+                return redirect(next)
+            return redirect(url_for("user.dashboard"))
         else:
             flash("کدملی یا رمز عبور اشتباه است!")
             return redirect(request.url)
@@ -112,23 +120,10 @@ def logout():
     return redirect(url_for('user.home'))
 
 
-
-
-
-#panel
-@app.route("/panel")
-def panel():
-    return "user panel"
-
-
-
-
 @app.route("/",  strict_slashes=False)
 def home():
     top_users = User.query.filter(User.completion == 1).order_by(User.coins.desc()).limit(9).all()
     return render_template("home.html", current_user=current_user, top_users=top_users)
-
-
 
 
 @app.route("/blog", strict_slashes=False)
@@ -136,7 +131,6 @@ def blog():
     page = request.args.get("page", 1, type=int)
     news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=12, error_out=False)
     return render_template("user/blog.html", current_user=current_user, news=news)
-
 
 @app.route("/api/blog", strict_slashes=False)
 def blog_api():
@@ -162,6 +156,7 @@ def single_blog(news_link):
     news = News.query.filter_by(prima_link=news_link).first_or_404()
     return render_template("user/single_blog.html", current_user=current_user, news=news)
 
+
 @app.route("/guide", methods = ["POST","GET"],  strict_slashes=False)
 def guide():
     return render_template("user/guide.html", current_user=current_user)
@@ -185,9 +180,67 @@ def support():
     else:
         return render_template("user/support.html", current_user=current_user)
 
-# #login page
-# @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)
-# def login():
 
-#     # login_user(user)
-#     return "login"
+#dashboard
+@app.route("/dashboard", methods = ["POST","GET"],  strict_slashes=False)
+@login_required
+def dashboard():
+    if request.method == "POST":
+        current_user.first_name = request.form.get('first_name',None)
+        current_user.last_name = request.form.get('last_name',None)
+        current_user.father_name = request.form.get('father_name',None)
+        current_user.gender = request.form.get('gender',None)
+        current_user.school_name = request.form.get('school_name',None)
+        current_user.number = request.form.get('number',None)
+        current_user.addres = request.form.get('addres',None)
+
+        grade = int(request.form.get('grade',None))
+        current_user.grade = grade
+        grade_dist ={
+            4: "چهارم",
+            5: "پنجم",
+            6: "ششم",
+            7: "هفتم",
+            8: "هشتم",
+            9: "نهم",
+            10: "دهم",
+            11: "یازدهم",
+            12: "دوازدهم"
+        }
+        current_user.grade_name = grade_dist[grade]
+        current_user.period_code = 2**((grade-1)//3 - 1)
+
+        current_user.completion = 1
+        try:
+            db.session.commit()
+            flash("completion_success")
+        except:
+            pass
+        return redirect(request.url)
+    else:
+        sub_invits = current_user.sent_invitations.filter_by(assistant=1).all()
+        return render_template("user/dashboard.html", current_user=current_user, sub_invits=sub_invits)
+    
+#switch_sub API
+@app.route('/api/switch_sub', methods=['POST','GET'])
+def switch_sub():
+    if not(current_user.is_authenticated) or current_user.completion == 0 or current_user.pay == 0 :
+        return abort(404)
+    
+    data = request.get_json()
+    invite_id = data.get('invite_id', None)
+    do = data.get('do', None)
+    if do == "activate":
+        if Invite.query.filter(Invite.inviter_id == current_user.id, Invite.assistant==1, Invite.activate==1).count() >= 3:
+            return jsonify({'result': "403"})
+
+    inv = Invite.query.filter(Invite.id == invite_id, Invite.inviter_id == current_user.id, Invite.assistant==1).first_or_404()
+
+    try:
+        inv.activate = int(not inv.activate)
+        db.session.commit()
+        result = "200"
+    except:
+        result = "500"
+
+    return jsonify({'result': result})

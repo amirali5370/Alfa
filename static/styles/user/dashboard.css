@@ -1,0 +1,740 @@
+
+   /* ====== Variables ====== */
+   :root{
+    --bg: #f4f6f9;
+    --card-bg: #ffffff;
+    --muted: #666;
+    --accent: #17a2b8;
+    --accent-dark: #138496;
+    --success: #27ae60;
+    --warn-bg: #fff3cd;
+    --warn-border: #ffecb5;
+    --danger: #c0392b;
+    --shadow: 0 2px 8px rgba(18,24,31,0.06);
+    --radius: 10px;
+    --gap: 18px;
+    --max-width: 1200px;
+    --font-sans: vazir, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+
+   .assistants .invite-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .assistants .invite-form input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  input::placeholder{
+    font-family: vazir;
+  }
+  
+  .assistant-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .assistant {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9f9f9;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  
+  .assistant .name {
+    font-weight: 600;
+  }
+  
+  .assistant .status {
+    margin: 0 8px;
+    font-size: 13px;
+  }
+  
+  .status.active {
+    color: var(--success);
+    font-weight: bold;
+  }
+  .status.inactive {
+    color: #777;
+  }
+  
+  .note {
+    font-size: 12px;
+    color: #666;
+    margin-top: 10px;
+    text-align: right;
+  }
+
+
+  /* ====== Base ====== */
+  .dashboard {
+    box-sizing: border-box;
+    max-width: var(--max-width);
+    margin: 0 auto 40px;
+    padding: 0 16px;
+    display: grid;
+    gap: var(--gap);
+    grid-template-columns: 1fr;   /* mobile: single column */
+    grid-auto-rows: auto;
+    align-items: start;
+    font-family: vazir;
+    direction: rtl;
+  }
+  
+  /* Generic tile/card */
+  .dashboard-item {
+    background: var(--card-bg);
+    border: 1px solid #eee;
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    box-sizing: border-box;
+    overflow: visible;
+  }
+  
+  /* headings inside tiles */
+  .dashboard-item h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: var(--accent);
+  }
+  
+  /* small paragraph */
+  .dashboard-item p { margin: 6px 0 0 0; color: var(--muted); font-size: 14px; }
+  
+  /* ====== Alert bar (always visible, centered text) ====== */
+  .alert-bar {
+    background: var(--warn-bg);
+    color: #5b4a00;
+    border: 1px solid var(--warn-border);
+    border-radius: calc(var(--radius) - 2px);
+    padding: 8px 14px;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 13px;
+    grid-column: 1 / -1; /* ensure full width on all breakpoints */
+  }
+  
+  /* ====== Coins block ====== */
+  .coins {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .coins .coins-num {
+    font-weight: 800;
+    color: #222;
+    /* responsive size */
+    font-size: clamp(20px, 4.2vw, 34px);
+    line-height: 1;
+  }
+  .coins .coins-sub { color: var(--muted); font-size: 13px; }
+  
+  /* ====== Payment block ====== */
+  .payment .status {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+  .payment .status.unpaid { color: var(--danger); }
+  .payment .status.paid   { color: var(--success); }
+  
+  /* paid note */
+  .paid-note {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--success);
+    background: #eef9f1;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  
+  /* ====== Invite friends (normal invite) ====== */
+  .invite {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .invite .invite-row{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .invite-code {
+    background: var(--bg);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    direction: ltr;     /* show code left-to-right */
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    cursor: pointer;
+  }
+  .invite .ghost-btn {
+    background: transparent;
+    border: 1px dashed var(--accent);
+    color: var(--accent);
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .invite .ghost-btn:hover{ background: #f0fbfc; }
+  
+  /* sms/send row */
+  .invite .sms-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .invite input[type="tel"]{
+    flex: 1 1 200px;
+    min-width: 0; /* prevents overflow in grid */
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+    direction: ltr;
+  }
+  .invite .action-btn {
+    padding: 9px 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .invite .hint { font-size: 12px; color: #777; }
+  
+  /* invited list */
+  .invite .invited-list {
+    margin-top: 8px;
+    padding: 8px 0 0 0;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+  .invite .invited-list li {
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #fafafa;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* ====== Assistants (invite-as-assistant + my assistants) ====== */
+  /* assistants tile intentionally made to occupy full width and last row */
+  .assistants {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* ensure it's visually separated */
+  }
+  .assistants .assist-invite-row{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .assistants .assist-code {
+    background: #f6fbff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e6f3f7;
+    font-weight: 700;
+    direction: ltr;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .assistants .assist-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  
+  /* list of my assistants (potentially long) */
+  .assistants .my-assist-list {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    display: grid;
+    gap: 8px;
+    /* limit height to avoid extending page too much; scroll if long */
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 8px; /* space for scrollbar (rtl) */
+    box-sizing: border-box;
+  }
+  .assistants .my-assist-list li {
+    background: #fafafa;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .assistants .my-assist-list li .meta { color: var(--muted); font-size: 13px; }
+  
+  /* small badge for status */
+  .badge {
+    padding: 6px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .badge.active { background: var(--accent); }
+  .badge.paid   { background: var(--success); }
+  .badge.pending{ background: #f39c12; }
+  
+  /* ====== Buttons common ====== */
+  .btn, .action-btn, .ghost-btn {
+    transition: all .18s ease;
+  }
+  .btn:focus, .action-btn:focus, .ghost-btn:focus {
+    outline: 3px solid rgba(23,162,184,0.12);
+    outline-offset: 2px;
+  }
+  
+  /* ====== Empty state note (if invite/assistants not present) ====== */
+  .empty-note {
+    font-size: 14px;
+    color: #666;
+    background: #fbfbfb;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  
+  /* ====== Accessibility improvements ====== */
+  .sr-only {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+
+  /* ====== Buttons full style ====== */
+
+/* پایه */
+.btn, 
+.action-btn, 
+.ghost-btn {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 9px 16px;
+  line-height: 1.2;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+}
+
+/* اصلی (primary) */
+.btn,
+.action-btn {
+  background: var(--accent);
+  border: 1px solid var(--accent-dark);
+  color: #fff;
+}
+.btn:hover,
+.action-btn:hover {
+  background: var(--accent-dark);
+}
+
+/* حالت موفق (مثلاً پرداخت انجام شد) */
+.btn.success {
+  background: var(--success);
+  border: 1px solid #1e874b;
+}
+.btn.success:hover {
+  background: #1e874b;
+}
+
+/* حالت خطر (مثلاً حذف یا لغو) */
+.btn.danger {
+  background: var(--danger);
+  border: 1px solid #922b21;
+}
+.btn.danger:hover {
+  background: #922b21;
+}
+
+/* حالت خنثی (مثلاً لغو یا بازگشت) */
+.btn.secondary {
+  background: #eee;
+  border: 1px solid #ddd;
+  color: #333;
+}
+.btn.secondary:hover {
+  background: #ddd;
+}
+
+/* دکمه Ghost (خط‌چین، بیشتر برای عملیات فرعی مثل کپی یا دعوت) */
+.ghost-btn {
+  background: transparent;
+  border: 1px dashed var(--accent);
+  color: var(--accent);
+}
+.ghost-btn:hover {
+  background: rgba(23,162,184,0.07);
+}
+
+/* سایزهای کوچک و بزرگ */
+.btn.sm, .action-btn.sm, .ghost-btn.sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+.btn.lg, .action-btn.lg, .ghost-btn.lg {
+  padding: 12px 20px;
+  font-size: 15px;
+}
+
+/* غیر فعال */
+.btn:disabled,
+.action-btn:disabled,
+.ghost-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  background: #ccc !important;
+  border-color: #bbb !important;
+  color: #666 !important;
+}
+
+/* تمرکز کیبورد */
+.btn:focus, .action-btn:focus, .ghost-btn:focus {
+  outline: 3px solid rgba(23,162,184,0.25);
+  outline-offset: 2px;
+}
+/* جمع‌وجور کردن لیست‌ها داخل داشبورد */
+.dashboard-item ul {
+    list-style: none;         /* حذف بولت */
+    padding: 0;               /* حذف فاصله داخلی */
+    margin: 8px 0 0;          /* فقط کمی فاصله از تیتر بالایی */
+  }
+  
+  .dashboard-item li {
+    margin: 4px 0;            /* فاصله کم بین آیتم‌ها */
+    padding: 6px 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+
+
+  
+  /* ====== Puzzle layout: tablet and desktop ====== */
+  @media (min-width: 768px) {
+    .dashboard { grid-template-columns: repeat(6, 1fr); }
+  
+    /* Alert stays full width */
+    .alert-bar { grid-column: 1 / -1; }
+  
+    /* place core tiles */
+    .coins     { grid-column: 1 / span 2; }  /* 2 of 6 */
+    .payment   { grid-column: 3 / span 4; }  /* 4 of 6 */
+  
+    /* invites occupy full width (so assistants always a separate row) */
+    .invite    { grid-column: 1 / -1; }
+    .assistants{ grid-column: 1 / -1; }      /* full width, last row (source order should place it last) */
+  }
+  
+  @media (min-width: 1100px) {
+    .dashboard { grid-template-columns: repeat(12, 1fr); }
+  
+    .alert-bar { grid-column: 1 / -1; }
+  
+    .coins     { grid-column: 1 / span 3; }  /* 3 of 12 */
+    .payment   { grid-column: 4 / span 9; }  /* 9 of 12 */
+  
+    .invite    { grid-column: 1 / -1; }      /* full width row */
+    .assistants{ grid-column: 1 / -1; }      /* full width row */
+  }
+  
+  /* ====== Small tweaks ====== */
+  .dashboard-item small { color: var(--muted); font-size: 12px; display: block; margin-top: 6px; }
+  .invite .invite-row, .assistants .assist-invite-row { gap: 10px; }
+  
+  /* prevent inputs from overflowing grid cells */
+  input, button, select, textarea { max-width: 100%; box-sizing: border-box; }
+  
+  /* scrollbar style for assistants list (modern browsers) */
+  .assistants .my-assist-list::-webkit-scrollbar { width: 8px; }
+  .assistants .my-assist-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px; }
+  
+  /* ====== Print-friendly (hide interactive elements) ====== */
+  @media print {
+    .ghost-btn, .action-btn, .btn, input[type="tel"] { display: none !important; }
+    .assistants .my-assist-list { max-height: none; overflow: visible; }
+  }
+  
+
+
+
+
+
+  /* ====== Fix for small mobile screens (<400px) ====== */
+@media (max-width: 400px) {
+    /* کاهش padding و gap کل داشبورد */
+    .dashboard {
+      padding: 0 8px;
+      gap: 12px;
+    }
+  
+    /* Alert bar full width and smaller font */
+    .alert-bar {
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+  
+    /* Coins & Payment & Invite & Assistants tiles */
+    .dashboard-item {
+      padding: 10px;
+    }
+  
+    /* Invite form + assistant form: stack vertically */
+    .assistants .invite-form,
+    .invite .sms-row,
+    .assistants .assist-invite-row,
+    .invite .invite-row {
+      flex-direction: column;
+      gap: 6px;
+    }
+  
+    /* Inputs and buttons full width */
+    .assistants .invite-form input,
+    .invite input[type="tel"],
+    .assistants .invite-form button,
+    .invite .action-btn,
+    .btn {
+      width: 100%;
+      min-width: 0; /* crucial to prevent overflow */
+      flex: none;
+    }
+  
+    /* LTR blocks like codes */
+    .invite-code,
+    .assist-code {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  
+    /* Reduce gap between assistants list items */
+    .assistant-list li,
+    .assistants .my-assist-list li,
+    .invite .invited-list li {
+      padding: 6px 8px;
+      font-size: 13px;
+    }
+  
+    /* Reduce button font-size */
+    .btn, .action-btn, .ghost-btn {
+      font-size: 13px;
+      padding: 7px 7px;
+    }
+  
+    /* Coins number smaller */
+    .coins .coins-num {
+      font-size: clamp(18px, 6vw, 28px);
+    }
+    .toggle{
+        max-width: 80px !important;
+    }
+  }
+  
+  /* ====== Ensure all flex children can shrink ====== */
+  .assistants .invite-form input,
+  .invite input[type="tel"],
+  .assistants .invite-form button,
+  .invite .action-btn,
+  .btn {
+    max-width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+#copy_al{
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    transform: translate(+50%, +50%);
+    background-color: rgb(255, 255, 255);
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+    transition: opacity 1s;
+    opacity: 0;
+    border: 1px solid rgba(0, 0, 0, 0.65);
+}
+
+
+
+
+.profile-complete {
+  grid-column: 1 / -1; /* می‌گیره کل عرض داشبورد در گرید */
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.profile-complete h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.profile-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.profile-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.profile-form input,
+.profile-form textarea {
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border 0.2s;
+}
+
+.profile-form textarea {
+  grid-column: 1 / -1;
+  /* min-height: 80px; */
+  resize: none;
+}
+
+.profile-form input:focus,
+.profile-form textarea:focus {
+  border-color: var(--primary, #007bff);
+  outline: none;
+}
+
+.submit-btn {
+  grid-column: 1 / -1;
+  justify-self: end;
+  padding: 10px 20px;
+  font-weight: bold;
+  background: var(--primary, #007bff);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-btn:hover {
+  background: #0056b3;
+}
+
+
+.gender-field {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.radio-btn {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.radio-btn input {
+  display: none;
+}
+
+.radio-btn span {
+  padding: 0.4rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.radio-btn input:checked + span {
+  background: #0077ff;
+  color: #fff;
+  border-color: #0077ff;
+}
+.op_gender{
+  display: flex;
+  margin-top: 5px;
+}
+.op_grade{
+  display: grid;
+  grid-template-columns: auto auto auto;
+  margin-top: 5px;
+  row-gap: 8px;
+}
+.op_grade .radio-btn {
+  height: 30px;
+  max-width: 55px;
+}
+.op_grade .radio-btn span {
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 768px) {
+  .profile-form {
+    grid-template-columns: 1fr; /* موبایل: ستونی */
+  }
+}
+.profile-form input,
+.profile-form textarea,
+.profile-form textarea::placeholder {
+  font-family: vazir;
+}
+.profile-complete{
+  border: 2px solid red;
+}
+#swal2-title,#swal2-html-container{
+  direction: rtl;
+}

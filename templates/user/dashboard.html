@@ -1,0 +1,215 @@
+{% extends "user/panel.html" %}
+{% block head %}
+    <title>داشبورد | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <meta name="url_of_" content="{{ url_for('user.switch_sub') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/dashboard.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div id="copy_al">کپی شد</div>
+<div class="page-title">
+    <h2>داشبورد</h2>
+</div>
+
+<section class="dashboard">
+    <!-- نوار هشدار تکمیل پروفایل -->
+    {% if current_user.completion == 0 or current_user.pay == 0 %}
+    <div class="alert-bar">
+        لطفاً برای استفاده کامل از امکانات، اطلاعات حساب خود را تکمیل کرده و نسبت به پرداخت هزینه ثبت نام اقدام فرمائید.
+    </div>
+    {% endif %}
+    
+    {% if current_user.completion == 0 %}
+    <div class="profile-complete">
+        <h3>تکمیل مشخصات</h3>
+        <form class="profile-form" method="post" action="#">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <label>
+                نام
+                <input type="text" name="first_name" placeholder="مثال: علی" required>
+            </label>
+        
+            <label>
+                نام خانوادگی
+                <input type="text" name="last_name" placeholder="مثال: رضایی" required>
+            </label>
+        
+            <label>
+                نام پدر
+                <input type="text" name="father_name" placeholder="مثال: حسن" required>
+            </label>
+        
+            <label class="gender-field">
+                <span>جنسیت</span>
+                <div class="op_gender">
+                    <label class="radio-btn">
+                        <input type="radio" name="gender" value="male" required>
+                        <span>پسر</span>
+                    </label>
+                    <label class="radio-btn">
+                        <input type="radio" name="gender" value="female" required>
+                        <span>دختر</span>
+                    </label>
+                </div>
+            </label>
+        
+            <label>
+                نام مدرسه
+                <input type="text" name="school_name" placeholder="مثال: دبیرستان شهید بهشتی" required>
+            </label>
+                            
+            <label>
+                شماره تماس
+                <input type="tel" name="number" placeholder="مثال: 09123456789" required>
+            </label>
+        
+            <label>
+                <span>پایه تحصیلی</span>
+                <div class="op_grade">
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="4" required>
+                        <span>چهارم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="5" required>
+                        <span>پنجم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="6" required>
+                        <span>ششم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="7" required>
+                        <span>هفتم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="8" required>
+                        <span>هشتم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="9" required>
+                        <span>نهم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="10" required>
+                        <span>دهم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="11" required>
+                        <span>یازدهم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="12" required>
+                        <span>دوازدهم</span>
+                    </label>
+                </div>
+            </label>
+        
+            <label>
+                آدرس
+                <textarea name="addres" placeholder="آدرس کامل خود را وارد کنید" maxlength="150" required></textarea>
+            </label>
+        
+            <button type="submit" class="btn submit-btn">ثبت اطلاعات</button>
+        </form>
+    </div>
+    {% endif %}
+
+
+    
+    <!-- بخش سکه‌ها -->
+    <div class="dashboard-item coins">
+        <h3>سکه‌های من</h3>
+        <p><strong>{{current_user.coins}}</strong> سکه</p>
+    </div>
+    
+    <!-- پرداخت -->
+    <div class="dashboard-item payment" id="payment-tile">
+        <h3>پرداخت هزینه ثبت‌نام</h3>
+        {% if current_user.pay == 0 %}
+        <p>هزینه ثبت‌نام شما هنوز پرداخت نشده است</p>
+        <button class="btn">پرداخت</button>
+        {% else %}
+        <p>هزینه ثبت‌نام شما پرداخت شده است</p>
+        {% endif %}
+    </div>
+    {% if current_user.completion == 1 and current_user.pay == 1 %}
+    <!-- دعوت افراد -->
+    <div class="dashboard-item invite">
+        <h3>دعوت دوستان</h3>
+        <p>کد دعوت شما:</p>
+        <div class="invite-code">{{current_user.invite_code}}</div>
+        <button id="inv_bt" class="btn">ارسال پیامک دعوت</button>
+    </div>
+    {% if current_user.user_type != "student" %}
+    <!-- دعوت معاون‌ها -->
+    <div class="dashboard-item assistants">
+        <h3>مدیریت معاون‌ها</h3>
+        
+        <!-- فرم دعوت -->
+        <p>کد دعوت معاونین:</p>
+        <div class="invite-code">{{current_user.sub_invite_code}}</div>
+        <div class="invite-form">
+            <input type="tel" placeholder="شماره موبایل معاون جدید" />
+            <button id="inv_sub_bt" class="btn">ارسال دعوت‌نامه</button>
+        </div>
+        
+        <!-- لیست معاون‌ها -->
+        <ul class="assistant-list">
+            {% for i in sub_invits %}
+            <li class="assistant" data-object="{{i.id}}">
+                <span class="name">{{i.invitee.first_name}} {{i.invitee.last_name}}</span>
+                {%if i.activate == 1%}
+                <span class="status active">فعال</span>
+                <button class="btn secondary toggle">غیرفعال کن</button>
+                {%else%}
+                <span class="status inactive">غیرفعال</span>
+                <button class="btn toggle">فعال کن</button>
+                {%endif%}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <!-- محدودیت‌ها -->
+        <div class="note">
+            حداکثر ۳ معاون فعال می‌تواند وجود داشته باشد.<br>
+            جمعاً ۱۰ معاون (فعال یا غیرفعال) قابل تعریف است.
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='scripts/user/dashboard.js') }}"></script>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == "completion_success"%}
+            <script type="module">
+                Swal.fire({
+                    title: 'تکمیل اطلاعات با موفقیت انجام شد!',
+                    html: '',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock %}

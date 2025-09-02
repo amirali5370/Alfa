@@ -7,6 +7,7 @@ class Invite(db.Model):
     __tablename__ = "invites"
     id = Column(Integer, primary_key=True)
     assistant = Column(Integer, nullable=False, default=0, index=True)
+    activate = Column(Integer, nullable=False, default=0)
     inviter_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
     invitee_id = Column(Integer, ForeignKey('users.id'), nullable=False, unique=True)
 
