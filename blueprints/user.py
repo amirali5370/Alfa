@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from extentions import db
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import literal
 from PIL import Image
 from functions.code_generators import invite_generator, auth_generator
 from config import STATIC_SAVE_PATH
@@ -301,3 +302,12 @@ def single_workbook(workbook_auth):
         return send_file(path, as_attachment=True)
     except:
         return abort(404)
+    
+
+@app.route("/event",  strict_slashes=False)
+@login_required
+def event():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    events = News.query.filter((News.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    return render_template("user/event.html", current_user=current_user, events=events)

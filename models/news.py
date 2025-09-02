@@ -10,5 +10,5 @@ class News(db.Model):
     content = Column(String, nullable=False)
     prima_link = Column(String, nullable=False, index=True)
     auth = Column(String, nullable=False, index=True)
-    is_event = Column(Integer, nullable=False, index=True)
+    grade_bits = Column(Integer, nullable=False, default=0, index=True)
     jalali_date = Column(String, nullable=False)

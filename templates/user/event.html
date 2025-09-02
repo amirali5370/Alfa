@@ -1,0 +1,26 @@
+{% extends "user/panel.html" %}
+{% block head %}
+    <title>حساب کاربری | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/event.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>رویدادهای من</h2>
+</div>
+
+<section class="events-section">
+    <div class="events-grid">
+        {% for e in events %}
+        <div class="event-card">
+            <img src="{{ url_for('static', filename='img/news/' ~ e.auth ~ '.jpg') }}" alt="{{e.title}}" class="event-thumb">
+            <div class="event-info">
+                <h4>{{e.title}}</h4>
+                <p class="news-desc">{{e.description or ''}}</p>
+                <a href="{{ url_for('user.single_blog', news_link=e.prima_link) }}"><button class="event-btn" onclick="openNews('news1.html')">جزئیات خبر</button></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
