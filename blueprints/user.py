@@ -11,6 +11,8 @@ from models.user import User
 from models.invite import Invite
 from models.news import News
 from models.ticket import Ticket
+from models.quiz import Quiz
+from models.workbook import Workbook
 
 app = Blueprint("user" , __name__)
 
@@ -254,6 +256,8 @@ def switch_sub():
 @app.route("/account", methods = ["POST","GET"],  strict_slashes=False)
 @login_required
 def account():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
     if request.method == "POST":
         _type = request.form.get('type', None)
         if _type == "psw":
@@ -275,3 +279,25 @@ def account():
 
     else:
         return render_template("user/account.html", current_user=current_user)
+    
+
+@app.route("/workbook",  strict_slashes=False)
+@login_required
+def workbook():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    workbooks = Workbook.query.filter(Workbook.user_id==current_user.id).all()
+    return render_template("user/workbook.html", current_user=current_user, workbooks=workbooks)
+
+#books' file
+@app.route('/download/workbook/<workbook_auth>')
+@login_required
+def single_workbook(workbook_auth):
+    if current_user.completion == 0 or current_user.pay == 0:
+        return abort(404)
+    Workbook.query.filter(Workbook.auth==workbook_auth, Workbook.user_id==current_user.id).first()
+    path = f"{STATIC_SAVE_PATH}/files/workbooks/{workbook_auth}.pdf"
+    try:
+        return send_file(path, as_attachment=True)
+    except:
+        return abort(404)

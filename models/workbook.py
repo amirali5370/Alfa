@@ -6,6 +6,8 @@ from extentions import db
 class Workbook(db.Model):
     __tablename__ = "workbooks"
     id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=True) 
     auth = Column(String, nullable=False, index=True)
     is_degree = Column(Integer, nullable=False, default=0, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False, index=True)
