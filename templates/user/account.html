@@ -1,0 +1,106 @@
+{% extends "user/panel.html" %}
+{% block head %}
+    <title>حساب کاربری | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <meta name="url_of_" content="{{ url_for('user.switch_sub') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/account.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>پروفایل کاربری</h2>
+</div>
+  
+<section class="profile-page">
+
+    <!-- بخش عکس پروفایل -->
+    <div class="profile-avatar">
+    <img src="{{ url_for('static', filename='img/users/' ~ current_user.auth ~ '.jpg') }}" alt="عکس پروفایل" class="avatar-img">
+    <form action="#" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <label for="avatar-upload" class="avatar-btn">تغییر عکس پروفایل</label>
+        <input name="profile" type="file" id="avatar-upload" accept="image/*" onchange="this.parentNode.submit();" hidden>
+    </form>
+    </div>
+  
+    <!-- مشخصات کاربر -->
+    <div class="profile-info">
+        <h3>مشخصات کاربری</h3>
+        <ul>
+            <li><span>نام:</span> {{current_user.first_name}}</li>
+            <li><span>نام خانوادگی:</span> {{current_user.last_name}}</li>
+            <li><span>نام پدر:</span> {{current_user.father_name}}</li>
+            <li><span>نوع کاربری:</span> {{ "ساده" if current_user.user_type == "student" else current_user.user_type}}</li>
+            <li><span>جنسیت:</span> {{ "پسر" if current_user.gender == "male" else "دختر" }}</li>
+            <li><span>کد ملی:</span> {{current_user.code}}</li>
+            <!-- <li><span>تاریخ تولد:</span> 1404/04/23</li> -->
+            <li><span>نام مدرسه:</span> {{current_user.school_name}}</li>
+            <li><span>پایه تحصیلی:</span> {{current_user.grade_name}}</li>
+            <li><span>شماره تماس:</span> {{current_user.number}}</li>
+            <li><span>آدرس:</span><br> {{current_user.addres}} </li>
+        </ul>
+    </div>
+  
+    <!-- تغییر رمز عبور -->
+    <div class="profile-security">
+        <h3>تنظیمات امنیتی</h3>
+        <form action="#" method="post" class="profile-form password_change" onsubmit="return checking(event)">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="type" value="psw">
+            <div class="form-group">
+                <label>رمز فعلی</label>
+                <input name="now_pass" type="password" required>
+            </div>
+        
+            <div class="form-group">
+                <label>رمز جدید</label>
+                <input id="password" name="new_pass" type="password" required>
+            </div>
+        
+            <div class="form-group">
+                <label>تکرار رمز جدید</label>
+                <input id="password2" type="password" required>
+            </div>
+        
+            <button type="submit" class="save-btn">تغییر رمز</button>
+        </form>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='scripts/user/account.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == "pass_success" %}
+            <script type="module">
+                Swal.fire({
+                    title: 'رمز عبور با موفقیت تغییر کرد!',
+                    html: '',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+            </script>
+            {% elif message == "now_pass_error" %}
+            <script type="module">
+                Swal.fire({
+                    title: 'رمز عبور فعلی به درستی وارد نشده است!',
+                    html: `درصورت فراموشی رمز عبور از طریق بخش <a style="color:blue;" href="{{ url_for('user.support') }}">پشتیبانی</a> با ما تماس حاصل فرمائید`,
+                    icon: 'error',
+                    confirmButtonColor: '#dc1225',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock %}

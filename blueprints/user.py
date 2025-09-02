@@ -3,7 +3,9 @@ from flask_login import login_user, login_required, current_user, logout_user
 from extentions import db
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
+from PIL import Image
 from functions.code_generators import invite_generator, auth_generator
+from config import STATIC_SAVE_PATH
 from scoring import *
 from models.user import User
 from models.invite import Invite
@@ -181,6 +183,9 @@ def support():
         return render_template("user/support.html", current_user=current_user)
 
 
+
+
+
 #dashboard
 @app.route("/dashboard", methods = ["POST","GET"],  strict_slashes=False)
 @login_required
@@ -244,3 +249,29 @@ def switch_sub():
         result = "500"
 
     return jsonify({'result': result})
+
+
+@app.route("/account", methods = ["POST","GET"],  strict_slashes=False)
+@login_required
+def account():
+    if request.method == "POST":
+        _type = request.form.get('type', None)
+        if _type == "psw":
+            now_pass = request.form.get('now_pass', None)
+            new_pass = request.form.get('new_pass', None)
+            if sha256_crypt.verify(now_pass, current_user.password):
+                current_user.password = sha256_crypt.encrypt(new_pass)
+                db.session.commit()
+                flash("pass_success")
+            else:
+                flash("now_pass_error")
+        else:
+            file = request.files.get("profile", None)
+            image = Image.open(file)
+            image = image.resize((256, 256))
+            image = image.convert("RGB") 
+            image.save(f"{STATIC_SAVE_PATH}/img/users/{current_user.auth}.jpg", 'JPEG')
+        return redirect(request.url)
+
+    else:
+        return render_template("user/account.html", current_user=current_user)

@@ -77,10 +77,10 @@
     /* top: calc(-170px/2 + 110px); */
     aspect-ratio: 1/1;
 }
-.top_img.boy{
+.top_img.male{
     background: linear-gradient(to bottom, #f8f8f800 50%, #87cefa 50%);
 }
-.top_img.girl{
+.top_img.female{
     background: linear-gradient(to bottom, #f8f8f800 50%, #ffc0cb 50%);
 }
 .content_top_user{

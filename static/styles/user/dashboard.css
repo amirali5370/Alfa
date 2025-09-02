@@ -727,14 +727,3 @@
     grid-template-columns: 1fr; /* موبایل: ستونی */
   }
 }
-.profile-form input,
-.profile-form textarea,
-.profile-form textarea::placeholder {
-  font-family: vazir;
-}
-.profile-complete{
-  border: 2px solid red;
-}
-#swal2-title,#swal2-html-container{
-  direction: rtl;
-}
