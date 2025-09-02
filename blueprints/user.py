@@ -3,6 +3,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from extentions import db
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timezone
 from sqlalchemy import literal
 from PIL import Image
 from functions.code_generators import invite_generator, auth_generator
@@ -334,3 +335,31 @@ def single_pamphlet(pamphlet_auth):
         return send_file(path, as_attachment=True)
     except:
         return abort(404)
+    
+
+
+@app.route("/quiz",  strict_slashes=False)
+@login_required
+def quiz():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    past, running, upcoming = [], [], []
+    now = datetime.now(timezone.utc)
+    for item in items:
+        if item.end_time < now:
+            past.append(item)
+        elif item.start_time > now:
+            upcoming.append(item)
+        else:
+            running.append(item)
+
+    return render_template("user/quiz.html", current_user=current_user, past=past, running=running, upcoming=upcoming)
+
+
+# @app.route("/quiz/<quiz_id>",  strict_slashes=False)
+# @login_required
+# def single_quiz(quiz_id):
+#     if current_user.completion == 0 or current_user.pay == 0:
+#         return redirect(url_for("user.dashboard"))
+#     return "Sd"
