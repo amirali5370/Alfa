@@ -1,0 +1,65 @@
+{% extends "user/panel.html" %}
+{% block head %}
+    <title>وبینار ها | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/webinar.css') }}">
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>وبینارهای من</h2>
+</div>
+  
+<section class="webinar-section">
+    <h3>درحال برگزاری</h3>
+    <div class="webinars-grid">
+        {% for r in running %}
+        <div class="webinar-card live">
+            <h4>{{r.title}}</h4>
+            <p>مدرس: {{r.teacher}}</p>
+            <p>توضیح: {{r.description}}</p>
+            <p>زمان شروع: {{r.start_jalali}}</p>
+            <a href="{{r.content_link}}" target="_blank"><button class="webinar-btn enter">ورود به وبینار</button></a>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">وبیناری درحال برگزاری برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+<section class="webinar-section">
+    <h3>آینده</h3>
+    <div class="webinars-grid">
+        {% for u in upcoming %}
+        <div class="webinar-card upcoming">
+            <h4>{{u.title}}</h4>
+            <p>مدرس: {{u.teacher}}</p>
+            <p>توضیح: {{u.description}}</p>
+            <p>زمان شروع: {{u.start_jalali}}</p>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">وبیناری در آینده برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+<section class="webinar-section">
+    <h3>گذشته</h3>
+    <div class="webinars-grid">
+        {% for p in past %}
+        <div class="webinar-card past">
+            <h4>{{p.title}}</h4>
+            <p>مدرس: {{p.teacher}}</p>
+            <p>توضیح: {{p.description}}</p>
+            <p>زمان شروع: {{p.start_jalali}}</p>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">آزمونی در گذشته برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section> 
+{% endblock %}

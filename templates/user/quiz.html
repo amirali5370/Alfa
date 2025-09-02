@@ -16,7 +16,7 @@
         <div class="exam-card live">
             <h4>{{r.title}}</h4>
             <p>زمان شروع: {{r.start_jalali}}<br>زمان پایان: {{r.end_jalali}}</p>
-            <button class="exam-btn enter">ورود به آزمون</button>
+            <a href="#"><button class="exam-btn enter">ورود به آزمون</button></a>
         </div>
         {% else %}
         <div class="page-title">
@@ -33,7 +33,8 @@
         {% for u in upcoming %}
         <div class="exam-card upcoming">
             <h4>{{u.title}}</h4>
-            <p>زمان شروع: {{u.start_jalali}}<br>زمان پایان: {{u.end_jalali}}</p>        </div>
+            <p>زمان شروع: {{u.start_jalali}}<br>زمان پایان: {{u.end_jalali}}</p>        
+        </div>
         {% else %}
         <div class="page-title">
             <h3 style="color: rgba(0, 0, 0, 0.65);">آزمونی در آینده برای شما موجود نیست!</h3>

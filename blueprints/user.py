@@ -16,6 +16,7 @@ from models.ticket import Ticket
 from models.quiz import Quiz
 from models.workbook import Workbook
 from models.pamphlet import Pamphlet
+from models.webinar import Webinar
 
 app = Blueprint("user" , __name__)
 
@@ -363,3 +364,22 @@ def quiz():
 #     if current_user.completion == 0 or current_user.pay == 0:
 #         return redirect(url_for("user.dashboard"))
 #     return "Sd"
+
+
+@app.route("/webinar",  strict_slashes=False)
+@login_required
+def webinar():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    past, running, upcoming = [], [], []
+    now = datetime.now(timezone.utc)
+    for item in items:
+        if item.end_time < now:
+            past.append(item)
+        elif item.start_time > now:
+            upcoming.append(item)
+        else:
+            running.append(item)
+
+    return render_template("user/webinar.html", current_user=current_user, past=past, running=running, upcoming=upcoming)

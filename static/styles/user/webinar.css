@@ -1,0 +1,66 @@
+.webinar-section {
+    margin-bottom: 40px;
+}
+.webinar-section h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #343a40;
+}
+
+.webinars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.webinar-card {
+    background: #fff;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    color: #333;
+    transition: transform 0.2s;
+}
+.webinar-card:hover{
+    transform: translateY(-3px);
+}
+
+.webinar-card h4{
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #17a2b8;
+}
+.webinar-card p{
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* وضعیت‌ها */
+.webinar-card.live {
+    border-left: 4px solid #28a745; /* سبز */
+}
+.webinar-card.upcoming {
+    border-left: 4px solid #ffc107; /* زرد */
+}
+.webinar-card.past {
+    border-left: 4px solid #dc3545; /* قرمز */
+}
+
+/* دکمه‌ها */
+.webinar-btn {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+.webinar-btn.enter {
+    background-color: #28a745;
+    color: #fff;
+}
+.webinar-btn.enter:hover {
+    background-color: #218838;
+}
