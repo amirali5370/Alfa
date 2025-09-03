@@ -101,7 +101,7 @@ body {
       font-size: 25px;
     }
   }
-  #content{
+  #content:not(.p_ad){
       width: 100%;
   }
   #head{

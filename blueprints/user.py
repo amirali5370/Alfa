@@ -26,8 +26,8 @@ from models.question import Question
 
 app = Blueprint("user" , __name__)
 
-limiter = Limiter()  # به app اصلی وصل خواهد شد
-limiter.limit("100 per minute")(app) 
+# limiter = Limiter()  # به app اصلی وصل خواهد شد
+# limiter.limit("100 per minute")(app) 
 
 # ------------- LOGIN AND REGISTER-------------
 #register page
@@ -301,7 +301,7 @@ def account():
 def workbook():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    workbooks = Workbook.query.filter(Workbook.user_id==current_user.id).all()
+    workbooks = Workbook.query.filter(Workbook.user_id==current_user.id).order_by(Workbook.id.desc()).all()
     return render_template("user/workbook.html", current_user=current_user, workbooks=workbooks)
 
 #books' file
@@ -323,7 +323,7 @@ def single_workbook(workbook_auth):
 def event():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    events = News.query.filter((News.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    events = News.query.filter((News.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(News.id.desc()).all()
     return render_template("user/event.html", current_user=current_user, events=events)
 
 
@@ -332,7 +332,7 @@ def event():
 def pamphlet():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    pamphlets = Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    pamphlets = Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Pamphlet.id.desc()).all()
     return render_template("user/pamphlet.html", current_user=current_user, pamphlets=pamphlets)
 
 #books' file
@@ -392,7 +392,7 @@ def single_quiz(quiz_auth):
                 
         result = round( (true*100)/(3*quiz.count) ,2)
         if r.score < result:
-            current_user.coins += coin_03 * (result - r.score)
+            current_user.coins += round(coin_03 * (result - r.score))
             r.score = result
             try:
                 db.session.commit()
@@ -438,7 +438,7 @@ def result():
 def webinar():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Webinar.id.desc()).all()
     past, running, upcoming = [], [], []
     now = datetime.now(timezone.utc)
     for item in items:
@@ -457,6 +457,6 @@ def webinar():
 def course():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Course.id.desc()).all()
 
     return render_template("user/course.html", courses=courses)

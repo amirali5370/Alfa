@@ -1,4 +1,4 @@
-{% extends "main.html" %}
+{% extends "admin/panel.html" %}
 {% block head %}
     <meta name="more_of_page" content="{{ csrf_token() }}">
     <title>رهبران پیشتاز | بلاگ</title>
@@ -7,6 +7,7 @@
 {% block body %}
 <header>
     <h1>اخبار و مقالات</h1>
+    <a href="{{ url_for('admin.single_blog', news_link='create') }}"><button type="button" style="background-color: rgb(0, 13, 255); width: 100px; height: 40px; border: none; color: white; cursor: pointer; margin-bottom: 20px; border-radius: 20px;">ایجاد خبر جدید</button></a>
 </header>
 
 <main class="news-container" data-current-page="{{ news.page }}" data-has-next="{{ 'true' if news.has_next else 'false' }}">
@@ -16,13 +17,13 @@
         <div class="news-content">
             <h2 class="news-title">{{n.title}}</h2>
             <p class="news-desc multi-line">{{ n.description or '' }}</p>
-            <a href="{{ url_for('user.single_blog', news_link=n.prima_link) }}" class="read-more">ادامه مطلب</a>
+            <a href="{{ url_for('admin.single_blog', news_link=n.prima_link) }}" class="read-more">ویرایش خبر</a>
             <span class="news-date">منتشر شده در {{n.jalali_date}}</span> 
         </div>
     </article>
     {% endfor %}
 </main>
 <span id="loading" style="display: none;">در حال بارگذاری ...</span>
-<script src="{{ url_for('static', filename='scripts/user/blog.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin/blog.js') }}"></script>
 
 {% endblock %}

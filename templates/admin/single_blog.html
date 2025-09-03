@@ -1,0 +1,70 @@
+{% extends "admin/panel.html" %}
+{% block head %}
+<meta name="more_of_page" content="{{ csrf_token() }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/user/single_blog.css') }}">
+<title>رهبران پیشتاز | {{news.title | default('ایجاد خبر') }}</title>
+<style>
+    .blog_post {
+        width: 100% !important;
+    }
+    .blog_title {
+        width: 80%;
+    }
+    .inf{
+        height: 20px;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<main id="single_blog">
+    <div id="head"></div>
+    <article class="blog_post">
+        <!-- <h1 class="blog_title">{{news.title}}</h1> -->
+        <form action="#" method="post" id="met_news">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="mode" id="" value="met">
+            <div>
+                <input type="checkbox" name="d1" id="d1" {{'checked' if 1 in grades else '' }}>
+                <label for="d1">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2" {{'checked' if 2 in grades else '' }}>
+                <label for="d2">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4" {{'checked' if 4 in grades else '' }}>
+                <label for="d4">دوره دوم متوسطه</label>
+            </div>
+            <br>
+            <label for="">لینک یکتا: </label>
+            <input class="inf" name="prima_link" value="{{news.prima_link | default('') }}">
+            <br>
+            <br>
+            <label for="">توضیحات کوتاه: </label>
+            <input class="inf" name="description" value="{{news.description | default('') }}">
+            <br>
+            <br>
+            <input class="blog_title" name="title" value="{{news.title | default('') }}">
+        </form>
+        <div class="meta_info">
+            <span>منتشر شده در {{news.jalali_date | default('')}}</span>
+        </div>
+
+        <form action="#" method="post" id="ph_news" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="mode" id="" value="ph">
+            <label for="avatar-upload" class="avatar-btn">
+                <div class="thumb_wrapper">
+                    <img src="{{ url_for('static', filename='img/news/' ~ (news.auth or 'default')  ~ '.jpg') }}" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/news.jpg') }}`;"  alt="cover" class="blog_cover">
+                </div>
+            </label>
+            <input name="profile" type="file" id="avatar-upload" accept="image/*" onchange="this.parentNode.submit();" hidden>
+        </form>
+
+        <div class="blog_content">
+        <textarea form="met_news" name="content" id="" style="width: 100%; resize: vertical; overflow: auto; font-family: vazir;">{{news.content | default('محتوای خبر...')}}</textarea>
+        </div>
+        <button form="met_news" type="submit" style="background-color: rgb(0, 13, 255); width: 90px; height: 40px; border: none; color: white; cursor: pointer; margin-top: 20px; border-radius: 20px;">ثبت تغییرات</button>
+        <a href="{{ url_for('admin.blog_del', news_link=news.prima_link) }}"><button type="submit" style="background-color: rgb(242, 32, 32); width: 90px; height: 40px; border: none; color: white; cursor: pointer; margin-top: 20px; border-radius: 20px;">حذف خبر</button></a>
+    </article>
+</main>
+
+{% endblock %}
