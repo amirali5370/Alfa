@@ -4,10 +4,12 @@ from datetime import datetime , timezone
 from config import ADMIN_PASSWORD, ADMIN_USERNAME
 from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator
-from functions.datetime import gregorian_to_jalali
+from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
 from extentions import db
 from models.news import News
 from models.pamphlet import Pamphlet
+from models.question import Question
+from models.quiz import Quiz
 
 app = Blueprint("admin" , __name__ , url_prefix='/admin')
 
@@ -25,7 +27,7 @@ def login():
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session["admin_login"] = username
-            return redirect(url_for("admin.dashboard"))
+            return redirect(url_for("admin.blog"))
         else:
             return redirect(url_for("admin.login"))
     else:
@@ -76,8 +78,8 @@ def single_blog(news_link):
             prima_link = request.form.get('prima_link',None)
             
             grade_bits = 0
-            for i in [1, 2, 4]:   # فقط همین سه تا داری
-                if request.form.get(f'd{i}'):  # یعنی تیک خورده باشه
+            for i in [1, 2, 4]:
+                if request.form.get(f'd{i}'):
                     grade_bits += i
 
             news.title = title
@@ -108,21 +110,23 @@ def blog_del(news_link):
 
 
 
-@app.route("/pamphlet", strict_slashes=False)
+@app.route("/pamphlet", methods=["POST","GET"], strict_slashes=False)
 def pamphlet():
-    pamphlets = Pamphlet.query.order_by(Pamphlet.id.desc()).order_by(Pamphlet.id.desc()).all()
-    return render_template("admin/pamphlet.html", pamphlets=pamphlets)
+    if request.method=="POST":
+        pass
+    else:
+        pamphlets = Pamphlet.query.order_by(Pamphlet.id.desc()).all()
+        return render_template("admin/pamphlet.html", pamphlets=pamphlets)
 
 
 @app.route("/edit_pamphlet/<pamphlet_auth>", methods=["POST"], strict_slashes=False)
 def edit_pamphlet(pamphlet_auth):
     pamphlets = Pamphlet.query.filter_by(auth=pamphlet_auth).first_or_404()
-
     title = request.form.get('title',None)
     description = request.form.get('description',None)    
     grade_bits = 0
-    for i in [1, 2, 4]:   # فقط همین سه تا داری
-        if request.form.get(f'd{i}'):  # یعنی تیک خورده باشه
+    for i in [1, 2, 4]:
+        if request.form.get(f'd{i}'):
             grade_bits += i
 
     pamphlets.title = title
@@ -138,3 +142,62 @@ def del_pamphlet(pamphlet_auth):
     db.session.delete(pamphlets)
     db.session.commit()
     return redirect(url_for('admin.pamphlet'))
+
+
+
+@app.route("/quiz", methods=["POST","GET"], strict_slashes=False)
+def quiz():
+    if request.method=="POST":
+        pass
+    else:
+        items = Quiz.query.order_by(Quiz.id.desc()).all()
+        past, running, upcoming = [], [], []
+        now = datetime.utcnow()
+        for item in items:
+            if item.end_time < now:
+                past.append(item)
+            elif item.start_time > now:
+                upcoming.append(item)
+            else:
+                running.append(item)
+
+        return render_template("admin/quiz.html", past=past, running=running, upcoming=upcoming)
+
+
+@app.route("/edit_quiz/<quiz_auth>", methods=["POST"], strict_slashes=False)
+def edit_quiz(quiz_auth):
+    
+    quizes = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
+    status = request.form.get('status',None)
+    if status=="now":
+        end_jalali = request.form.get('end_jalali',None)
+        quizes.end_jalali = end_jalali
+        end_time = jalali_to_gregorian(end_jalali)
+        quizes.end_time = end_time
+    else:
+        title = request.form.get('title',None)
+        count = request.form.get('count',None)    
+        start_jalali = request.form.get('start_jalali',None)    
+        end_jalali = request.form.get('end_jalali',None)
+
+        grade_bits = 0
+        for i in [1, 2, 4]:
+            if request.form.get(f'd{i}'):
+                grade_bits += i
+
+        quizes.title = title
+        quizes.count = count
+        quizes.start_jalali = start_jalali
+        quizes.end_jalali = end_jalali
+        quizes.grade_bits = grade_bits
+
+        start_time = jalali_to_gregorian(start_jalali)
+        end_time = jalali_to_gregorian(end_jalali)
+
+        quizes.start_time = start_time
+        quizes.end_time = end_time
+
+
+    db.session.commit()
+
+    return redirect(url_for('admin.quiz'))

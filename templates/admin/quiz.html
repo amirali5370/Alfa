@@ -1,0 +1,154 @@
+{% extends "admin/panel.html" %}
+{% block head %}
+    <title>آزمون ها | ادمین</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/quiz.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <meta name="res_u" content="{{ url_for('user.result') }}">
+    <style>
+        .exam-card input {
+            margin: 0 0 10px;
+            font-size: 18px;
+            font-family: vazir;
+        }
+        .exam-card input.p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>آزمون‌های من</h2>
+</div>
+  <span style="color: black;">مثال نحوه ورودی تاریخ و ساعت ها:<br>1404/06/05 19:25</span>
+  <!-- در حال برگزاری -->
+<section class="exam-section">
+    <h3>آزمون‌های در حال برگزاری</h3>
+    <div class="exams-grid">
+        {% for r in running %}
+        <div class="exam-card live">
+            <form action="{{ url_for('admin.edit_quiz', quiz_auth=r.auth) }}" method="post" enctype="multipart/form-data" id="meta-form-{{r.id}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="status" value="now"/>
+            <h4>{{r.title}}</h4>
+            <p>زمان شروع: {{r.start_jalali}}><br>زمان پایان: <input class="p" type="text" name="end_jalali" value="{{r.end_jalali}}"></p>
+            <label for="تعداد سوالات">تعداد سوالات: </label>
+            <span>{{r.count}}</span>
+            <div>
+                <input type="checkbox" name="d1" id="d1" {{ 'checked' if and(1,r.grade_bits) != 0 else '' }} disabled>
+                <label for="d1">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2" {{ 'checked' if and(2,r.grade_bits) != 0 else '' }} disabled>
+                <label for="d2">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4" {{ 'checked' if and(4,r.grade_bits) != 0 else '' }} disabled>
+                <label for="d4">دوره دوم متوسطه</label>
+            </div>
+            </form>
+
+            <br>
+            <button type="submit" form="meta-form-{{r.id}}" style="background-color: #28a745;" class="exam-btn enter">ثبت تغییرات</button>
+
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">آزمونی درحال برگزاری برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+  <!-- آینده -->
+<section class="exam-section">
+    <h3>آزمون‌های آینده</h3>
+    <div class="exams-grid">
+        {% for u in upcoming %}
+        <div class="exam-card upcoming">
+            <form action="{{ url_for('admin.edit_quiz', quiz_auth=u.auth) }}" method="post" enctype="multipart/form-data" id="meta-form-{{u.id}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="text" name="title" value="{{u.title}}">
+            <p>زمان شروع: <input class="p" type="text" name="start_jalali" value="{{u.start_jalali}}"><br>زمان پایان: <input class="p" type="text" name="end_jalali" value="{{u.end_jalali}}"></p>
+            <label for="تعداد سوالات">تعداد سوالات: </label>
+            <input type="number" name="count" value="{{u.count}}" style="width: 50px;">
+            <div>
+                <input type="checkbox" name="d1" id="d1" {{ 'checked' if and(1,u.grade_bits) != 0 else '' }}>
+                <label for="d1">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2" {{ 'checked' if and(2,u.grade_bits) != 0 else '' }}>
+                <label for="d2">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4" {{ 'checked' if and(4,u.grade_bits) != 0 else '' }}>
+                <label for="d4">دوره دوم متوسطه</label>
+            </div>
+            </form>
+
+            <br>
+            <button type="submit" form="meta-form-{{u.id}}" style="background-color: #28a745;" class="exam-btn enter">ثبت تغییرات</button>
+            <label for="quiz-upload" class="quiz-btn">
+                <a style="background-color: #17a2b8;" class="exam-btn enter">آپلود سوالات</a>
+            </label>
+            <input name="quiz_file" type="file" id="avatar-upload" accept=".xls,.xlsx" onchange="this.parentNode.submit();" hidden>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">آزمونی در آینده برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+  <!-- گذشته -->
+<section class="exam-section">
+    <h3>آزمون‌های گذشته</h3>
+    <div class="exams-grid">
+        {% for p in past %}
+        <div class="exam-card past">
+            <h4>{{p.title}}</h4>
+            <p>زمان شروع: {{p.start_jalali}}<br>زمان پایان: {{p.end_jalali}}</p>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">آزمونی در گذشته برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='scripts/user/quiz.js') }}"></script>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == "quiz_success"%}
+            <script type="module">
+            Swal.fire({
+                title: 'پاسخ شما با موفقیت ثبت شد!',
+                html: 'بعد از اتمام زمان آزمون می توانید نمره خود را مشاهده کنید.',
+                icon: 'success',
+                confirmButtonColor: '#3f9b0b',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% elif message == "quiz_more_3" %}
+            <script type="module">
+            Swal.fire({
+                title: 'دفعات ورود بیش از حد مجاز!',
+                html: 'متاسفانه شما تعداد دفعات مجاز ورود را رد کرده‌اید. می توانید برای مشاهده نتایج تا اتمام زمان آزمون صبر کنید.',
+                icon: 'error',
+                confirmButtonColor: '#dc1225',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+{% endblock %}

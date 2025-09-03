@@ -4,7 +4,7 @@ from flask_limiter import Limiter
 from extentions import db
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime, timezone
+from datetime import datetime
 from sqlalchemy import literal
 from PIL import Image
 import random
@@ -357,7 +357,7 @@ def quiz():
         return redirect(url_for("user.dashboard"))
     items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Quiz.id.desc()).all()
     past, running, upcoming = [], [], []
-    now = datetime.now(timezone.utc)
+    now = datetime.utcnow()
     for item in items:
         if item.end_time < now:
             past.append(item)
@@ -440,7 +440,7 @@ def webinar():
         return redirect(url_for("user.dashboard"))
     items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Webinar.id.desc()).all()
     past, running, upcoming = [], [], []
-    now = datetime.now(timezone.utc)
+    now = datetime.utcnow()
     for item in items:
         if item.end_time < now:
             past.append(item)
