@@ -2,6 +2,9 @@
 {% block head %}
     <title>آزمون ها | {{current_user.first_name}} {{current_user.last_name}}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/quiz.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <meta name="res_u" content="{{ url_for('user.result') }}">
 {% endblock %}
 {% block body %}
 <div class="page-title">
@@ -51,7 +54,7 @@
         <div class="exam-card past">
             <h4>{{p.title}}</h4>
             <p>زمان شروع: {{p.start_jalali}}<br>زمان پایان: {{p.end_jalali}}</p>
-            <a href="#"><button class="exam-btn report">مشاهده کارنامه</button></a>
+            <button class="exam-btn report" data-re="{{p.id}}">مشاهده کارنامه</button>
         </div>
         {% else %}
         <div class="page-title">
@@ -60,4 +63,40 @@
         {% endfor%}
     </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='scripts/user/quiz.js') }}"></script>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message == "quiz_success"%}
+            <script type="module">
+            Swal.fire({
+                title: 'پاسخ شما با موفقیت ثبت شد!',
+                html: 'بعد از اتمام زمان آزمون می توانید نمره خود را مشاهده کنید.',
+                icon: 'success',
+                confirmButtonColor: '#3f9b0b',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% elif message == "quiz_more_3" %}
+            <script type="module">
+            Swal.fire({
+                title: 'دفعات ورود بیش از حد مجاز!',
+                html: 'متاسفانه شما تعداد دفعات مجاز ورود را رد کرده‌اید. می توانید برای مشاهده نتایج تا اتمام زمان آزمون صبر کنید.',
+                icon: 'error',
+                confirmButtonColor: '#dc1225',
+                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                showCloseButton: true,
+                showLoaderOnConfirm:true,
+                allowOutsideClick:false,
+            }).then((result) => {swal.close();})
+            </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
 {% endblock %}

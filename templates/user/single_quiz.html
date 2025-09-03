@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/single_quiz.css') }}">
+  <title>صفحه آزمون</title>
+</head>
+<body>
+    <div class="quiz-title">
+        <h2>{{quiz.title}}</h2>
+    </div>
+    <div class="alert-wrp">
+        <div class="alert-bar">
+            توجه کنید حداکثر 3 بار اجازه ریلود کردن، ورود به صفحه و یا ثبت پاسخ هر آزمون را دارید و در انتها بهترین نتیجه ثبت شده برای شما منظور خواهد شد.
+            <br>
+            برای ذخیره پاسخ های خود حتما گزینه «ثبت پاسخ ها» را انتخاب کنید
+            <br>
+            پاسخ ها به صورت خودکار ذخیره نمی شوند!
+        </div>
+    </div>
+    <!-- نوار وضعیت -->
+    <div class="exam-status">
+        <span>سوالات پاسخ داده شده: <strong id="answeredCount">0</strong></span>
+        <span>سوالات علامت‌خورده: <strong id="markedCount">0</strong></span>
+        <span>تعداد سوالات: <strong id="allCount">0</strong></span>
+    </div>
+  <!-- محتوای آزمون -->
+    <form action="#" method="post" class="exam-container">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% for q in questions %}
+        <div class="question-card">
+            <div class="question-text">سوال {{loop.index}}: {{q.text}}</div>
+            <div class="options">
+                {% for o in randomizer(q.option_1 , q.option_2 , q.option_3 , q.option_4 , q.option_5) %}
+                <label><input type="radio" name="q{{q.id}}" value="{{o}}"><span>{{o}}</span></label>
+                {% endfor%}
+            </div>
+            <div class="question-actions">
+                <button type="button" class="mark-btn">علامت زدن</button>
+                <button type="button" class="clear-btn">پاک کردن انتخاب</button>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="exam-btn subm">ثبت پاسخ ها</button>
+  </form>
+
+
+  <script src="{{ url_for('static', filename='scripts/user/single_quiz.js') }}"></script>
+</body>
+</html>

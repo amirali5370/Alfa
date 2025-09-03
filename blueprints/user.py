@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone
 from sqlalchemy import literal
 from PIL import Image
+import random
 from functions.code_generators import invite_generator, auth_generator
 from config import STATIC_SAVE_PATH
 from scoring import *
@@ -18,6 +19,9 @@ from models.workbook import Workbook
 from models.pamphlet import Pamphlet
 from models.webinar import Webinar
 from models.course import Course
+from models.result import Result
+from models.question import Question
+
 
 app = Blueprint("user" , __name__)
 
@@ -59,6 +63,7 @@ def register():
         try:
             db.session.commit()
         except IntegrityError:
+            db.session.rollback()
             flash("unique")
             return redirect(request.url)
 
@@ -183,6 +188,7 @@ def support():
             db.session.commit()
             flash("ticket_add_success")
         except:
+            db.session.rollback()
             flash("ticket_add_error")
 
         return redirect(request.url)
@@ -227,7 +233,7 @@ def dashboard():
             db.session.commit()
             flash("completion_success")
         except:
-            pass
+            db.session.rollback()
         return redirect(request.url)
     else:
         sub_invits = current_user.sent_invitations.filter_by(assistant=1).all()
@@ -345,7 +351,7 @@ def single_pamphlet(pamphlet_auth):
 def quiz():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).all()
+    items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Quiz.id.desc()).all()
     past, running, upcoming = [], [], []
     now = datetime.now(timezone.utc)
     for item in items:
@@ -359,13 +365,68 @@ def quiz():
     return render_template("user/quiz.html", current_user=current_user, past=past, running=running, upcoming=upcoming)
 
 
-@app.route("/quiz/<quiz_auth>",  strict_slashes=False)
+@app.route("/quiz/<quiz_auth>", methods = ["POST","GET"],  strict_slashes=False)
 @login_required
 def single_quiz(quiz_auth):
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    # quiz = Quiz.query.filter_by()
-    return "Sd"
+    
+    quiz = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
+    r = Result.query.filter_by(user_id=current_user.id, quiz_id=quiz.id).first()
+    if request.method == "POST":
+        true = 0
+        questions = {q.id: q for q in quiz.questions}
+        for key, value in request.form.items():
+            if key.startswith("q"):
+                q = questions.get(int(key[1:]))
+                if not q:
+                    continue
+                if q.answer == value:
+                    true += 3
+                else:
+                    true -= 1
+                
+        result = round( (true*100)/(3*quiz.count) ,2)
+        if r.score < result:
+            current_user.coins += coin_03 * (result - r.score)
+            r.score = result
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
+
+        flash('quiz_success')
+        return redirect(url_for('user.quiz'))
+
+    else:
+        if r==None:
+            r = Result(user_id=current_user.id, quiz_id=quiz.id)
+            db.session.add(r)
+            db.session.commit()
+
+        if r.enter > 2:
+            flash('quiz_more_3')
+            return redirect(url_for('user.quiz')) 
+        r.enter = r.enter+1
+        db.session.commit()
+
+        questions = random.sample(quiz.questions.all(), quiz.count)
+        return render_template("user/single_quiz.html", quiz=quiz, questions=questions)
+
+
+@app.route("/api/result", methods = ["POST","GET"], strict_slashes=False)
+@login_required
+def result():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return abort(404)
+    print(request)
+    data = request.get_json()
+    quiz_id = int(data.get('quiz_id',None))
+
+    r = Result.query.filter(Result.user_id==current_user.id, Result.quiz_id==quiz_id).first_or_404()
+
+    return jsonify({'result': r.score})
+
 
 
 @app.route("/webinar",  strict_slashes=False)
