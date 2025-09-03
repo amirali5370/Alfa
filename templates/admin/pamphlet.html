@@ -1,0 +1,51 @@
+{% extends "admin/panel.html" %}
+{% block head %}
+    <title>جزوات | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/pamphlet.css') }}">
+    <style>
+        .note-card input {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #17a2b8;
+            font-family: vazir;
+        }
+        .note-card input.p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>جزوه‌های من</h2>
+</div>
+  
+<section class="notes-section">
+    <div class="notes-grid">
+        {% for p in pamphlets %}
+        <form class="note-card" action="{{url_for('admin.edit_pamphlet', pamphlet_auth=p.auth)}}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="text" name="title" value="{{p.title}}">
+            <br>
+            <input type="text" class="p" name="description" value="{{p.description}}">
+            <div>
+                <input type="checkbox" name="d1" id="d1" {{ 'checked' if and(1,p.grade_bits) != 0 else '' }}>
+                <label for="d1">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2" {{ 'checked' if and(2,p.grade_bits) != 0 else '' }}>
+                <label for="d2">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4" {{ 'checked' if and(4,p.grade_bits) != 0 else '' }}>
+                <label for="d4">دوره دوم متوسطه</label>
+            </div>
+            <button type="submit" class="note-btn">ثبت تغییرات</button>
+            <a href="{{url_for('admin.del_pamphlet', pamphlet_auth=p.auth)}}"><button type="button" class="note-btn" style="background-color: #f22020;">حذف جزوه</button></a>
+        </form>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">جزوه ای موجود نیست!</h3>
+        </div>
+        {% endfor %}
+</section>
+{% endblock %}

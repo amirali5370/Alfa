@@ -7,6 +7,7 @@ from functions.code_generators import auth_generator
 from functions.datetime import gregorian_to_jalali
 from extentions import db
 from models.news import News
+from models.pamphlet import Pamphlet
 
 app = Blueprint("admin" , __name__ , url_prefix='/admin')
 
@@ -29,13 +30,6 @@ def login():
             return redirect(url_for("admin.login"))
     else:
         return render_template("admin/login.html")
-        
-
-@app.route("/dashboard", methods = ["POST","GET"])
-def dashboard():
-    return render_template("admin/panel.html")
-
-
 
 
 @app.route("/blog", strict_slashes=False)
@@ -111,3 +105,36 @@ def blog_del(news_link):
     db.session.delete(news)
     db.session.commit()
     return redirect(url_for('admin.blog'))
+
+
+
+@app.route("/pamphlet", strict_slashes=False)
+def pamphlet():
+    pamphlets = Pamphlet.query.order_by(Pamphlet.id.desc()).order_by(Pamphlet.id.desc()).all()
+    return render_template("admin/pamphlet.html", pamphlets=pamphlets)
+
+
+@app.route("/edit_pamphlet/<pamphlet_auth>", methods=["POST"], strict_slashes=False)
+def edit_pamphlet(pamphlet_auth):
+    pamphlets = Pamphlet.query.filter_by(auth=pamphlet_auth).first_or_404()
+
+    title = request.form.get('title',None)
+    description = request.form.get('description',None)    
+    grade_bits = 0
+    for i in [1, 2, 4]:   # فقط همین سه تا داری
+        if request.form.get(f'd{i}'):  # یعنی تیک خورده باشه
+            grade_bits += i
+
+    pamphlets.title = title
+    pamphlets.description = description
+    pamphlets.grade_bits = grade_bits
+    db.session.commit()
+
+    return redirect(url_for('admin.pamphlet'))
+
+@app.route("/del_pamphlet/<pamphlet_auth>", methods=["GET"], strict_slashes=False)
+def del_pamphlet(pamphlet_auth):
+    pamphlets = Pamphlet.query.filter_by(auth=pamphlet_auth).first_or_404()
+    db.session.delete(pamphlets)
+    db.session.commit()
+    return redirect(url_for('admin.pamphlet'))
