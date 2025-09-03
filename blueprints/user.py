@@ -1,5 +1,6 @@
 from flask import Blueprint, abort, render_template, request, redirect, send_file, url_for, flash, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
+from flask_limiter import Limiter
 from extentions import db
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
@@ -24,6 +25,9 @@ from models.question import Question
 
 
 app = Blueprint("user" , __name__)
+
+limiter = Limiter()  # به app اصلی وصل خواهد شد
+limiter.limit("100 per minute")(app) 
 
 # ------------- LOGIN AND REGISTER-------------
 #register page

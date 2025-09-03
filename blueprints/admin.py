@@ -9,17 +9,16 @@ def before_request():
         abort(404)
 
 
-# @app.route("/admin/login", methods = ["POST","GET"])
-# def login():
-#     if request.method == "POST":
-#         username = request.form.get('username',None)
-#         password = request.form.get('password',None)
+@app.route("/admin/login", methods = ["POST","GET"])
+def login():
+    if request.method == "POST":
+        username = request.form.get('username',None)
+        password = request.form.get('password',None)
 
-#         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-#             session["admin_login"] = username
-
-#             return "login"
-#         else:
-#             return "error"
-#     else:
-#         return "login page"
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session["admin_login"] = username
+            return "login"
+        else:
+            return "error"
+    else:
+        return render_template("admin/login.html")
