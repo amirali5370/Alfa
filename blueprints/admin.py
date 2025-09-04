@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, render_template, request, send_file, session, redirect, abort, flash, url_for
 from PIL import Image
 from datetime import datetime , timezone
+import pandas as pd
 from config import ADMIN_PASSWORD, ADMIN_USERNAME
 from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator
@@ -113,7 +114,20 @@ def blog_del(news_link):
 @app.route("/pamphlet", methods=["POST","GET"], strict_slashes=False)
 def pamphlet():
     if request.method=="POST":
-        pass
+        title = request.form.get('title',None)
+        description = request.form.get('description',None)
+        file = request.files.get('file')
+        grade_bits = 0
+        for i in [1, 2, 4]:
+            if request.form.get(f'd{i}'):
+                grade_bits += i
+
+        pamphlets = Pamphlet(title=title, description=description, grade_bits=grade_bits, auth=auth_generator(Pamphlet))
+        db.session.add(pamphlets)
+        db.session.flush()
+        file.save(f"{STATIC_SAVE_PATH}/files/pamphlets/{pamphlets.auth}.pdf")   
+        db.session.commit()
+        return redirect(request.url)
     else:
         pamphlets = Pamphlet.query.order_by(Pamphlet.id.desc()).all()
         return render_template("admin/pamphlet.html", pamphlets=pamphlets)
@@ -148,7 +162,21 @@ def del_pamphlet(pamphlet_auth):
 @app.route("/quiz", methods=["POST","GET"], strict_slashes=False)
 def quiz():
     if request.method=="POST":
-        pass
+        title = request.form.get('title',None)
+        count = request.form.get('count',None)    
+        start_jalali = request.form.get('start_jalali',None)    
+        end_jalali = request.form.get('end_jalali',None)
+
+        grade_bits = 0
+        for i in [1, 2, 4]:
+            if request.form.get(f'd{i}'):
+                grade_bits += i
+
+        quizes = Quiz(title=title, count=count, grade_bits=grade_bits, start_jalali=start_jalali, end_jalali=end_jalali, start_time=jalali_to_gregorian(start_jalali), end_time=jalali_to_gregorian(end_jalali), auth=auth_generator(Quiz))
+        db.session.add(quizes)
+        db.session.commit()
+        return redirect(request.url)
+
     else:
         items = Quiz.query.order_by(Quiz.id.desc()).all()
         past, running, upcoming = [], [], []
@@ -199,5 +227,32 @@ def edit_quiz(quiz_auth):
 
 
     db.session.commit()
+
+    return redirect(url_for('admin.quiz'))
+
+@app.route("/del_quiz/<quiz_auth>", strict_slashes=False)
+def del_quiz(quiz_auth):
+    quiz = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
+    Question.query.filter_by(quiz_id=quiz.id).delete()
+    db.session.delete(quiz)
+    db.session.commit()
+    return redirect(url_for('admin.quiz'))
+
+@app.route("/up_quiz/<quiz_auth>", methods=["POST","GET"], strict_slashes=False)
+def up_quiz(quiz_auth):
+    quiz = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
+
+    file = request.files['quiz_file']
+    if file!=None:
+        if file.filename != '':
+            df = pd.read_excel(file)
+            Question.query.filter_by(quiz_id=quiz.id).delete()
+
+            for index, row in df.iterrows():
+                q = Question(quiz_id=quiz.id, text=row['text'], option_1=row['op1'], option_2=row['op2'], option_3=row['op3'], option_4=row['op4'], option_5=row['op5'])
+                q.answer = q.__dict__['option_' + str(row['answer'])]
+                db.session.add(q)
+            
+            db.session.commit()
 
     return redirect(url_for('admin.quiz'))

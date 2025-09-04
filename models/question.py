@@ -12,7 +12,7 @@ class Question(db.Model):
     option_3 = Column(String, nullable=True)
     option_4 = Column(String, nullable=True)
     option_5 = Column(String, nullable=True)
-    answer = Column(Integer, nullable=False)
+    answer = Column(Integer, nullable=True)
     quiz_id = Column(Integer, ForeignKey('quizes.id'), nullable=False)
 
     quiz = db.relationship("Quiz", foreign_keys=[quiz_id], backref=backref("questions" , lazy="dynamic"))

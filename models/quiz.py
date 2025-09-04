@@ -10,7 +10,6 @@ class Quiz(db.Model):
     count = Column(Integer, nullable=False)
     start_time = Column(DateTime(timezone=True), nullable=False, index=True)
     end_time = Column(DateTime(timezone=True), nullable=False, index=True)
-    status = Column(String, nullable=False)
     grade_bits = Column(Integer, nullable=False)
     start_jalali = Column(String, nullable=False)
     end_jalali = Column(String, nullable=False)

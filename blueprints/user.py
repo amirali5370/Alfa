@@ -341,10 +341,10 @@ def pamphlet():
 def single_pamphlet(pamphlet_auth):
     if current_user.completion == 0 or current_user.pay == 0:
         return abort(404)
-    Pamphlet.query.filter(Pamphlet.auth==pamphlet_auth , (Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).first()
-    path = f"{STATIC_SAVE_PATH}/files/pamphlets/{pamphlet_auth}.pdf"
+    pam = Pamphlet.query.filter(Pamphlet.auth==pamphlet_auth , (Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).first()
+    path = f"{STATIC_SAVE_PATH}/files/pamphlets/{pam.auth}.pdf"
     try:
-        return send_file(path, as_attachment=True)
+        return send_file(path, as_attachment=True, download_name=f"{pam.title}.pdf")
     except:
         return abort(404)
     
@@ -355,7 +355,7 @@ def single_pamphlet(pamphlet_auth):
 def quiz():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Quiz.id.desc()).all()
+    items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Quiz.start_time).all()
     past, running, upcoming = [], [], []
     now = datetime.utcnow()
     for item in items:

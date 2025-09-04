@@ -20,7 +20,29 @@
 <div class="page-title">
     <h2>جزوه‌های من</h2>
 </div>
-  
+<form class="note-card" action="#" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <input type="text" name="title" value="عنوان جزوه">
+    <br>
+    <input type="text" class="p" name="description" value="توضیحات">
+    <div>
+        <input type="checkbox" name="d1" id="d1">
+        <label for="d1">دوره دوم ابتدایی</label>
+        <br>
+        <input type="checkbox" name="d2" id="d2">
+        <label for="d2">دوره اول متوسطه</label>
+        <br>
+        <input type="checkbox" name="d4" id="d4">
+        <label for="d4">دوره دوم متوسطه</label>
+    </div>
+    <input name="file" type="file" id="upload" accept=".pdf" onchange="this.parentNode.submit();" hidden>
+    <label style="position: relative; top: 12px;" for="upload" class="quiz-btn">
+        <a type="reset" class="note-btn">آپلود سوالات</a>
+    </label>
+    <br><br>
+</form>
+<br>
+<br>
 <section class="notes-section">
     <div class="notes-grid">
         {% for p in pamphlets %}
@@ -30,14 +52,14 @@
             <br>
             <input type="text" class="p" name="description" value="{{p.description}}">
             <div>
-                <input type="checkbox" name="d1" id="d1" {{ 'checked' if and(1,p.grade_bits) != 0 else '' }}>
-                <label for="d1">دوره دوم ابتدایی</label>
+                <input type="checkbox" name="d1" id="d1{{p.id}}" {{ 'checked' if and(1,p.grade_bits) != 0 else '' }}>
+                <label for="d1{{p.id}}">دوره دوم ابتدایی</label>
                 <br>
-                <input type="checkbox" name="d2" id="d2" {{ 'checked' if and(2,p.grade_bits) != 0 else '' }}>
-                <label for="d2">دوره اول متوسطه</label>
+                <input type="checkbox" name="d2" id="d2{{p.id}}" {{ 'checked' if and(2,p.grade_bits) != 0 else '' }}>
+                <label for="d2{{p.id}}">دوره اول متوسطه</label>
                 <br>
-                <input type="checkbox" name="d4" id="d4" {{ 'checked' if and(4,p.grade_bits) != 0 else '' }}>
-                <label for="d4">دوره دوم متوسطه</label>
+                <input type="checkbox" name="d4" id="d4{{p.id}}" {{ 'checked' if and(4,p.grade_bits) != 0 else '' }}>
+                <label for="d4{{p.id}}">دوره دوم متوسطه</label>
             </div>
             <button type="submit" class="note-btn">ثبت تغییرات</button>
             <a href="{{url_for('admin.del_pamphlet', pamphlet_auth=p.auth)}}"><button type="button" class="note-btn" style="background-color: #f22020;">حذف جزوه</button></a>
