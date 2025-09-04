@@ -7,8 +7,10 @@ from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator
 from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
 from extentions import db
+from models.course import Course
 from models.news import News
 from models.pamphlet import Pamphlet
+from models.part import Part
 from models.question import Question
 from models.quiz import Quiz
 from models.webinar import Webinar
@@ -335,3 +337,91 @@ def del_webinar(webinar_id):
     db.session.delete(webi)
     db.session.commit()
     return redirect(url_for('admin.webinar'))
+
+
+
+@app.route("/course", methods=["POST","GET"], strict_slashes=False)
+def course():
+    if request.method=="POST":
+        title = request.form.get('title',None)
+        description = request.form.get('description',None)
+        grade_bits = 0
+        for i in [1, 2, 4]:
+            if request.form.get(f'd{i}'):
+                grade_bits += i
+        cours = Course(title=title, description=description, grade_bits=grade_bits, auth=auth_generator(Course))
+        db.session.add(cours)
+        db.session.commit()
+        return redirect(request.url)
+    else:
+        courses = Course.query.order_by(Course.id.desc()).all()
+        return render_template("admin/course.html", courses=courses)
+    
+@app.route("/del_course/<course_auth>", strict_slashes=False)
+def del_course(course_auth):
+    cour = Course.query.filter_by(auth=course_auth).first_or_404()
+    try:
+        db.session.delete(cour)
+        db.session.commit()
+        return redirect(url_for('admin.course'))
+    except:
+        return '', 204
+    
+@app.route("/edit_course/<course_auth>", methods=["POST","GET"], strict_slashes=False)
+def edit_course(course_auth):
+    cour = Course.query.filter_by(auth=course_auth).first_or_404()
+
+    title = request.form.get('title',None)
+    description = request.form.get('description',None)    
+
+    grade_bits = 0
+    for i in [1, 2, 4]:
+        if request.form.get(f'd{i}'):
+            grade_bits += i
+    
+    cour.title = title
+    cour.description = description
+    cour.grade_bits = grade_bits
+    db.session.commit()
+
+    return redirect(url_for('admin.course'))
+    
+
+
+@app.route("/course/<course_auth>", methods=["POST","GET"], strict_slashes=False)
+def single_course(course_auth):
+    cours = Course.query.filter_by(auth=course_auth).first_or_404()
+    if request.method=="POST":
+        title = request.form.get('title',None)
+        content_id = request.form.get('content_id',None)
+        part = Part(title=title, content_id=content_id, course_id=cours.id, auth=auth_generator(Part))
+        db.session.add(part)
+        db.session.commit()
+        return redirect(request.url)
+    else:
+        parts = cours.parts.all()
+        return render_template("admin/part.html", cours=cours, parts=parts)
+    
+@app.route("/del_part/<part_auth>", strict_slashes=False)
+def del_part(part_auth):
+    part = Part.query.filter_by(auth=part_auth).first_or_404()
+    c = part.course.auth
+    db.session.delete(part)
+    db.session.commit()
+    return redirect(url_for('admin.single_course', course_auth=c))
+
+    
+@app.route("/edit_part/<part_auth>", methods=["POST","GET"], strict_slashes=False)
+def edit_part(part_auth):
+    part = Part.query.filter_by(auth=part_auth).first_or_404()
+    
+    title = request.form.get('title',None)
+    content_id = request.form.get('content_id',None)    
+
+    part.title = title
+    part.content_id = content_id
+
+    db.session.commit()
+    c = part.course.auth
+
+    return redirect(url_for('admin.single_course', course_auth=c))
