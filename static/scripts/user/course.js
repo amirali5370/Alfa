@@ -3,7 +3,7 @@ const u_p_p = document.querySelector("meta[name='url_p_']").getAttribute("conten
 const url = document.querySelector("meta[name='url_ap_']").getAttribute("content");
 document.querySelectorAll(".course-card").forEach(item => {
     item.addEventListener('click', e => {
-        console.log(e.currentTarget.dataset);
+        let course_name = e.currentTarget.dataset.coT
         fetch(url, {
             method: 'POST',
             headers: {
@@ -11,7 +11,7 @@ document.querySelectorAll(".course-card").forEach(item => {
                 'X-CSRF-TOKEN': csrfToken,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({ "course_id": e.currentTarget.dataset.coD })
+            body: JSON.stringify({ "course_auth": e.currentTarget.dataset.coA })
         })
         .then(res => res.json())
         .then(data => {
@@ -26,7 +26,7 @@ document.querySelectorAll(".course-card").forEach(item => {
             `;
             });
             Swal.fire({
-                title: 'قسمت های این دوره:',
+                title: `قسمت های دوره:<br>${course_name}`,
                 html: htmlContent,
                 width: '90%',
                 maxWidth: 650,

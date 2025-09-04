@@ -15,7 +15,7 @@
 <section class="courses-section">
     <div class="courses-grid">
         {% for c in courses %}
-        <div class="course-card" data-co-d="{{c.id}}">
+        <div class="course-card" data-co-a="{{c.auth}}" data-co-t="{{c.title}}">
             <h4>{{c.title}}</h4>
             <p>توضیح: {{c.description}}</p>
         </div>

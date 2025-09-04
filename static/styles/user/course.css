@@ -92,3 +92,6 @@
   .swal2-title {
     font-size: clamp(18px, 3vw, 24px) !important;
   }
+  .course-card{
+    cursor: pointer;
+  }

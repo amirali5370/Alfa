@@ -470,9 +470,8 @@ def get_part():
         return redirect(url_for("user.dashboard"))
     if request.method == "POST":
         data = request.get_json()
-        print(data)
-        course_id = int(data.get('course_id',None))
-        courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0, Course.id==course_id).first_or_404()
+        course_auth = data.get('course_auth',None)
+        courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0, Course.auth==course_auth).first_or_404()
         part = courses.parts.all()
         
         return jsonify({
