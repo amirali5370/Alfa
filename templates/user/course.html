@@ -11,10 +11,10 @@
 <section class="courses-section">
     <div class="courses-grid">
         {% for c in courses %}
-        <a href="{{c.content_link}}" class="course-card">
+        <div class="course-card" data-co-d="">
             <h4>{{c.title}}</h4>
             <p>توضیح: {{c.description}}</p>
-        </a>
+        </div>
         {% else %}
         <div class="page-title">
             <h3 style="color: rgba(0, 0, 0, 0.65);">دوره ای برای شما وجود ندارد!</h3>
@@ -22,4 +22,5 @@
         {% endfor %}
     </div>
 </section>
+<script src="{{ url_for('static', filename='scripts/user/course.js') }}"></script>
 {% endblock %}

@@ -460,3 +460,28 @@ def course():
     courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Course.id.desc()).all()
 
     return render_template("user/course.html", courses=courses)
+
+
+@app.route("/api_part", methods=["POST","GET"], strict_slashes=False)
+@login_required
+def get_part():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    if request.method == "GET":
+        return abort(404)
+    data = request.get_json()
+    course_id = int(data.get('course_id',None))
+    courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0, Course.id==course_id).first_or_404()
+    part = courses.parts.all()
+    
+    return jsonify({
+            "items": [
+                {
+                    "id": item.id,
+                    "title": item.title,
+                    "description": item.description,
+                    "auth": item.auth
+                }
+                for item in part
+            ]
+        })
