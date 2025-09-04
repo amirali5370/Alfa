@@ -10,6 +10,7 @@ from PIL import Image
 import random
 from functions.code_generators import invite_generator, auth_generator
 from config import STATIC_SAVE_PATH
+from models.part import Part
 from scoring import *
 from models.user import User
 from models.invite import Invite
@@ -467,21 +468,30 @@ def course():
 def get_part():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    if request.method == "GET":
-        return abort(404)
-    data = request.get_json()
-    course_id = int(data.get('course_id',None))
-    courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0, Course.id==course_id).first_or_404()
-    part = courses.parts.all()
-    
-    return jsonify({
-            "items": [
-                {
-                    "id": item.id,
-                    "title": item.title,
-                    "description": item.description,
-                    "auth": item.auth
-                }
-                for item in part
-            ]
-        })
+    if request.method == "POST":
+        data = request.get_json()
+        print(data)
+        course_id = int(data.get('course_id',None))
+        courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0, Course.id==course_id).first_or_404()
+        part = courses.parts.all()
+        
+        return jsonify({
+                "items": [
+                    {
+                        "title": item.title,
+                        "auth": item.auth
+                    }
+                    for item in part
+                ]
+            })
+    else:
+        abort(403)
+
+
+@app.route("/part/<part_auth>", methods=["GET"], strict_slashes=False)
+@login_required
+def part(part_auth):
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    p = Part.query.filter_by(auth=part_auth).first_or_404()
+    return 200

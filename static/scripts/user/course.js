@@ -1,40 +1,43 @@
+const csrfToken = document.querySelector("meta[name='more_of_page']").getAttribute("content");
+const u_p_p = document.querySelector("meta[name='url_p_']").getAttribute("content");
+const url = document.querySelector("meta[name='url_ap_']").getAttribute("content");
 document.querySelectorAll(".course-card").forEach(item => {
     item.addEventListener('click', e => {
-        fetch(`/api_part`, {
-            method: 'POST', // GET برای لود داده‌ها
+        console.log(e.currentTarget.dataset);
+        fetch(url, {
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': csrfToken,
                 'X-Requested-With': 'XMLHttpRequest'
             },
+            body: JSON.stringify({ "course_id": e.currentTarget.dataset.coD })
         })
         .then(res => res.json())
         .then(data => {
             // اضافه کردن هر خبر به DOM
-            data.items.forEach(item => {
-                let article = document.createElement("article");
-                article.classList.add("news-card");
-                article.innerHTML = `
-                    <img src="${item.image}" alt="خبر ${item.id}">
-                    <div class="news-content">
-                        <h2 class="news-title">${item.title}</h2>
-                        <p class="news-desc">${item.description}</p>
-                        <a href="${item.url}" class="read-more">ادامه مطلب</a>
-                        <span class="news-date">منتشر شده در ${item.jalali_date}</span> 
-                    </div>
-                `;
-                container.appendChild(article);
+            const sections = data.items
+            let htmlContent = '';
+            sections.forEach((sec, index) => {
+            htmlContent += `
+                <a href="${u_p_p}${sec.auth}"><div class="swal-section" id="swal-section-${index}">
+                <h4>${sec.title}</h4>
+                </div></a>
+            `;
             });
-    
-            // آپدیت مقادیر صفحه و hasNext
-            currentPage++;
-            hasNext = data.has_next;
-            isLoading = false;
-            document.getElementById("loading").style.display = "none";
+            Swal.fire({
+                title: 'قسمت های این دوره:',
+                html: htmlContent,
+                width: '90%',
+                maxWidth: 650,
+                showConfirmButton: false,
+                showCloseButton: true,
+                customClass: { popup: 'scrollable-sweetalert' }
+              });
+          
         })
         .catch(err => {
             console.error("Error loading more news:", err);
-            isLoading = false;
-            document.getElementById("loading").style.display = "none";
         });
     });
 });
