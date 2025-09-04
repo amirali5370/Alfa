@@ -30,13 +30,10 @@ app.config['SESSION_COOKIE_SECURE'] = True
 
 Talisman(app, content_security_policy=None)
 
-# limiter = Limiter(
-#     app,
-#     key_func=get_remote_address,       # محدود کردن بر اساس IP کاربر
-#     default_limits=["60 per minute"]    # پیش‌فرض: هر IP حداکثر 100 درخواست در ساعت
-# )
-
 extentions.db.init_app(app)
+extentions.cache.init_app(app)
+# extentions.limiter.init_app(app)
+
 csrf = CSRFProtect(app)
 
 login_manager = LoginManager()

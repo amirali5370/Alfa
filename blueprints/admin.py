@@ -11,6 +11,7 @@ from models.news import News
 from models.pamphlet import Pamphlet
 from models.question import Question
 from models.quiz import Quiz
+from models.webinar import Webinar
 
 app = Blueprint("admin" , __name__ , url_prefix='/admin')
 
@@ -256,3 +257,81 @@ def up_quiz(quiz_auth):
             db.session.commit()
 
     return redirect(url_for('admin.quiz'))
+
+
+
+@app.route("/webinar", methods=["POST","GET"], strict_slashes=False)
+def webinar():
+    if request.method=="POST":
+        title = request.form.get('title',None)
+        teacher = request.form.get('teacher',None)    
+        description = request.form.get('description',None)    
+        content_link = request.form.get('content_link',None)    
+        start_jalali = request.form.get('start_jalali',None)    
+        end_jalali = request.form.get('end_jalali',None)
+
+        grade_bits = 0
+        for i in [1, 2, 4]:
+            if request.form.get(f'd{i}'):
+                grade_bits += i
+
+        webinars = Webinar(title=title, description=description, teacher=teacher, content_link=content_link, grade_bits=grade_bits, start_jalali=start_jalali, end_jalali=end_jalali, start_time=jalali_to_gregorian(start_jalali), end_time=jalali_to_gregorian(end_jalali))
+        db.session.add(webinars)
+        db.session.commit()
+        return redirect(request.url)
+    else:
+        items = Webinar.query.order_by(Webinar.id.desc()).all()
+        past, running, upcoming = [], [], []
+        now = datetime.utcnow()
+        for item in items:
+            if item.end_time < now:
+                past.append(item)
+            elif item.start_time > now:
+                upcoming.append(item)
+            else:
+                running.append(item)
+        return render_template("admin/webinar.html", past=past, running=running, upcoming=upcoming)
+    
+@app.route("/edit_webinar/<webinar_id>", methods=["POST"], strict_slashes=False)
+def edit_webinar(webinar_id):
+    
+    webi = Webinar.query.filter_by(id=webinar_id).first_or_404()
+
+    title = request.form.get('title',None)
+    teacher = request.form.get('teacher',None)    
+    description = request.form.get('description',None)    
+    content_link = request.form.get('content_link',None)    
+    start_jalali = request.form.get('start_jalali',None)    
+    end_jalali = request.form.get('end_jalali',None)
+
+    grade_bits = 0
+    for i in [1, 2, 4]:
+        if request.form.get(f'd{i}'):
+            grade_bits += i
+
+    webi.title = title
+    webi.description = description
+    webi.teacher = teacher
+    webi.content_link = content_link
+    webi.grade_bits = grade_bits
+
+    webi.start_jalali = start_jalali
+    webi.end_jalali = end_jalali
+
+    start_time = jalali_to_gregorian(start_jalali)
+    end_time = jalali_to_gregorian(end_jalali)
+
+    webi.start_time = start_time
+    webi.end_time = end_time
+
+    db.session.commit()
+
+    return redirect(url_for('admin.webinar'))
+
+
+@app.route("/del_webinar/<webinar_id>", strict_slashes=False)
+def del_webinar(webinar_id):
+    webi = Webinar.query.filter_by(id=webinar_id).first_or_404()
+    db.session.delete(webi)
+    db.session.commit()
+    return redirect(url_for('admin.webinar'))

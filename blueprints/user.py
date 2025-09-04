@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, render_template, request, redirect, send_file, url_for, flash, jsonify
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_limiter import Limiter
-from extentions import db
+from extentions import db, cache, limiter
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime
@@ -438,7 +438,7 @@ def result():
 def webinar():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Webinar.id.desc()).all()
+    items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Webinar.start_time).all()
     past, running, upcoming = [], [], []
     now = datetime.utcnow()
     for item in items:

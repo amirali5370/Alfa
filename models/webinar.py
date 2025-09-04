@@ -9,7 +9,6 @@ class Webinar(db.Model):
     description = Column(String, nullable=True)
     teacher = Column(String, nullable=True)
     content_link = Column(String, nullable=False)
-    date = Column(Integer, nullable=False, index=True)
     start_time = Column(DateTime, nullable=False, index=True)
     end_time = Column(DateTime, nullable=False, index=True)
     grade_bits = Column(Integer, nullable=False)

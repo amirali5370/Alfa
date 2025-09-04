@@ -1,0 +1,146 @@
+{% extends "admin/panel.html" %}
+{% block head %}
+    <title>وبینارها | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/webinar.css') }}">
+    <style>
+        .webinar-card .h4 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #17a2b8;
+            font-family: vazir;
+            font-weight: bold;
+        }
+        .webinar-card .p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+            font-family: vazir;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>وبینارهای من</h2>
+</div>
+<h3 style="color: black;">ایجاد وبینار</h3>
+<form action="#" method="post" class="webinar-card live" style="border-left: 5px solid #07b5ff;background-color: #d9f4ff;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input class="h4" type="text" name="title" value="عنوان وبینار">
+    <p>مدرس: <input class="p" type="text" name="teacher" value=""></p>
+    <p>توضیح: <input class="p" type="text" name="description" value=""></p>
+    <p>زمان شروع: <input class="p" type="text" name="start_jalali" value="1404/00/00 00:00"></p>
+    <p>زمان پایان: <input class="p" type="text" name="end_jalali" value="1404/00/00 00:00"></p>
+    <p>لینک جلسه: <input class="p" type="text" name="content_link" value="https://www.example.com/hjsdf"></p>
+    <div>
+        <input type="checkbox" name="d1" id="d1">
+        <label for="d1">دوره دوم ابتدایی</label>
+        <br>
+        <input type="checkbox" name="d2" id="d2">
+        <label for="d2">دوره اول متوسطه</label>
+        <br>
+        <input type="checkbox" name="d4" id="d4">
+        <label for="d4">دوره دوم متوسطه</label>
+    </div>
+    <button type="submit" class="webinar-btn enter">ایجاد وبینار</button>
+
+</form>
+<section class="webinar-section">
+    <h3>درحال برگزاری</h3>
+    <div class="webinars-grid">
+        {% for r in running %}
+        <form action="{{url_for('admin.edit_webinar', webinar_id=r.id)}}" method="post" class="webinar-card live">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input class="h4" type="text" name="title" value="{{r.title}}">
+            <p>مدرس: <input class="p" type="text" name="teacher" value="{{r.teacher}}"></p>
+            <p>توضیح: <input class="p" type="text" name="description" value="{{r.description}}"></p>
+            <p>زمان شروع: <input class="p" type="text" name="start_jalali" value="{{r.start_jalali}}"></p>
+            <p>زمان پایان: <input class="p" type="text" name="end_jalali" value="{{r.end_jalali}}"></p>
+            <p>لینک جلسه: <input class="p" type="text" name="content_link" value="{{r.content_link}}"></p>
+            <div>
+                <input type="checkbox" name="d1" id="d1{{r.id}}" {{ 'checked' if and(1,r.grade_bits) != 0 else '' }}>
+                <label for="d1{{r.id}}">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2{{r.id}}" {{ 'checked' if and(2,r.grade_bits) != 0 else '' }}>
+                <label for="d2{{r.id}}">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4{{r.id}}" {{ 'checked' if and(4,r.grade_bits) != 0 else '' }}>
+                <label for="d4{{r.id}}">دوره دوم متوسطه</label>
+            </div>
+            <button type="submit" class="webinar-btn enter" style="background-color: #ffc20b;">ویرایش وبینار</button>
+            <a href="{{url_for('admin.del_webinar', webinar_id=r.id)}}"><button type="button" class="webinar-btn enter" style="background-color: #dc3545;">حذف وبینار</button></a>
+        </form>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">وبیناری درحال برگزاری برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+<section class="webinar-section">
+    <h3>آینده</h3>
+    <div class="webinars-grid">
+        {% for u in upcoming %}
+        <form action="{{url_for('admin.edit_webinar', webinar_id=u.id)}}" method="post" class="webinar-card upcoming">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input class="h4" type="text" name="title" value="{{u.title}}">
+            <p>مدرس: <input class="p" type="text" name="teacher" value="{{u.teacher}}"></p>
+            <p>توضیح: <input class="p" type="text" name="description" value="{{u.description}}"></p>
+            <p>زمان شروع: <input class="p" type="text" name="start_jalali" value="{{u.start_jalali}}"></p>
+            <p>زمان پایان: <input class="p" type="text" name="end_jalali" value="{{u.end_jalali}}"></p>
+            <p>لینک جلسه: <input class="p" type="text" name="content_link" value="{{u.content_link}}"></p>
+            <div>
+                <input type="checkbox" name="d1" id="d1{{u.id}}" {{ 'checked' if and(1,u.grade_bits) != 0 else '' }}>
+                <label for="d1{{u.id}}">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2{{u.id}}" {{ 'checked' if and(2,u.grade_bits) != 0 else '' }}>
+                <label for="d2{{u.id}}">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4{{u.id}}" {{ 'checked' if and(4,u.grade_bits) != 0 else '' }}>
+                <label for="d4{{u.id}}">دوره دوم متوسطه</label>
+            </div>
+            <button type="submit" class="webinar-btn enter" style="background-color: #ffc20b;">ویرایش وبینار</button>
+            <a href="{{url_for('admin.del_webinar', webinar_id=u.id)}}"><button type="button" class="webinar-btn enter" style="background-color: #dc3545;">حذف وبینار</button></a>
+
+        </form>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">وبیناری در آینده برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+<section class="webinar-section">
+    <h3>گذشته</h3>
+    <div class="webinars-grid">
+        {% for p in past %}
+        <form action="{{url_for('admin.edit_webinar', webinar_id=p.id)}}" method="post" class="webinar-card past">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input class="h4" type="text" name="title" value="{{p.title}}">
+            <p>مدرس: <input class="p" type="text" name="teacher" value="{{p.teacher}}"></p>
+            <p>توضیح: <input class="p" type="text" name="description" value="{{p.description}}"></p>
+            <p>زمان شروع: <input class="p" type="text" name="start_jalali" value="{{p.start_jalali}}"></p>
+            <p>زمان پایان: <input class="p" type="text" name="end_jalali" value="{{p.end_jalali}}"></p>
+            <p>لینک جلسه: <input class="p" type="text" name="content_link" value="{{p.content_link}}"></p>
+            <div>
+                <input type="checkbox" name="d1" id="d1{{p.id}}" {{ 'checked' if and(1,p.grade_bits) != 0 else '' }}>
+                <label for="d1{{p.id}}">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2{{p.id}}" {{ 'checked' if and(2,p.grade_bits) != 0 else '' }}>
+                <label for="d2{{p.id}}">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4{{p.id}}" {{ 'checked' if and(4,p.grade_bits) != 0 else '' }}>
+                <label for="d4{{p.id}}">دوره دوم متوسطه</label>
+            </div>
+            <button type="submit" class="webinar-btn enter" style="background-color: #ffc20b;">ویرایش وبینار</button>
+            <a href="{{url_for('admin.del_webinar', webinar_id=p.id)}}"><button type="button" class="webinar-btn enter" style="background-color: #dc3545;">حذف وبینار</button></a>
+        </form>
+        {% else %}
+        <div class="page-title">
+            <h3 style="color: rgba(0, 0, 0, 0.65);">آزمونی در گذشته برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section> 
+{% endblock %}
