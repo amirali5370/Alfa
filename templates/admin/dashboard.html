@@ -1,0 +1,24 @@
+{% extends "admin/panel.html" %}
+{% block head %}
+    <title>داشبورد | ادمین</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/admin/dashboard.css') }}">
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+{% endblock %}
+{% block body %}
+<div class="upload-box">
+    <form id="uploadForm" enctype="multipart/form-data">
+        <h2>آپلود مدارک</h2>
+        <input type="text" name="title" placeholder="اسم کارنامه" required><br><br>
+        <textarea name="description" placeholder="توضیح..." rows="3"></textarea><br><br>
+
+        <input type="file" id="fileInput" name="files" multiple accept="application/pdf" style="display:none;">
+        <label for="fileInput" class="upload-label">📁 انتخاب فایل‌ها</label>
+    </form>
+
+    <div id="progress"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<script src="{{ url_for('static', filename='scripts/admin/dashboard.js') }}"></script>
+
+{% endblock %}

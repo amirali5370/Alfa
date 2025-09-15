@@ -2,19 +2,24 @@ from flask import Blueprint, jsonify, render_template, request, send_file, sessi
 from PIL import Image
 from datetime import datetime , timezone
 import pandas as pd
+from werkzeug.utils import secure_filename
+from pathlib import Path
 from config import ADMIN_PASSWORD, ADMIN_USERNAME
 from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator
 from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
 from extentions import db, cache
+from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
 from models.course import Course
 from models.news import News
 from models.pamphlet import Pamphlet
 from models.part import Part
 from models.question import Question
 from models.quiz import Quiz
+from models.user import User
 from models.webinar import Webinar
-from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
+from models.workbook import Workbook
+
 
 
 app = Blueprint("admin" , __name__ , url_prefix='/admin')
@@ -466,3 +471,37 @@ def edit_part(part_auth):
     c = part.course.auth
 
     return redirect(url_for('admin.single_course', course_auth=c))
+
+
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template("admin/dashboard.html")
+
+#workbook system
+@app.route('/upload-multiple', methods=['POST'])
+def upload_multiple():
+    files = request.files.getlist('files')
+    title = request.form.get('title')
+    description = request.form.get('description')
+
+    if not files:
+        return jsonify({'error': 'No files provided'}), 400
+
+    for file in files:
+        if not file.filename.lower().endswith('.pdf'):
+            continue
+
+        code = Path(file.filename).stem
+        user = User.query.filter_by(code=code).first()
+        if not user:
+            return abort(403)
+        auth = auth_generator(Workbook)
+
+        file.save(f"{STATIC_SAVE_PATH}/files/workbooks/{auth}.pdf")
+
+        w  = Workbook(user_id=user.id, is_degree=1, auth=auth, title=title, description=description)
+        db.session.add(w)
+
+    db.session.commit()
+    return {'result': 'created'}, 201
