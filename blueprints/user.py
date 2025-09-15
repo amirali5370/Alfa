@@ -10,7 +10,7 @@ from sqlalchemy import literal
 from PIL import Image
 import random
 from functions.code_generators import invite_generator, auth_generator
-from config import CHAT_ID, STATIC_SAVE_PATH, TOKEN
+from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY
 from functions.datetime import gregorian_to_jalali
 from models.part import Part
 from scoring import *
@@ -25,6 +25,7 @@ from models.webinar import Webinar
 from models.course import Course
 from models.result import Result
 from models.question import Question
+from models.payment import Payment
 
 
 
@@ -586,3 +587,61 @@ def part(part_auth):
         return redirect(url_for("user.dashboard"))
     p = Part.query.filter_by(auth=part_auth).first_or_404()
     return 200
+
+
+
+
+#pay system
+#payment handler
+@app.route("/payment", methods=["GET"])
+@login_required
+def payment():
+    if current_user.pay != 0:
+        return redirect(url_for("user.dashboard"))
+    
+    r = requests.post(URL_PAY_TOKEN, 
+                    data={
+                        'api': PAY_API,
+                        'amount':PRICE,
+                        'callback':str(url_for('user.verify', _external=True))
+                    })
+    
+    token = r.json()['result']['token']
+    url = r.json()['result']['url']
+
+    pay = Payment(user_id=current_user.id, token=token, amount=PRICE)
+    db.session.add(pay)
+    db.session.commit()
+
+    return redirect(url)
+
+#verify handler
+@app.route("/verify", methods=["GET"])
+def verify():
+    token = request.args.get('token')
+    pay = Payment.query.filter(Payment.token==token).first_or_404()
+    r = requests.post(URL_PAY_VERIFY, 
+                    data={
+                        'api': PAY_API,
+                        'amount':pay.amount,
+                        'token':token
+                    })
+    status = bool(r.json()['success'])
+    if status:
+        flash("payment_success")
+
+        pay.status = "success"
+        pay.card_pan = r.json()['result']['card_pan']
+        pay.date = r.json()['result']['date']
+        pay.refid = r.json()['result']['refid']
+        pay.transaction_id = r.json()['result']['transaction_id']
+        pay.user.pay = 1
+        pay.user.coins = pay.user.coins + coin_04
+        db.session.commit()
+    else:
+        flash("payment_failed")
+
+        pay.status = "failed"
+        pay.error = r.json()['error'][0]
+        db.session.commit()
+    return redirect(url_for("user.dashboard"))

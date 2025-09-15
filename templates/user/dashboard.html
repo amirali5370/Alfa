@@ -139,7 +139,7 @@
         <h3>پرداخت هزینه ثبت‌نام</h3>
         {% if current_user.pay == 0 %}
         <p>هزینه ثبت‌نام شما هنوز پرداخت نشده است</p>
-        <button class="btn">پرداخت</button>
+        <a href="/payment" class="btn">پرداخت</a>
         {% else %}
         <p>هزینه ثبت‌نام شما پرداخت شده است</p>
         {% endif %}
@@ -207,7 +207,34 @@
                     showLoaderOnConfirm:true,
                     allowOutsideClick:false,
                 }).then((result) => {swal.close();})
-                </script>
+            </script>
+            {% endif %}
+            {% if message == "payment_success"%}
+            <script type="module">
+                Swal.fire({
+                    title: 'پرداخت موفقیت آمیز بود!',
+                    html: '',
+                    icon: 'success',
+                    confirmButtonColor: '#3f9b0b',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+            </script>
+            {% elif message == "payment_failed" %}
+            <script type="module">
+                Swal.fire({
+                    title: 'پرداخت ناموفق!',
+                    html: "اگر وجه از حساب شما کم شده است، ظرف 72 ساعت آینده باز خواهد گشت.",
+                    icon: 'error',
+                    confirmButtonColor: '#dc1225',
+                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    showCloseButton: true,
+                    showLoaderOnConfirm:true,
+                    allowOutsideClick:false,
+                }).then((result) => {swal.close();})
+            </script>
             {% endif %}
         {% endfor %}
     {% endif %}
