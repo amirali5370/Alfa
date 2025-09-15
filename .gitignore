@@ -12,3 +12,6 @@ config.py
 
 # DB file
 database.db
+
+# cache directory
+cache_dir/

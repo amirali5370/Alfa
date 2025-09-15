@@ -95,3 +95,6 @@
   .course-card{
     cursor: pointer;
   }
+  .swal2-popup.swal2-modal.scrollable-sweetalert.swal2-show{
+    background-color: #f2f2f2;
+  }

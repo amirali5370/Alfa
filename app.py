@@ -24,7 +24,13 @@ app.jinja_env.globals['randomizer'] = randomizer
 app.jinja_env.globals['and'] = lambda x,y : x&y
 
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
+
 app.config["SECRET_KEY"] = config.SECRET_KEY
+
+app.config['CACHE_TYPE'] = 'FileSystemCache'
+app.config['CACHE_DIR'] = 'cache_dir'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 300
+
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SECURE'] = True 
 

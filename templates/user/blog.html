@@ -9,7 +9,7 @@
     <h1>اخبار و مقالات</h1>
 </header>
 
-<main class="news-container" data-current-page="{{ news.page }}" data-has-next="{{ 'true' if news.has_next else 'false' }}">
+<main class="news-container" data-current-page="{{ page }}" data-has-next="{{ 'true' if has_next else 'false' }}">
     {% for n in news %}
     <article class="news-card">
         <img src="{{ url_for('static', filename='img/news/' ~ n.auth ~ '.jpg') }}" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/news.jpg') }}`;" alt="خبر {{n.id}}">

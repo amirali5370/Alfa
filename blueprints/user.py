@@ -25,6 +25,7 @@ from models.result import Result
 from models.question import Question
 
 
+
 app = Blueprint("user" , __name__)
 
 # limiter = Limiter()  # به app اصلی وصل خواهد شد
@@ -145,16 +146,31 @@ def home():
     return render_template("home.html", current_user=current_user, top_users=top_users)
 
 
+
+
+
+# news system
+@cache.memoize(timeout=0)
+def get_news_page(page):
+    pagination = News.query.order_by(News.id.desc()).paginate(page=page, per_page=12, error_out=False)
+    return pagination.items, pagination.has_next, pagination.page
+
+@cache.memoize(timeout=0)
+def get_news_by_link(link):
+    return News.query.filter_by(prima_link=link).first_or_404()
+
+
 @app.route("/blog", strict_slashes=False)
 def blog():
     page = request.args.get("page", 1, type=int)
-    news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=12, error_out=False)
-    return render_template("user/blog.html", current_user=current_user, news=news)
+    news, has, news_page = get_news_page(page)
+    return render_template("user/blog.html", current_user=current_user, news=news, has_next=has, page=news_page)
+
 
 @app.route("/api/blog", strict_slashes=False)
 def blog_api():
     page = request.args.get("page", 1, type=int)
-    news = News.query.order_by(News.id.desc()).paginate(page=page, per_page=12, error_out=False)
+    news, has, page = get_news_page(page)
     return {
         "items": [
             {
@@ -165,15 +181,18 @@ def blog_api():
                 "image": url_for('static', filename='img/news/' + str(item.auth) + '.jpg'),
                 "jalali_date": item.jalali_date
             }
-            for item in news.items
+            for item in news
         ],
-        "has_next": news.has_next
+        "has_next": has
     }
 
-@app.route("/blog/<news_link>",  strict_slashes=False)
+
+@app.route("/blog/<news_link>", strict_slashes=False)
 def single_blog(news_link):
-    news = News.query.filter_by(prima_link=news_link).first_or_404()
+    news = get_news_by_link(news_link)
     return render_template("user/single_blog.html", current_user=current_user, news=news)
+
+
 
 
 @app.route("/guide", methods = ["POST","GET"],  strict_slashes=False)
@@ -228,7 +247,7 @@ def dashboard():
             9: "نهم",
             10: "دهم",
             11: "یازدهم",
-            12: "دوازدهم"
+            12: "دوزادهم"
         }
         current_user.grade_name = grade_dist[grade]
         current_user.period_code = 2**((grade-1)//3 - 1)
@@ -319,24 +338,36 @@ def single_workbook(workbook_auth):
         return abort(404)
     
 
+
+# events system
+@cache.memoize(timeout=0)
+def get_events(pr_code):
+    return News.query.filter((News.grade_bits.op('&')(literal(pr_code))) != 0).order_by(News.id.desc()).all()
+
 @app.route("/event",  strict_slashes=False)
 @login_required
 def event():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    events = News.query.filter((News.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(News.id.desc()).all()
+    events = get_events(current_user.period_code)
     return render_template("user/event.html", current_user=current_user, events=events)
 
+
+
+
+# pamphlets system
+@cache.memoize(timeout=0)
+def get_pamphlet(pr_code):
+    return Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(pr_code))) != 0).order_by(Pamphlet.id.desc()).all()
 
 @app.route("/pamphlet",  strict_slashes=False)
 @login_required
 def pamphlet():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    pamphlets = Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Pamphlet.id.desc()).all()
+    pamphlets = get_pamphlet(current_user.period_code)
     return render_template("user/pamphlet.html", current_user=current_user, pamphlets=pamphlets)
 
-#books' file
 @app.route('/download/pamphlet/<pamphlet_auth>')
 @login_required
 def single_pamphlet(pamphlet_auth):
@@ -350,13 +381,26 @@ def single_pamphlet(pamphlet_auth):
         return abort(404)
     
 
+# quiz system
+@cache.memoize(timeout=59)
+def get_all_quiz(pr_code):
+    return Quiz.query.filter((Quiz.grade_bits.op('&')(literal(pr_code))) != 0).order_by(Quiz.id.desc()).all()
+
+@cache.memoize(timeout=0)
+def get_quiz_and_questions(quiz_auth):
+    quiz = Quiz.query.filter(Quiz.auth==quiz_auth).first()
+    if not quiz:
+        return abort(404)
+    questions=quiz.questions.all()
+    return quiz, questions
+
 
 @app.route("/quiz",  strict_slashes=False)
 @login_required
 def quiz():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    items = Quiz.query.filter((Quiz.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Quiz.start_time).all()
+    items = get_all_quiz(current_user.period_code)
     past, running, upcoming = [], [], []
     now = datetime.utcnow()
     for item in items:
@@ -376,11 +420,18 @@ def single_quiz(quiz_auth):
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
     
-    quiz = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
+    quiz, all_questions = get_quiz_and_questions(quiz_auth,current_user.period_code)
+    if (quiz.grade_bits & current_user.period_code) == 0:
+        return abort(404)
+    
+    now = datetime.utcnow()
+    if quiz.end_time < now or quiz.start_time > now:
+        return abort(404)
+    
     r = Result.query.filter_by(user_id=current_user.id, quiz_id=quiz.id).first()
     if request.method == "POST":
         true = 0
-        questions = {q.id: q for q in quiz.questions}
+        questions = {q.id: q for q in all_questions}
         for key, value in request.form.items():
             if key.startswith("q"):
                 q = questions.get(int(key[1:]))
@@ -414,8 +465,7 @@ def single_quiz(quiz_auth):
             return redirect(url_for('user.quiz')) 
         r.enter = r.enter+1
         db.session.commit()
-
-        questions = random.sample(quiz.questions.all(), quiz.count)
+        questions = random.sample(all_questions, quiz.count)
         return render_template("user/single_quiz.html", quiz=quiz, questions=questions)
 
 
@@ -434,12 +484,18 @@ def result():
 
 
 
+# webinar system
+@cache.memoize(timeout=0)
+def get_all_webinar(pr_code):
+    return Webinar.query.filter((Webinar.grade_bits.op('&')(literal(pr_code))) != 0).order_by(Webinar.start_time).all()
+
+
 @app.route("/webinar",  strict_slashes=False)
 @login_required
 def webinar():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    items = Webinar.query.filter((Webinar.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Webinar.start_time).all()
+    items = get_all_webinar(current_user.period_code)
     past, running, upcoming = [], [], []
     now = datetime.utcnow()
     for item in items:
@@ -453,15 +509,28 @@ def webinar():
     return render_template("user/webinar.html", current_user=current_user, past=past, running=running, upcoming=upcoming)
 
 
+
+# course system
+@cache.memoize(timeout=0)
+def get_all_course(pr_code):
+    return Course.query.filter((Course.grade_bits.op('&')(literal(pr_code))) != 0).order_by(Course.id.desc()).all()
+
+@cache.memoize(timeout=0)
+def get_parts_cached(course_auth):
+    cour = Course.query.filter(Course.auth==course_auth).first_or_404()
+    part = cour.parts.all()
+    return cour, part
+
+
+
 @app.route("/course",  strict_slashes=False)
 @login_required
 def course():
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
-    courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0).order_by(Course.id.desc()).all()
+    courses = get_all_course(current_user.period_code)
 
     return render_template("user/course.html", courses=courses)
-
 
 @app.route("/api_part", methods=["POST","GET"], strict_slashes=False)
 @login_required
@@ -471,8 +540,9 @@ def get_part():
     if request.method == "POST":
         data = request.get_json()
         course_auth = data.get('course_auth',None)
-        courses = Course.query.filter((Course.grade_bits.op('&')(literal(current_user.period_code))) != 0, Course.auth==course_auth).first_or_404()
-        part = courses.parts.all()
+        cour, part = get_parts_cached(course_auth)
+        if (cour.grade_bits & current_user.period_code) == 0:
+            return abort(404)
         
         return jsonify({
                 "items": [
@@ -484,7 +554,7 @@ def get_part():
                 ]
             })
     else:
-        abort(403)
+        return abort(403)
 
 
 @app.route("/part/<part_auth>", methods=["GET"], strict_slashes=False)

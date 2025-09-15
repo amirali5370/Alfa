@@ -6,7 +6,7 @@ from config import ADMIN_PASSWORD, ADMIN_USERNAME
 from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator
 from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
-from extentions import db
+from extentions import db, cache
 from models.course import Course
 from models.news import News
 from models.pamphlet import Pamphlet
@@ -14,6 +14,8 @@ from models.part import Part
 from models.question import Question
 from models.quiz import Quiz
 from models.webinar import Webinar
+from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
+
 
 app = Blueprint("admin" , __name__ , url_prefix='/admin')
 
@@ -66,12 +68,16 @@ def blog_api():
 @app.route("/blog/<news_link>", methods={"GET","POST"}, strict_slashes=False)
 def single_blog(news_link):
     if news_link == "create":
-        n = News(title='', description='', content='', prima_link='', auth=auth_generator(News), grade_bits=7, jalali_date=gregorian_to_jalali(datetime.now(timezone.utc)))
+        n = News(title='', description='', content='', prima_link='', auth=auth_generator(News), grade_bits=0, jalali_date=gregorian_to_jalali(datetime.now(timezone.utc)))
         db.session.add(n)
         db.session.flush()
         n.prima_link = f"news_{n.id}"
         db.session.commit()
-        return render_template("admin/single_blog.html", news=n, grades=[])
+        cache.delete_memoized(get_news_page)
+        cache.delete_memoized(get_events)
+
+        return redirect(url_for("admin.blog"))
+    
     news = News.query.filter_by(prima_link=news_link).first_or_404()
     if request.method == "POST":
         mode = request.form.get('mode',None)
@@ -92,6 +98,10 @@ def single_blog(news_link):
             news.prima_link = prima_link
             news.grade_bits = grade_bits
             db.session.commit()
+            cache.delete_memoized(get_news_page)
+            cache.delete_memoized(get_news_by_link,news_link)
+            cache.delete_memoized(get_events)
+
         elif mode=="ph":
             file = request.files.get("profile", None)
             image = Image.open(file)
@@ -110,6 +120,9 @@ def blog_del(news_link):
     news = News.query.filter_by(prima_link=news_link).first_or_404()
     db.session.delete(news)
     db.session.commit()
+    cache.delete_memoized(get_news_page)
+    cache.delete_memoized(get_news_by_link,news_link)
+    cache.delete_memoized(get_events)   
     return redirect(url_for('admin.blog'))
 
 
@@ -130,6 +143,7 @@ def pamphlet():
         db.session.flush()
         file.save(f"{STATIC_SAVE_PATH}/files/pamphlets/{pamphlets.auth}.pdf")   
         db.session.commit()
+        cache.delete_memoized(get_pamphlet)
         return redirect(request.url)
     else:
         pamphlets = Pamphlet.query.order_by(Pamphlet.id.desc()).all()
@@ -150,6 +164,7 @@ def edit_pamphlet(pamphlet_auth):
     pamphlets.description = description
     pamphlets.grade_bits = grade_bits
     db.session.commit()
+    cache.delete_memoized(get_pamphlet)
 
     return redirect(url_for('admin.pamphlet'))
 
@@ -158,6 +173,8 @@ def del_pamphlet(pamphlet_auth):
     pamphlets = Pamphlet.query.filter_by(auth=pamphlet_auth).first_or_404()
     db.session.delete(pamphlets)
     db.session.commit()
+    cache.delete_memoized(get_pamphlet)
+
     return redirect(url_for('admin.pamphlet'))
 
 
@@ -178,6 +195,7 @@ def quiz():
         quizes = Quiz(title=title, count=count, grade_bits=grade_bits, start_jalali=start_jalali, end_jalali=end_jalali, start_time=jalali_to_gregorian(start_jalali), end_time=jalali_to_gregorian(end_jalali), auth=auth_generator(Quiz))
         db.session.add(quizes)
         db.session.commit()
+        cache.delete_memoized(get_all_quiz)
         return redirect(request.url)
 
     else:
@@ -230,6 +248,8 @@ def edit_quiz(quiz_auth):
 
 
     db.session.commit()
+    cache.delete_memoized(get_all_quiz)
+    cache.delete_memoized(get_quiz_and_questions,quiz_auth)
 
     return redirect(url_for('admin.quiz'))
 
@@ -237,8 +257,12 @@ def edit_quiz(quiz_auth):
 def del_quiz(quiz_auth):
     quiz = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
     Question.query.filter_by(quiz_id=quiz.id).delete()
+
     db.session.delete(quiz)
     db.session.commit()
+    cache.delete_memoized(get_all_quiz)
+    cache.delete_memoized(get_quiz_and_questions,quiz_auth)
+
     return redirect(url_for('admin.quiz'))
 
 @app.route("/up_quiz/<quiz_auth>", methods=["POST","GET"], strict_slashes=False)
@@ -257,6 +281,7 @@ def up_quiz(quiz_auth):
                 db.session.add(q)
             
             db.session.commit()
+            cache.delete_memoized(get_quiz_and_questions,quiz_auth)
 
     return redirect(url_for('admin.quiz'))
 
@@ -280,6 +305,7 @@ def webinar():
         webinars = Webinar(title=title, description=description, teacher=teacher, content_link=content_link, grade_bits=grade_bits, start_jalali=start_jalali, end_jalali=end_jalali, start_time=jalali_to_gregorian(start_jalali), end_time=jalali_to_gregorian(end_jalali))
         db.session.add(webinars)
         db.session.commit()
+        cache.delete_memoized(get_all_webinar)
         return redirect(request.url)
     else:
         items = Webinar.query.order_by(Webinar.id.desc()).all()
@@ -327,6 +353,7 @@ def edit_webinar(webinar_id):
     webi.end_time = end_time
 
     db.session.commit()
+    cache.delete_memoized(get_all_webinar)
 
     return redirect(url_for('admin.webinar'))
 
@@ -336,6 +363,7 @@ def del_webinar(webinar_id):
     webi = Webinar.query.filter_by(id=webinar_id).first_or_404()
     db.session.delete(webi)
     db.session.commit()
+    cache.delete_memoized(get_all_webinar)
     return redirect(url_for('admin.webinar'))
 
 
@@ -352,6 +380,8 @@ def course():
         cours = Course(title=title, description=description, grade_bits=grade_bits, auth=auth_generator(Course))
         db.session.add(cours)
         db.session.commit()
+        cache.delete_memoized(get_all_course)
+
         return redirect(request.url)
     else:
         courses = Course.query.order_by(Course.id.desc()).all()
@@ -363,6 +393,9 @@ def del_course(course_auth):
     try:
         db.session.delete(cour)
         db.session.commit()
+        cache.delete_memoized(get_all_course)
+        cache.delete_memoized(get_parts_cached, course_auth)
+
         return redirect(url_for('admin.course'))
     except:
         return '', 204
@@ -383,6 +416,8 @@ def edit_course(course_auth):
     cour.description = description
     cour.grade_bits = grade_bits
     db.session.commit()
+    cache.delete_memoized(get_all_course)
+    cache.delete_memoized(get_parts_cached, course_auth)
 
     return redirect(url_for('admin.course'))
     
@@ -397,6 +432,8 @@ def single_course(course_auth):
         part = Part(title=title, content_id=content_id, course_id=cours.id, auth=auth_generator(Part))
         db.session.add(part)
         db.session.commit()
+        cache.delete_memoized(get_parts_cached)
+
         return redirect(request.url)
     else:
         parts = cours.parts.all()
@@ -408,6 +445,8 @@ def del_part(part_auth):
     c = part.course.auth
     db.session.delete(part)
     db.session.commit()
+    cache.delete_memoized(get_parts_cached)
+
     return redirect(url_for('admin.single_course', course_auth=c))
 
     
@@ -422,6 +461,8 @@ def edit_part(part_auth):
     part.content_id = content_id
 
     db.session.commit()
+    cache.delete_memoized(get_parts_cached)
+
     c = part.course.auth
 
     return redirect(url_for('admin.single_course', course_auth=c))
