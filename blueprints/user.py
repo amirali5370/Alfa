@@ -10,7 +10,7 @@ from sqlalchemy import literal
 from PIL import Image
 import random
 from functions.code_generators import invite_generator, auth_generator
-from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY
+from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY, VID_API_KEY, VID_SECRET_KEY
 from functions.datetime import gregorian_to_jalali
 from models.part import Part
 from scoring import *
@@ -586,7 +586,22 @@ def part(part_auth):
     if current_user.completion == 0 or current_user.pay == 0:
         return redirect(url_for("user.dashboard"))
     p = Part.query.filter_by(auth=part_auth).first_or_404()
-    return 200
+    url = 'https://api.vidprotect.ir/v1/storage/bucket/file/generate/link'
+    headers = {
+        'api_key': VID_API_KEY,
+        'secret_key': VID_SECRET_KEY
+    }
+    payload = {
+        'fileId': p.content_id,
+        'mobileNumber': current_user.code
+    }
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        return render_template("user/part.html", video_url=data['url'])
+    except requests.exceptions.RequestException as e:
+        return 'Error:'+str(e)
 
 
 
