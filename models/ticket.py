@@ -9,3 +9,4 @@ class Ticket(db.Model):
     code = Column(String, nullable=False, index=True)
     phone = Column(String, nullable=False)
     message = Column(String, nullable=False)
+    jalali_date = Column(String, nullable=False)

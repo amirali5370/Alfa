@@ -4,12 +4,14 @@ from flask_limiter import Limiter
 from extentions import db, cache, limiter
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime
+from datetime import datetime, timezone
+import requests
 from sqlalchemy import literal
 from PIL import Image
 import random
 from functions.code_generators import invite_generator, auth_generator
-from config import STATIC_SAVE_PATH
+from config import CHAT_ID, STATIC_SAVE_PATH, TOKEN
+from functions.datetime import gregorian_to_jalali
 from models.part import Part
 from scoring import *
 from models.user import User
@@ -207,10 +209,30 @@ def support():
         phone = request.form.get('phone',None)
         message = request.form.get('message',None)
         try:
-            tick = Ticket(name=name, code=code, phone=phone, message=message)
-            db.session.add(tick)
-            db.session.commit()
-            flash("ticket_add_success")
+            TEXT = f"""
+            نام و نام خانوادگی : {name}
+        کدملی : {code}
+        شماره تلفن : {phone}
+
+        متن پیام:
+        {message}
+            """
+
+            url = (f"https://eitaayar.ir/api/{TOKEN}/sendMessage")
+            data = {"UrlBox":url,
+                        "chat_id": CHAT_ID,
+                        "text":TEXT        
+            }
+            req = requests.post(url=url,data=data)
+            if bool(req.json()['ok']) == True:
+                tick = Ticket(name=name, code=code, phone=phone, message=message, jalali_date=gregorian_to_jalali(datetime.now(timezone.utc)))
+                db.session.add(tick)
+                db.session.commit()
+                flash("ticket_add_success")
+            else:
+                flash("ticket_add_error")
+
+
         except:
             db.session.rollback()
             flash("ticket_add_error")
