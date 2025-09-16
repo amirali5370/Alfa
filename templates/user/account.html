@@ -13,7 +13,7 @@
 
     <!-- بخش عکس پروفایل -->
     <div class="profile-avatar">
-    <img src="{{ url_for('static', filename='img/users/' ~ current_user.auth ~ '.jpg') }}" alt="عکس پروفایل" class="avatar-img">
+    <img src="{{ url_for('static', filename='img/users/' ~ current_user.auth ~ '.jpg') }}" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/user.jpg') }}`;" alt="عکس پروفایل" class="avatar-img">
     <form action="#" method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <label for="avatar-upload" class="avatar-btn">تغییر عکس پروفایل</label>

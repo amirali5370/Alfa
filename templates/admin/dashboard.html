@@ -6,6 +6,17 @@
 {% endblock %}
 {% block body %}
 <div class="upload-box">
+    <h2>📥 آپلود فایل کاربران (Excel)</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput_user" name="file" accept=".xlsx,.xls">
+        <label for="fileInput_user" class="upload-label">انتخاب فایل Excel</label>
+    </form>
+    <div id="progress_user">فایلی انتخاب نشده است</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill_user"></div></div>
+</div>
+
+
+<div class="upload-box">
     <form id="uploadForm" enctype="multipart/form-data">
         <h2>آپلود مدارک</h2>
         <input type="text" name="title" placeholder="اسم کارنامه" required><br><br>

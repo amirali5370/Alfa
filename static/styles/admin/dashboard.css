@@ -4,6 +4,8 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    flex-direction: column;
+    row-gap: 40px;
   }
   .upload-box {
     background: #fff;
@@ -13,7 +15,7 @@
     text-align: center;
     width: 350px;
   }
-  #fileInput {
+  #fileInput, #fileInput_user {
     display: none;
   }
   .upload-label {
@@ -28,7 +30,7 @@
   .upload-label:hover {
     background: #4338ca;
   }
-  #progress {
+  #progress, #progress_user {
     margin-top: 1rem;
     font-size: 0.9rem;
     color: #333;

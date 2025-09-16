@@ -4,9 +4,10 @@ from datetime import datetime , timezone
 import pandas as pd
 from werkzeug.utils import secure_filename
 from pathlib import Path
+from passlib.hash import sha256_crypt
 from config import ADMIN_PASSWORD, ADMIN_USERNAME
 from config import STATIC_SAVE_PATH
-from functions.code_generators import auth_generator
+from functions.code_generators import auth_generator, invite_generator
 from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
 from extentions import db, cache
 from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
@@ -274,7 +275,7 @@ def del_quiz(quiz_auth):
 def up_quiz(quiz_auth):
     quiz = Quiz.query.filter_by(auth=quiz_auth).first_or_404()
 
-    file = request.files['quiz_file']
+    file = request.files.get('quiz_file', None)
     if file!=None:
         if file.filename != '':
             df = pd.read_excel(file)
@@ -481,9 +482,9 @@ def dashboard():
 #workbook system
 @app.route('/upload-multiple', methods=['POST'])
 def upload_multiple():
-    files = request.files.getlist('files')
-    title = request.form.get('title')
-    description = request.form.get('description')
+    files = request.files.getlist('files', None)
+    title = request.form.get('title', None)
+    description = request.form.get('description', None)
 
     if not files:
         return jsonify({'error': 'No files provided'}), 400
@@ -505,3 +506,34 @@ def upload_multiple():
 
     db.session.commit()
     return {'result': 'created'}, 201
+
+
+#users system
+@app.route('/upload-users', methods=['POST'])
+def upload_users():
+    file = request.files.get('file', None)
+
+
+    if not file:
+        return jsonify({'result': 'No files provided'}), 400
+
+    if file.filename == '':
+        return jsonify({'result': 'No files provided'}), 400
+    
+    df = pd.read_excel(file, dtype={'code': str, 'password': str})
+
+    for index, row in df.iterrows():
+        
+        invite_code = invite_generator()
+        sub_invite_code = invite_generator()
+        auth = auth_generator(User)
+
+        user = User(auth=auth, first_name=row['first_name'], last_name=row['last_name'], password=sha256_crypt.encrypt(row['password']), code=row['code'], invite_code=invite_code, sub_invite_code=sub_invite_code, coins=10)
+        db.session.add(user)
+    try:
+        db.session.commit()
+        return {'result': 'created'}, 201
+    #اگر ارور یونیک بخوره
+    except:
+        db.session.rollback()
+        return {'result': 'Database error'}, 500

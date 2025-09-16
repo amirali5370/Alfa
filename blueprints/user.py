@@ -314,8 +314,6 @@ def switch_sub():
 @app.route("/account", methods = ["POST","GET"],  strict_slashes=False)
 @login_required
 def account():
-    if current_user.completion == 0 or current_user.pay == 0:
-        return redirect(url_for("user.dashboard"))
     if request.method == "POST":
         _type = request.form.get('type', None)
         if _type == "psw":
