@@ -37,6 +37,7 @@ app = Blueprint("user" , __name__)
 # ------------- LOGIN AND REGISTER-------------
 #register page
 @app.route("/register", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("3 per hour")
 def register():
     if current_user.is_authenticated:
         if next != None:
@@ -96,6 +97,7 @@ def register():
 
 #is_repetitive API
 @app.route('/is_repetitive', methods=['POST'])
+@limiter.limit("10 per hour")
 def is_repetitive():
     data = request.get_json()
     code = data.get('code',None)
@@ -109,6 +111,7 @@ def is_repetitive():
 
 #login page
 @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("5 per minute")
 def login():
     next = request.args.get('next',None)
     if current_user.is_authenticated:
@@ -137,6 +140,7 @@ def login():
 
 #logout link
 @app.route("/logout")
+@limiter.limit("5 per minute")
 def logout():
     if current_user.is_authenticated:
         logout_user()
@@ -150,10 +154,10 @@ def get_top_users():
     return User.query.filter(User.completion == 1, User.pay == 1).order_by(User.coins.desc()).limit(9).all()
 
 @app.route("/",  strict_slashes=False)
+@limiter.limit("60 per minute")
 def home():
     top_users = get_top_users()
     return render_template("home.html", current_user=current_user, top_users=top_users)
-
 
 
 
@@ -169,6 +173,7 @@ def get_news_by_link(link):
 
 
 @app.route("/blog", strict_slashes=False)
+@limiter.limit("60 per minute")
 def blog():
     page = request.args.get("page", 1, type=int)
     news, has, news_page = get_news_page(page)
@@ -176,6 +181,7 @@ def blog():
 
 
 @app.route("/api/blog", strict_slashes=False)
+@limiter.limit("200 per minute")
 def blog_api():
     page = request.args.get("page", 1, type=int)
     news, has, page = get_news_page(page)
@@ -204,10 +210,12 @@ def single_blog(news_link):
 
 
 @app.route("/guide", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("6 per minute")
 def guide():
     return render_template("user/guide.html", current_user=current_user)
 
 @app.route("/support", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("3 per minute")
 def support():
     if request.method == "POST":
         name = request.form.get('name',None)
@@ -253,6 +261,7 @@ def support():
 
 #dashboard
 @app.route("/dashboard", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("30 per minute")
 @login_required
 def dashboard():
     if request.method == "POST":
@@ -293,6 +302,7 @@ def dashboard():
     
 #switch_sub API
 @app.route('/api/switch_sub', methods=['POST','GET'])
+@limiter.limit("60 per minute")
 def switch_sub():
     if not(current_user.is_authenticated) or current_user.completion == 0 or current_user.pay == 0 :
         return abort(404)
@@ -315,8 +325,8 @@ def switch_sub():
 
     return jsonify({'result': result})
 
-
 @app.route("/account", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("30 per minute")
 @login_required
 def account():
     if request.method == "POST":
@@ -343,6 +353,7 @@ def account():
     
 
 @app.route("/workbook",  strict_slashes=False)
+@limiter.limit("20 per minute")
 @login_required
 def workbook():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -352,6 +363,7 @@ def workbook():
 
 #books' file
 @app.route('/download/workbook/<workbook_auth>')
+@limiter.limit("20 per minute")
 @login_required
 def single_workbook(workbook_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -371,6 +383,7 @@ def get_events(pr_code):
     return News.query.filter((News.grade_bits.op('&')(literal(pr_code))) != 0).order_by(News.id.desc()).all()
 
 @app.route("/event",  strict_slashes=False)
+@limiter.limit("30 per minute")
 @login_required
 def event():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -387,6 +400,7 @@ def get_pamphlet(pr_code):
     return Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(pr_code))) != 0).order_by(Pamphlet.id.desc()).all()
 
 @app.route("/pamphlet",  strict_slashes=False)
+@limiter.limit("40 per minute")
 @login_required
 def pamphlet():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -395,6 +409,7 @@ def pamphlet():
     return render_template("user/pamphlet.html", current_user=current_user, pamphlets=pamphlets)
 
 @app.route('/download/pamphlet/<pamphlet_auth>')
+@limiter.limit("30 per minute")
 @login_required
 def single_pamphlet(pamphlet_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -422,6 +437,7 @@ def get_quiz_and_questions(quiz_auth):
 
 
 @app.route("/quiz",  strict_slashes=False)
+@limiter.limit("100 per minute")
 @login_required
 def quiz():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -441,6 +457,7 @@ def quiz():
 
 
 @app.route("/quiz/<quiz_auth>", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("20 per minute")
 @login_required
 def single_quiz(quiz_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -496,6 +513,7 @@ def single_quiz(quiz_auth):
 
 
 @app.route("/api/result", methods = ["POST","GET"], strict_slashes=False)
+@limiter.limit("30 per minute")
 @login_required
 def result():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -517,6 +535,7 @@ def get_all_webinar(pr_code):
 
 
 @app.route("/webinar",  strict_slashes=False)
+@limiter.limit("40 per minute")
 @login_required
 def webinar():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -550,6 +569,7 @@ def get_parts_cached(course_auth):
 
 
 @app.route("/course",  strict_slashes=False)
+@limiter.limit("100 per minute")
 @login_required
 def course():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -559,6 +579,7 @@ def course():
     return render_template("user/course.html", courses=courses)
 
 @app.route("/api_part", methods=["POST","GET"], strict_slashes=False)
+@limiter.limit("60 per minute")
 @login_required
 def get_part():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -584,6 +605,7 @@ def get_part():
 
 
 @app.route("/part/<part_auth>", methods=["GET"], strict_slashes=False)
+@limiter.limit("100 per minute")
 @login_required
 def part(part_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -612,6 +634,7 @@ def part(part_auth):
 #pay system
 #payment handler
 @app.route("/payment", methods=["GET"])
+@limiter.limit("4 per minute")
 @login_required
 def payment():
     if current_user.pay != 0:
@@ -635,6 +658,7 @@ def payment():
 
 #verify handler
 @app.route("/verify", methods=["GET"])
+@limiter.limit("10 per minute")
 def verify():
     token = request.args.get('token')
     pay = Payment.query.filter(Payment.token==token).first_or_404()

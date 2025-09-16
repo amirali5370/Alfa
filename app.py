@@ -38,7 +38,7 @@ Talisman(app, content_security_policy=None)
 
 extentions.db.init_app(app)
 extentions.cache.init_app(app)
-# extentions.limiter.init_app(app)
+extentions.limiter.init_app(app)
 
 csrf = CSRFProtect(app)
 
