@@ -97,3 +97,14 @@
 .avatar-btn:hover {
     background: #138496;
 }
+#out{
+    background-color: #ff273b;
+    align-self: center;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #eee;
+    cursor: pointer;
+}
+#out:hover{
+    background-color: #ff293ed9;
+}

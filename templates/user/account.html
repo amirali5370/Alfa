@@ -20,7 +20,6 @@
         <input name="profile" type="file" id="avatar-upload" accept="image/*" onchange="this.parentNode.submit();" hidden>
     </form>
     </div>
-  
     <!-- مشخصات کاربر -->
     <div class="profile-info">
         <h3>مشخصات کاربری</h3>
@@ -38,7 +37,7 @@
             <li><span>آدرس:</span><br> {{current_user.addres}} </li>
         </ul>
     </div>
-  
+    
     <!-- تغییر رمز عبور -->
     <div class="profile-security">
         <h3>تنظیمات امنیتی</h3>
@@ -49,20 +48,21 @@
                 <label>رمز فعلی</label>
                 <input name="now_pass" type="password" required>
             </div>
-        
+            
             <div class="form-group">
                 <label>رمز جدید</label>
                 <input id="password" name="new_pass" type="password" required>
             </div>
-        
+            
             <div class="form-group">
                 <label>تکرار رمز جدید</label>
                 <input id="password2" type="password" required>
             </div>
-        
+            
             <button type="submit" class="save-btn">تغییر رمز</button>
         </form>
     </div>
+    <label id="out" href="/logoutt">خروج از حساب کاربری</label>
 </section>
 
 <script src="{{ url_for('static', filename='scripts/user/account.js') }}"></script>
