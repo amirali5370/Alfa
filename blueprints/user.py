@@ -143,11 +143,16 @@ def logout():
     return redirect(url_for('user.home'))
 
 
+
+#top users caching
+@cache.memoize(timeout=3600)
+def get_top_users():
+    return User.query.filter(User.completion == 1, User.pay == 1).order_by(User.coins.desc()).limit(9).all()
+
 @app.route("/",  strict_slashes=False)
 def home():
-    top_users = User.query.filter(User.completion == 1).order_by(User.coins.desc()).limit(9).all()
+    top_users = get_top_users()
     return render_template("home.html", current_user=current_user, top_users=top_users)
-
 
 
 
