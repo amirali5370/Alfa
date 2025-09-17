@@ -195,7 +195,7 @@ form:not(.log){
     justify-content: end;
     align-items: center;
 }
-input {
+input, select {
     /* height: 100%; */
     width: 80%;
     background-color: inherit;
@@ -250,7 +250,9 @@ input::-ms-reveal {
     color: rgba(255, 255, 255, 0.798);
     margin: 7px 0;
 }
-
+select{
+    cursor: pointer;
+}
 
 
 
@@ -328,7 +330,7 @@ input::-ms-reveal {
     }
 }
 @media only screen and (max-width: 1100px) {
-    input {
+    input, select {
         padding: 16px 12px;
         font-size: 20px;
         width: 85%;

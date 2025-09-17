@@ -520,15 +520,22 @@ def upload_users():
     if file.filename == '':
         return jsonify({'result': 'No files provided'}), 400
     
+    typs = ['مسئول فرهنگی هنری', 'مسئول قرآنی', 'مسئول آموزشی']
+
     df = pd.read_excel(file, dtype={'code': str, 'password': str})
 
+    
     for index, row in df.iterrows():
         
         invite_code = invite_generator()
         sub_invite_code = invite_generator()
         auth = auth_generator(User)
 
-        user = User(auth=auth, first_name=row['first_name'], last_name=row['last_name'], password=sha256_crypt.encrypt(row['password']), code=row['code'], invite_code=invite_code, sub_invite_code=sub_invite_code, coins=10)
+        user_type = row['user_type'] if row['user_type'] in typs else 'student'
+
+        user = User(auth=auth, first_name=row['first_name'], last_name=row['last_name'], password=sha256_crypt.encrypt(row['password']), code=row['code'],
+            user_type=user_type, province=row['province'], city=row['city'], invite_code=invite_code, sub_invite_code=sub_invite_code, coins=10)
+    
         db.session.add(user)
     try:
         db.session.commit()

@@ -62,3 +62,66 @@ function checking(event) {
 
     return false; // جلوگیری از submit پیش‌فرض
 }
+
+
+
+
+//convert select to Choices
+const pElement = document.getElementById('province');
+const cElement = document.getElementById('city');
+
+const choice_p = new Choices(pElement, {
+    searchEnabled: false,
+    shouldSort: false
+
+});
+const choice_c = new Choices(cElement, {
+    searchEnabled: false,
+    shouldSort: false
+
+});
+
+
+
+
+//get cities
+function fetchCities(province) {
+    choice_c.removeActiveItems();
+    choice_c.setChoiceByValue('');
+    choice_c.clearChoices()
+    if (province === "") {
+
+        return;
+    }
+
+    // ارسال درخواست AJAX به سرور برای دریافت شهرستانها
+    fetch(`/get_cities?province=${province}`)
+        .then(response => response.json())
+        .then(cities => {
+            const items = cities.map(item => ({
+                value: item,
+                label: item
+            }));
+            choice_c.setChoices(
+                [
+                  {
+                    value: '',
+                    label: 'انتخاب شهرستان',
+                    disabled: true,
+                    selected: true
+                  },
+                  ...items
+                ],
+                'value',
+                'label',
+                true
+            );
+
+        })
+        .catch(error => console.error('Error fetching cities:', error));
+}
+
+//set top of login card
+const el = document.querySelector('nav#navbar');
+const heightNav = el.offsetHeight;
+document.querySelector('.login-card').style.top=`${heightNav - 28}px`;

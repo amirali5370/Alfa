@@ -18,6 +18,8 @@ class User(db.Model, UserMixin):
     number = Column(String, nullable=True)
     addres = Column(String, nullable=True)
     birthday = Column(String, nullable=True)
+    province = Column(String, nullable=True)
+    city = Column(String, nullable=True)
     user_type = Column(String, nullable=True, default="student")
     coins = Column(Integer, nullable=True, index=True, default=0)
     pay = Column(Integer, nullable=True, default=0)

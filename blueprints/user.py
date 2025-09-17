@@ -2,6 +2,7 @@ from flask import Blueprint, abort, render_template, request, redirect, send_fil
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_limiter import Limiter
 from extentions import db, cache, limiter
+from functions.give_city_data import cities as city_data
 from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone
@@ -37,7 +38,7 @@ app = Blueprint("user" , __name__)
 # ------------- LOGIN AND REGISTER-------------
 #register page
 @app.route("/register", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("3 per hour")
+# @limiter.limit("3 per hour")
 def register():
     if current_user.is_authenticated:
         if next != None:
@@ -52,13 +53,16 @@ def register():
         password = request.form.get('password',None)
         invite = request.form.get('invite',None)
 
+        province = request.form.get('province',None)
+        city = request.form.get('city',None)
+
         user = current_user
 
         invite_code = invite_generator()
         sub_invite_code = invite_generator()
         auth = auth_generator(User)
 
-        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=code, invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01)
+        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=code, invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01, province=province, city=city)
 
         assistant = False
         if inv_link != None:
@@ -92,7 +96,7 @@ def register():
             inviting = False
         else:
             inviting = True
-        return render_template("user/register.html", inviting=inviting, current_user=current_user, next=next)
+        return render_template("user/register.html", inviting=inviting, current_user=current_user, next=next, provinces=city_data.keys())
     
 
 #is_repetitive API
@@ -107,6 +111,15 @@ def is_repetitive():
     else:
         result = True
     return jsonify({'result': result})
+
+#get city api
+@app.route('/get_cities')
+def get_cities():
+    province = request.args.get('province' , None)
+    if province == None:
+        abort(404)
+    cities = city_data.get(province, [])
+    return jsonify(cities)
 
 
 #login page
