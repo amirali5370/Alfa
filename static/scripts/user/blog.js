@@ -5,6 +5,9 @@ let currentPage = parseInt(container.dataset.currentPage);
 let hasNext = container.dataset.hasNext === "true";
 const csrfToken = document.querySelector('meta[name="more_of_page"]').getAttribute('content')
 
+const loading_tag = document.getElementById("loading")
+loading_tag.style.display = "none"
+
 let isLoading = false;
 
 // لود بیشتر وقتی اسکرول رسید انتها
@@ -18,7 +21,7 @@ window.addEventListener("scroll", () => {
 
 function loadMore() {
     isLoading = true;
-    document.getElementById("loading").style.display = "flex";
+    loading_tag.style.display = "flex";
 
     fetch(`/api/blog?page=${currentPage + 1}`, {
         method: 'GET', // GET برای لود داده‌ها
@@ -49,11 +52,11 @@ function loadMore() {
         currentPage++;
         hasNext = data.has_next;
         isLoading = false;
-        document.getElementById("loading").style.display = "none";
+        loading_tag.style.display = "none";
     })
     .catch(err => {
         console.error("Error loading more news:", err);
         isLoading = false;
-        document.getElementById("loading").style.display = "none";
+        loading_tag.style.display = "none";
     });
 }

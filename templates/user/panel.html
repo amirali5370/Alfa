@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/panel.css') }}">
+
+    <style nonce="{{nonce}}">
+        #x{cursor:pointer; pointer-events:auto;}
+    </style>
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -18,8 +22,7 @@
             <img id="ph_side" src="{{ url_for('static', filename='img/users/' ~ current_user.auth ~ '.jpg') }}" onerror="this.onerror=null; this.src=`{{ url_for('static', filename='main_img/user.jpg') }}`;" alt="">
             <svg id="x_side" xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 256 256" 
-                id="x" 
-                style="cursor:pointer; pointer-events:auto;">
+                id="x">
                 <rect width="256" height="256" fill="transparent"></rect>
                 <line x1="200" x2="56" y1="56" y2="200" 
                     fill="none" stroke="currentColor" 
@@ -104,9 +107,6 @@
         </span>
         {% block body %}{% endblock %}
     </div>
-    <script>
-        document.querySelector(`a[href='${window.location.pathname}']`).classList.add('select');
-    </script>
     <script src="{{ url_for('static', filename='scripts/user/panel.js') }}"></script>
 </body>
 </html>

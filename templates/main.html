@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
     {% block head %}{% endblock %}
     {% if not current_user.is_authenticated %}
-    <style>
+    <style nonce="{{nonce}}">
         #user_bar{
             margin-left: 30px;
             gap: 10px;

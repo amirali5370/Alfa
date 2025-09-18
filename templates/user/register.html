@@ -3,7 +3,6 @@
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 
-
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/register.css') }}">
     <!-- SweetAlert2 CSS -->
@@ -84,13 +83,13 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "کدملی یا رمز عبور اشتباه است!"%}
-            <script type="module">
+            <script nonce="{{nonce}}" type="module">
                 Swal.fire({
                     title: 'کدملی یا رمز عبور اشتباه است!',
                     html: '',
                     icon: 'error',
                     confirmButtonColor: '#dc1225',
-                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    confirmButtonText: '<div class="b123"><i class="i123 fa fa-times"></i> باشه</div>',
                     showCloseButton: true,
                     showLoaderOnConfirm:true,
                     allowOutsideClick:false,

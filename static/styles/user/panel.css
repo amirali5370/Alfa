@@ -151,3 +151,10 @@ h2{
 #swal2-title,#swal2-html-container{
   direction: rtl;
 }
+
+#none_co,.none_co{
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.b123{direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;}
+.i123{margin-left: 5px;}

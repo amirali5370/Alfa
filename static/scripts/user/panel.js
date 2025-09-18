@@ -1,3 +1,5 @@
+document.querySelector(`a[href='${window.location.pathname}']`).classList.add('select');
+
 const side_bar = document.querySelector("#side");
 function open_side(){
     side_bar.classList.add("open")

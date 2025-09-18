@@ -71,26 +71,26 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "pass_success" %}
-            <script type="module">
+            <script  nonce="{{nonce}}" type="module">
                 Swal.fire({
                     title: 'رمز عبور با موفقیت تغییر کرد!',
                     html: '',
                     icon: 'success',
                     confirmButtonColor: '#3f9b0b',
-                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    confirmButtonText: '<div class="b123"><i class="i123 fa fa-times"></i> باشه</div>',
                     showCloseButton: true,
                     showLoaderOnConfirm:true,
                     allowOutsideClick:false,
                 }).then((result) => {swal.close();})
             </script>
             {% elif message == "now_pass_error" %}
-            <script type="module">
+            <script  nonce="{{nonce}}" type="module">
                 Swal.fire({
                     title: 'رمز عبور فعلی به درستی وارد نشده است!',
                     html: `درصورت فراموشی رمز عبور از طریق بخش <a style="color:blue;" href="{{ url_for('user.support') }}">پشتیبانی</a> با ما تماس حاصل فرمائید`,
                     icon: 'error',
                     confirmButtonColor: '#dc1225',
-                    confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                    confirmButtonText: '<div class="b123"><i class="i123 fa fa-times"></i> باشه</div>',
                     showCloseButton: true,
                     showLoaderOnConfirm:true,
                     allowOutsideClick:false,

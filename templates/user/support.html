@@ -43,26 +43,26 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "ticket_add_success"%}
-            <script type="module">
+            <script nonce="{{nonce}}" type="module">
             Swal.fire({
                 title: 'تیکت شما با موفقیت ثبت شد!',
                 html: 'بعد از بررسی شدن، در صورت نیاز با شما تماس برقرار خواهد شد.',
                 icon: 'success',
                 confirmButtonColor: '#3f9b0b',
-                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                confirmButtonText: '<div class="b123"><i class="i123 fa fa-times"></i> باشه</div>',
                 showCloseButton: true,
                 showLoaderOnConfirm:true,
                 allowOutsideClick:false,
             }).then((result) => {swal.close();})
             </script>
             {% elif message == "ticket_add_error" %}
-            <script type="module">
+            <script nonce="{{nonce}}" type="module">
             Swal.fire({
                 title: 'تیکت شما ثبت نشد!',
                 html: 'بعد از چند دقیقه مجددا اقدام فرمائید.<br>در صورت بر طرف نشدن مشکل با ما تماس برقرار کنید',
                 icon: 'error',
                 confirmButtonColor: '#dc1225',
-                confirmButtonText: '<div style="direction:rtl;font-size:18px;font-family:Iran,Calibri;font-weight:bold;"><i style="margin-left: 5px;" class="fa fa-times"></i> باشه</div>',
+                confirmButtonText: '<div class="b123"><i class="i123 fa fa-times"></i> باشه</div>',
                 showCloseButton: true,
                 showLoaderOnConfirm:true,
                 allowOutsideClick:false,

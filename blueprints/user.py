@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, render_template, request, redirect, send_file, url_for, flash, jsonify
+from flask import Blueprint, abort, render_template, request, redirect, send_file, url_for, flash, jsonify, g
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_limiter import Limiter
 from extentions import db, cache, limiter
@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 import requests
 from sqlalchemy import literal
 from PIL import Image
+import os
 import random
 from functions.code_generators import invite_generator, auth_generator
 from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY, VID_API_KEY, VID_SECRET_KEY
@@ -32,13 +33,47 @@ from models.payment import Payment
 
 app = Blueprint("user" , __name__)
 
-# limiter = Limiter()  # به app اصلی وصل خواهد شد
-# limiter.limit("100 per minute")(app) 
+
+
+# nonce system
+# تولید nonce برای هر درخواست
+@app.before_request
+def generate_nonce():
+    # 16 بایت تصادفی -> hex string
+    g.nonce = os.urandom(16).hex()
+
+# inject nonce به تمام تمپلیت‌ها تا لازم نباشه دستی پاس بدیم
+@app.context_processor
+def inject_nonce():
+    return dict(nonce=getattr(g, 'nonce', ''))
+
+# اضافه کردن هدر CSP به پاسخ‌های HTML
+@app.after_request
+def add_csp_header(response):
+    nonce = getattr(g, 'nonce', None)
+    content_type = response.headers.get('Content-Type', '')
+    # فقط برای پاسخ‌های HTML هدر CSP بگذار
+    if nonce and 'text/html' in content_type:
+        csp = (
+            "default-src 'self'; "
+            f"script-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+            f"style-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+            "img-src 'self' data: https://cdn.jsdelivr.net; "
+            "font-src 'self' https://cdn.jsdelivr.net; "
+            "object-src 'none'; "
+            "base-uri 'self';"
+        )
+        response.headers['Content-Security-Policy'] = csp
+    return response
+
+
+
+
 
 # ------------- LOGIN AND REGISTER-------------
 #register page
 @app.route("/register", methods = ["POST","GET"],  strict_slashes=False)
-# @limiter.limit("3 per hour")
+@limiter.limit("3 per hour")
 def register():
     if current_user.is_authenticated:
         if next != None:
