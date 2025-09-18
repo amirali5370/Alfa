@@ -6,7 +6,7 @@ from flask_limiter.util import get_remote_address
 from blueprints.general import app as general
 from blueprints.admin import app as admin
 from blueprints.user import app as user
-# from blueprints.general import page_not_found
+from blueprints.general import page_not_found
 from functions.jinja_functions import *
 import config
 import extentions
@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.register_blueprint(general)
 app.register_blueprint(admin)
 app.register_blueprint(user)
-# app.register_error_handler(404, page_not_found)
+app.register_error_handler(404, page_not_found)
 
 app.jinja_env.globals['randomizer'] = randomizer
 app.jinja_env.globals['and'] = lambda x,y : x&y
