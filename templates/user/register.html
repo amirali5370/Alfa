@@ -87,7 +87,7 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "کدملی یا رمز عبور اشتباه است!"%}
-            <script nonce="{{nonce}}" type="module">
+            <script type="module">
                 Swal.fire({
                     title: 'کدملی یا رمز عبور اشتباه است!',
                     html: '',

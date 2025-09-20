@@ -71,7 +71,7 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "quiz_success"%}
-            <script nonce="{{nonce}}" type="module">
+            <script type="module">
             Swal.fire({
                 title: 'پاسخ شما با موفقیت ثبت شد!',
                 html: 'بعد از اتمام زمان آزمون می توانید نمره خود را مشاهده کنید.',
@@ -84,7 +84,7 @@
             }).then((result) => {swal.close();})
             </script>
             {% elif message == "quiz_more_3" %}
-            <script nonce="{{nonce}}" type="module">
+            <script type="module">
             Swal.fire({
                 title: 'دفعات ورود بیش از حد مجاز!',
                 html: 'متاسفانه شما تعداد دفعات مجاز ورود را رد کرده‌اید. می توانید برای مشاهده نتایج تا اتمام زمان آزمون صبر کنید.',

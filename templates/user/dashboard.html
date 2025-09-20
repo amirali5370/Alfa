@@ -198,7 +198,7 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "completion_success"%}
-            <script nonce="{{nonce}}" type="module">
+            <script type="module">
                 Swal.fire({
                     title: 'تکمیل اطلاعات با موفقیت انجام شد!',
                     html: '',
@@ -212,7 +212,7 @@
             </script>
             {% endif %}
             {% if message == "payment_success"%}
-            <script nonce="{{nonce}}" type="module">
+            <script type="module">
                 Swal.fire({
                     title: 'پرداخت موفقیت آمیز بود!',
                     html: '',
@@ -225,7 +225,7 @@
                 }).then((result) => {swal.close();})
             </script>
             {% elif message == "payment_failed" %}
-            <script nonce="{{nonce}}" type="module">
+            <script type="module">
                 Swal.fire({
                     title: 'پرداخت ناموفق!',
                     html: "اگر وجه از حساب شما کم شده است، ظرف 72 ساعت آینده باز خواهد گشت.",

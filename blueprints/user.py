@@ -37,34 +37,34 @@ app = Blueprint("user" , __name__)
 
 # nonce system
 # تولید nonce برای هر درخواست
-@app.before_request
-def generate_nonce():
-    # 16 بایت تصادفی -> hex string
-    g.nonce = os.urandom(16).hex()
+# @app.before_request
+# def generate_nonce():
+#     # 16 بایت تصادفی -> hex string
+#     g.nonce = os.urandom(16).hex()
 
 # inject nonce به تمام تمپلیت‌ها تا لازم نباشه دستی پاس بدیم
-@app.context_processor
-def inject_nonce():
-    return dict(nonce=getattr(g, 'nonce', ''))
+# @app.context_processor
+# def inject_nonce():
+#     return dict(nonce=getattr(g, 'nonce', ''))
 
 # اضافه کردن هدر CSP به پاسخ‌های HTML
-@app.after_request
-def add_csp_header(response):
-    nonce = getattr(g, 'nonce', None)
-    content_type = response.headers.get('Content-Type', '')
-    # فقط برای پاسخ‌های HTML هدر CSP بگذار
-    if nonce and 'text/html' in content_type:
-        csp = (
-            "default-src 'self'; "
-            f"script-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
-            f"style-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
-            "img-src 'self' data: https://cdn.jsdelivr.net; "
-            "font-src 'self' https://cdn.jsdelivr.net; "
-            "object-src 'none'; "
-            "base-uri 'self';"
-        )
-        response.headers['Content-Security-Policy'] = csp
-    return response
+# @app.after_request
+# def add_csp_header(response):
+#     nonce = getattr(g, 'nonce', None)
+#     content_type = response.headers.get('Content-Type', '')
+#     # فقط برای پاسخ‌های HTML هدر CSP بگذار
+#     if nonce and 'text/html' in content_type:
+#         csp = (
+#             "default-src 'self'; "
+#             f"script-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+#             f"style-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net; "
+#             "img-src 'self' data: https://cdn.jsdelivr.net; "
+#             "font-src 'self' https://cdn.jsdelivr.net; "
+#             "object-src 'none'; "
+#             "base-uri 'self';"
+#         )
+#         response.headers['Content-Security-Policy'] = csp
+#     return response
 
 
 # ------------- site map -------------
@@ -171,9 +171,11 @@ def register():
             return redirect(request.url)
 
         if inviter != None:
-            inv = Invite(inviter_id=inviter.id , invitee_id=user.id , assistant=assistant)
+            inv = Invite(inviter_id=inviter.id , invitee_id=user.id, assistant=assistant)
             inviter.coins += coin_02
             db.session.add(inv)
+            if assistant:
+                user.user_type="M"+inviter.user_type
             db.session.commit()
         login_user(user)
 
@@ -451,7 +453,13 @@ def account():
         return redirect(request.url)
 
     else:
-        return render_template("user/account.html", current_user=current_user)
+        user_type = current_user.user_type
+        if user_type == "student":
+            user_type="ساده"
+        elif user_type.startswith("M"):
+            user_type="معاونت " + user_type[1:]
+
+        return render_template("user/account.html", current_user=current_user, user_type=user_type)
     
 
 @app.route("/workbook",  strict_slashes=False)
@@ -475,7 +483,7 @@ def single_workbook(workbook_auth):
     try:
         return send_file(path, as_attachment=True)
     except:
-        return abort(404)
+        return abort(403)
     
 
 

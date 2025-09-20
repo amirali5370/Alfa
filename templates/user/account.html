@@ -23,13 +23,15 @@
     </form>
     </div>
     <!-- مشخصات کاربر -->
+    {% if current_user.completion == 0 or current_user.pay == 0 %}
+    {% else %}
     <div class="profile-info">
         <h3>مشخصات کاربری</h3>
         <ul>
             <li><span>نام:</span> {{current_user.first_name}}</li>
             <li><span>نام خانوادگی:</span> {{current_user.last_name}}</li>
             <li><span>نام پدر:</span> {{current_user.father_name}}</li>
-            <li><span>نوع کاربری:</span> {{ "ساده" if current_user.user_type == "student" else current_user.user_type}}</li>
+            <li><span>نوع کاربری:</span> {{user_type}}</li>
             <li><span>جنسیت:</span> {{ "پسر" if current_user.gender == "male" else "دختر" }}</li>
             <li><span>کد ملی:</span> {{current_user.code}}</li>
             <!-- <li><span>تاریخ تولد:</span> 1404/04/23</li> -->
@@ -39,6 +41,7 @@
             <li><span>آدرس:</span><br> {{current_user.addres}} </li>
         </ul>
     </div>
+    {% endif %}
     
     <!-- تغییر رمز عبور -->
     <div class="profile-security">
@@ -73,7 +76,7 @@
     {% if messages %}
         {% for message in messages %}
             {% if message == "pass_success" %}
-            <script  nonce="{{nonce}}" type="module">
+            <script type="module">
                 Swal.fire({
                     title: 'رمز عبور با موفقیت تغییر کرد!',
                     html: '',
@@ -86,7 +89,7 @@
                 }).then((result) => {swal.close();})
             </script>
             {% elif message == "now_pass_error" %}
-            <script  nonce="{{nonce}}" type="module">
+            <script type="module">
                 Swal.fire({
                     title: 'رمز عبور فعلی به درستی وارد نشده است!',
                     html: `درصورت فراموشی رمز عبور از طریق بخش <a style="color:blue;" href="{{ url_for('user.support') }}">پشتیبانی</a> با ما تماس حاصل فرمائید`,
