@@ -1,7 +1,11 @@
 {% extends "main.html" %}
 {% block head %}
     <meta name="more_of_page" content="{{ csrf_token() }}">
+
     <title>رهبران پیشتاز | بلاگ</title>
+    <meta name="description" content="اخبار، مقالات و منابع آموزشی ویژه دانش‌آموزان و معلمان طرح نو پویان آموزش و پرورش. آخرین مسابقات، دوره‌ها و مطالب علمی را در وبلاگ دنبال کنید.">
+    <meta name="robots" content="index, follow">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/blog.css') }}">
 {% endblock %}
 {% block body %}

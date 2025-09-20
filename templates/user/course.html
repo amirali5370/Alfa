@@ -1,6 +1,8 @@
 {% extends "user/panel.html" %}
 {% block head %}
     <title>دوره‌ها | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <meta name="robots" content="noindex, nofollow">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/course.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <meta name="more_of_page" content="{{ csrf_token() }}">

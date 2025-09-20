@@ -74,18 +74,20 @@ def blog_api():
 @app.route("/blog/<news_link>", methods={"GET","POST"}, strict_slashes=False)
 def single_blog(news_link):
     if news_link == "create":
-        n = News(title='', description='', content='', prima_link='', auth=auth_generator(News), grade_bits=0, jalali_date=gregorian_to_jalali(datetime.now(timezone.utc)))
+        n = News(title='', description='', content='', prima_link='', auth=auth_generator(News), grade_bits=0, jalali_date=gregorian_to_jalali(datetime.now(timezone.utc)), xml_date=datetime.now(timezone.utc).strftime("%Y-%m-%d"))
         db.session.add(n)
         db.session.flush()
         n.prima_link = f"news_{n.id}"
         db.session.commit()
         cache.delete_memoized(get_news_page)
         cache.delete_memoized(get_events)
+        cache.delete('sitemap_xml')
 
         return redirect(url_for("admin.blog"))
     
     news = News.query.filter_by(prima_link=news_link).first_or_404()
     if request.method == "POST":
+        news.xml_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         mode = request.form.get('mode',None)
         if mode=="met":
             title = request.form.get('title',None)
@@ -103,10 +105,6 @@ def single_blog(news_link):
             news.content = content
             news.prima_link = prima_link
             news.grade_bits = grade_bits
-            db.session.commit()
-            cache.delete_memoized(get_news_page)
-            cache.delete_memoized(get_news_by_link,news_link)
-            cache.delete_memoized(get_events)
 
         elif mode=="ph":
             file = request.files.get("profile", None)
@@ -114,6 +112,12 @@ def single_blog(news_link):
             image = image.resize((1600, 900))
             image = image.convert("RGB") 
             image.save(f"{STATIC_SAVE_PATH}/img/news/{news.auth}.jpg", 'JPEG')
+            
+        db.session.commit()
+        cache.delete_memoized(get_news_page)
+        cache.delete_memoized(get_news_by_link,news_link)
+        cache.delete_memoized(get_events)
+        cache.delete('sitemap_xml')
 
         return redirect(url_for('admin.single_blog', news_link=news.prima_link))
     else:
@@ -128,7 +132,8 @@ def blog_del(news_link):
     db.session.commit()
     cache.delete_memoized(get_news_page)
     cache.delete_memoized(get_news_by_link,news_link)
-    cache.delete_memoized(get_events)   
+    cache.delete_memoized(get_events)
+    cache.delete('sitemap_xml')
     return redirect(url_for('admin.blog'))
 
 

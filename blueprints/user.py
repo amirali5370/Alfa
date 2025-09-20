@@ -1,4 +1,4 @@
-from flask import Blueprint, abort, render_template, request, redirect, send_file, url_for, flash, jsonify, g
+from flask import Blueprint, Response, abort, render_template, request, redirect, send_file, send_from_directory, url_for, flash, jsonify, g
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_limiter import Limiter
 from extentions import db, cache, limiter
@@ -67,6 +67,60 @@ def add_csp_header(response):
     return response
 
 
+# ------------- site map -------------
+def get_posts_xml():
+    return News.query.all()
+
+@cache.cached(key_prefix='sitemap_xml', timeout=0)
+@app.route("/sitemap.xml", methods=["GET"])
+def sitemap():
+    pages = []
+
+    # صفحات ثابت
+    pages.append({
+        "loc": url_for('user.home', _external=True),
+        "lastmod": "2025-09-22"
+    })
+    pages.append({
+        "loc": url_for('user.blog', _external=True),
+        "lastmod": "2025-09-22"
+    })
+    pages.append({
+        "loc": url_for('user.guide', _external=True),
+        "lastmod": "2025-09-22"
+    })
+    pages.append({
+        "loc": url_for('user.support', _external=True),
+        "lastmod": "2025-09-22"
+    })
+
+    # صفحات سینگل بلاگ
+    for post in get_posts_xml():
+        pages.append({
+            "loc": url_for('user.single_blog', news_link=post.prima_link, _external=True),
+            "lastmod": post.xml_date
+        })
+
+    # تولید XML
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+    for page in pages:
+        xml.append("  <url>")
+        xml.append(f"    <loc>{page['loc']}</loc>")
+        xml.append(f"    <lastmod>{page['lastmod']}</lastmod>")
+        xml.append("    <changefreq>weekly</changefreq>")
+        xml.append("    <priority>0.8</priority>")
+        xml.append("  </url>")
+
+    xml.append("</urlset>")
+    sitemap_xml = "\n".join(xml)
+    return Response(sitemap_xml, mimetype='application/xml')
+
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory("static", "robots.txt")
 
 
 
