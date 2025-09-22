@@ -127,7 +127,7 @@ def robots():
 # ------------- LOGIN AND REGISTER-------------
 #register page
 @app.route("/register", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("3 per hour")
+# @limiter.limit("3 per hour")
 def register():
     if current_user.is_authenticated:
         if next != None:
