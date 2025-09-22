@@ -1,0 +1,54 @@
+{% extends "user/panel.html" %}
+{% block head %}
+    <title>اردوها | {{current_user.first_name}} {{current_user.last_name}}</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/camp.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>اردو ها</h2>
+</div>
+  
+  <!-- ثبت نام شده -->
+<section class="course-section">
+    <h3>اردوهای من:</h3>
+    <div class="courses-grid">
+        {% for r in reg %}
+        <div class="course-card">
+            <h4>{{r.title}}</h4>
+            <p>توضیح: {{r.description}}</p>
+            <p><strong>هزینه: {{r.price}} سکه</strong></p>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 class="none_co">اردویی ثبت نام شده برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  <br>
+  <!-- قابل ثبت نام -->
+<section class="course-section">
+    <h3>اردوهای قابل ثبت نام:</h3>
+    <div class="courses-grid">
+        {% for s in sta %}
+        <div class="course-card" data-co-a="{{s.auth}}" data-co-p="{{s.price}}">
+            <h4>{{s.title}}</h4>
+            <p>توضیح: {{s.description}}</p>
+            <p><strong>هزینه: {{s.price}} سکه</strong></p>
+            <label><button class="note-btn">ثبت‌نام در اردو</button></label>
+        </div>
+        {% else %}
+        <div class="page-title">
+            <h3 class="none_co">اردویی قابل ثبت نام برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='scripts/user/camp.js') }}"></script>
+  
+{% endblock %}

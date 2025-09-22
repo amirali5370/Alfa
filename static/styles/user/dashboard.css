@@ -498,7 +498,9 @@
     .ghost-btn, .action-btn, .btn, input[type="tel"] { display: none !important; }
     .assistants .my-assist-list { max-height: none; overflow: visible; }
   }
-  
+  .payment{
+    height: 100%;
+  }
 
 
 
@@ -726,4 +728,10 @@
   .profile-form {
     grid-template-columns: 1fr; /* موبایل: ستونی */
   }
+}
+input{
+  font-family: vazir;
+  width: 225px;
+  height: 40px;
+  padding: 8px 12px;
 }

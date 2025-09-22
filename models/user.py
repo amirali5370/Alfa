@@ -17,7 +17,6 @@ class User(db.Model, UserMixin):
     grade_name = Column(String, nullable=True, index=True)
     number = Column(String, nullable=True)
     addres = Column(String, nullable=True)
-    birthday = Column(String, nullable=True)
     province = Column(String, nullable=True)
     city = Column(String, nullable=True)
     user_type = Column(String, nullable=True, default="student")

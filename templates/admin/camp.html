@@ -1,0 +1,90 @@
+{% extends "admin/panel.html" %}
+{% block head %}
+    <title>اردوها | ادمین</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <meta name="more_of_page" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/camp.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .course-card .h4 {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #17a2b8;
+            font-family: vazir;
+            font-weight: bold;
+        }
+        .course-card .p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+            font-family: vazir;
+        }
+        .status_box {
+            accent-color: rgb(7, 172, 7); /* رنگ تیک وقتی تیک زده شد */
+        }
+        label,input[type="checkbox"]{
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<div class="page-title">
+    <h2>اردو ها</h2>
+</div>
+<form action="#" method="post" class="course-card"  style="background-color: #d9f4ff;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input name="title" class="h4" type="text" value="عنوان اردو">
+    <p>توضیح: <input name="description" class="p" type="text" value="توضیحات اردو"></p>
+    <p><strong>هزینه: <input name="price" type="number" value="10" style="font-weight: bold; width: 50px;"> سکه</strong></p>
+    <div>
+        <input type="checkbox" name="d1" id="d2create">
+        <label for="d1create">دوره دوم ابتدایی</label>
+        <br>
+        <input type="checkbox" name="d2" id="d2create">
+        <label for="d2create">دوره اول متوسطه</label>
+        <br>
+        <input type="checkbox" name="d4" id="d4create">
+        <label for="d4create">دوره دوم متوسطه</label>
+        <br>
+        
+        <input class="status_box" type="checkbox" name="status" id="status_box">
+        <label for="status_box">قابل ثبت نام</label>
+    </div>
+    <button type="submit" class="note-btn enter">ایجاد اردو</button>
+</form>
+<br><br>
+<section class="course-section">
+    <div class="courses-grid">
+        {% for s in camps %}
+        <form action="{{url_for('admin.edit_camp', camp_auth=s.auth)}}" method="post" class="course-card" data-co-a="{{s.auth}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input name="title" class="h4" type="text" value="{{s.title}}">
+            <p>توضیح: <input name="description" class="p" type="text" value="{{s.description}}"></p>
+            <p><strong>هزینه: <input name="price" type="number" value="{{s.price}}" style="font-weight: bold; width: 50px;"> سکه</strong></p>
+            <div>
+                <input type="checkbox" name="d1" id="d1{{s.id}}" {{ 'checked' if and(1,s.grade_bits) != 0 else '' }}>
+                <label for="d1{{s.id}}">دوره دوم ابتدایی</label>
+                <br>
+                <input type="checkbox" name="d2" id="d2{{s.id}}" {{ 'checked' if and(2,s.grade_bits) != 0 else '' }}>
+                <label for="d2{{s.id}}">دوره اول متوسطه</label>
+                <br>
+                <input type="checkbox" name="d4" id="d4{{s.id}}" {{ 'checked' if and(4,s.grade_bits) != 0 else '' }}>
+                <label for="d4{{s.id}}">دوره دوم متوسطه</label>
+                <br>
+                
+                <input type="checkbox" name="status" class="status_box" id="status_box{{s.id}}" {{ 'checked' if s.status == 1 else '' }}>
+                <label for="status_box{{s.id}}">قابل ثبت نام</label>
+            </div>
+            <button type="submit" class="note-btn enter" style="background-color: #ffc20b;">ویرایش اردو</button>
+            <label><a type="button" class="note-btn" href="{{url_for('admin.export_reservation_users', camp_auth=s.auth)}}">لیست شرکت کنندگان</a></label>
+        </form>
+        {% else %}
+        <div class="page-title">
+            <h3 class="none_co">اردویی قابل ثبت نام برای شما موجود نیست!</h3>
+        </div>
+        {% endfor%}
+    </div>
+</section>
+  
+{% endblock %}

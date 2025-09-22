@@ -15,4 +15,6 @@ class Payment(db.Model):
     card_pan = Column(String, index=True)
     date = Column(String, index=True)
 
+    inApp = Column(Integer, index=True, default=0)
+
     user = db.relationship("User", backref=backref("payments" , lazy="dynamic"))

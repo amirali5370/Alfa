@@ -8,13 +8,14 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone
 import requests
 from sqlalchemy import literal
+from sqlalchemy.sql import exists
 from PIL import Image
 import os
 import random
 from functions.code_generators import invite_generator, auth_generator
 from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY, VID_API_KEY, VID_SECRET_KEY
 from functions.datetime import gregorian_to_jalali
-from models.part import Part
+from models.reservation import Reservation
 from scoring import *
 from models.user import User
 from models.invite import Invite
@@ -28,6 +29,8 @@ from models.course import Course
 from models.result import Result
 from models.question import Question
 from models.payment import Payment
+from models.camp import Camp
+from models.part import Part
 
 
 
@@ -215,7 +218,7 @@ def get_cities():
 
 #login page
 @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 def login():
     next = request.args.get('next',None)
     if current_user.is_authenticated:
@@ -741,34 +744,83 @@ def part(part_auth):
 
 
 
+#camps system
+@cache.memoize(timeout=0)
+def get_grade_camps(pr_code):
+    return Camp.query.filter((Camp.grade_bits.op('&')(literal(pr_code))) != 0)
+
+
+def get_user_camps(pr_code,us_id):
+    reg = get_grade_camps(pr_code).join(Reservation).filter(Reservation.user_id == us_id).all()
+    sta = get_grade_camps(pr_code).filter(~exists().where((Reservation.camp_id == Camp.id) &(Reservation.user_id == us_id)), Camp.status==1).all()
+    return reg,sta
+
+
+@app.route("/camp", methods=["GET","POST"], strict_slashes=False)
+@limiter.limit("30 per minute")
+@login_required
+def camp():
+    if current_user.completion == 0 or current_user.pay == 0:
+        return redirect(url_for("user.dashboard"))
+    if request.method == "POST":
+        auth = request.get_json().get('auth', None)
+        my_camp = Camp.query.filter_by(auth=auth).first_or_404()
+        if Reservation.query.filter(Reservation.camp_id==my_camp.id, Reservation.user_id==current_user.id).first()!=None:
+            return abort(404)
+        if current_user.coins >= my_camp.price:
+            r = Reservation(camp_id=my_camp.id,user_id=current_user.id)
+            current_user.coins = current_user.coins - my_camp.price
+            db.session.add(r)
+            db.session.commit()
+            return jsonify({'result':'buy'})
+        else:
+            return jsonify({'result':'little'})
+
+    else:
+        reg, sta = get_user_camps(pr_code=current_user.period_code, us_id=current_user.id)
+        return render_template("user/camp.html", reg=reg, sta=sta)
+
+
+
+
 #pay system
 #payment handler
-@app.route("/payment", methods=["GET"])
-@limiter.limit("4 per minute")
+@app.route("/payment", methods=["GET","POST"])
+@limiter.limit("5 per minute")
 @login_required
 def payment():
-    if current_user.pay != 0:
-        return redirect(url_for("user.dashboard"))
+    if request.method=="GET":
+        if current_user.pay != 0:
+            return redirect(url_for("user.dashboard"))
+    amount = PRICE
+    inApp = 0
+    if request.method=="POST":
+        coins = request.get_json().get('coins', None)
+        if coins==None:
+            return "Record not found", 400
+        
+        amount = coins * ppc
+        inApp = coins
     
     r = requests.post(URL_PAY_TOKEN, 
                     data={
                         'api': PAY_API,
-                        'amount':PRICE,
+                        'amount':amount,
                         'callback':str(url_for('user.verify', _external=True))
                     })
     
     token = r.json()['result']['token']
     url = r.json()['result']['url']
 
-    pay = Payment(user_id=current_user.id, token=token, amount=PRICE)
+    pay = Payment(user_id=current_user.id, token=token, amount=amount, inApp=inApp)
     db.session.add(pay)
     db.session.commit()
-
+    if request.method=="POST":
+        return jsonify({'url':url})
     return redirect(url)
 
 #verify handler
 @app.route("/verify", methods=["GET"])
-@limiter.limit("10 per minute")
 def verify():
     token = request.args.get('token')
     pay = Payment.query.filter(Payment.token==token).first_or_404()
@@ -787,8 +839,11 @@ def verify():
         pay.date = r.json()['result']['date']
         pay.refid = r.json()['result']['refid']
         pay.transaction_id = r.json()['result']['transaction_id']
-        pay.user.pay = 1
-        pay.user.coins = pay.user.coins + coin_04
+        if pay.inApp==0:
+            pay.user.pay = 1
+            pay.user.coins = pay.user.coins + coin_04
+        else:
+            pay.user.coins = pay.user.coins + pay.inApp
         db.session.commit()
     else:
         flash("payment_failed")

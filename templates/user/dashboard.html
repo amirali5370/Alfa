@@ -6,6 +6,7 @@
     <meta name="more_of_page" content="{{ csrf_token() }}">
     <meta name="url_of_" content="{{ url_for('user.switch_sub') }}">
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/coiner.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/dashboard.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 {% endblock %}
@@ -147,6 +148,29 @@
         {% endif %}
     </div>
     {% if current_user.completion == 1 and current_user.pay == 1 %}
+    <!-- خرید سکه -->
+    <div class="dashboard-item card invite" role="region" aria-label="ورودی عدد صحیح مثبتی که حداقل 10 باشد">
+        <div class="label">
+            <h3>خرید سکه</h3>
+            <div class="helper">قیمت هر سکه : 1000 تومان</div>
+        </div>
+        <div class="num-row">
+            <div class="input-wrap">
+                <div class="input-inner">
+                    <div class="sign-badge" id="signBadge">#</div>
+                    <input id="numInput" class="num-input" type="text" inputmode="numeric" pattern="\d*" placeholder="مثال: 12" aria-label="ورودی عدد طبیعی" autocomplete="off" />
+                </div>
+                <div id="error" class="error" aria-live="polite" style="display:none"></div>
+            </div>
+        
+            <div class="steppers" role="group" aria-label="افزایش و کاهش عدد">
+                <button class="step-btn" id="btnUp" title="افزایش">▲</button>
+                <button class="step-btn" id="btnDown" title="کاهش">▼</button>
+            </div>
+        </div>
+        <button id="buy_coin" class="btn">خرید سکه</button>
+    </div>
+
     <!-- دعوت افراد -->
     <div class="dashboard-item invite">
         <h3>دعوت دوستان</h3>
@@ -193,6 +217,7 @@
     {% endif %}
 </section>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='scripts/user/coiner.js') }}"></script>
 <script src="{{ url_for('static', filename='scripts/user/dashboard.js') }}"></script>
 {% with messages = get_flashed_messages() %}
     {% if messages %}

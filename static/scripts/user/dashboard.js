@@ -105,7 +105,6 @@ document.querySelectorAll('.assistant>.btn').forEach(item => {
 			'invite_id':invite_id,
 			'do':e.target.classList.contains('secondary') ? "deactivate" : "activate"
 		}
-		console.log(data);
 
 		fetch(url_switch_sub, {
 			method: 'POST',
@@ -145,4 +144,27 @@ document.querySelectorAll('.assistant>.btn').forEach(item => {
 			window.location.reload();
 		});
 	});
+});
+
+
+
+
+const csrfToken = document.querySelector("meta[name='more_of_page']").getAttribute("content");
+document.querySelector('#buy_coin').addEventListener('click',(e)=>{
+  const coins = getValidatedValue()
+  if (coins === null){return null}
+  var data = {
+    'coins':coins
+  }
+
+  fetch('/payment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': csrfToken
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {window.location.href = data.url;})
 });

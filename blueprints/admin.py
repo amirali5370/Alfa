@@ -3,6 +3,7 @@ from PIL import Image
 from datetime import datetime , timezone
 import pandas as pd
 from werkzeug.utils import secure_filename
+from io import BytesIO
 from pathlib import Path
 from passlib.hash import sha256_crypt
 from config import ADMIN_PASSWORD, ADMIN_USERNAME
@@ -10,13 +11,15 @@ from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator, invite_generator
 from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
 from extentions import db, cache
-from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
+from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_grade_camps, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
+from models.camp import Camp
 from models.course import Course
 from models.news import News
 from models.pamphlet import Pamphlet
 from models.part import Part
 from models.question import Question
 from models.quiz import Quiz
+from models.reservation import Reservation
 from models.user import User
 from models.webinar import Webinar
 from models.workbook import Workbook
@@ -39,7 +42,7 @@ def login():
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session["admin_login"] = username
-            return redirect(url_for("admin.blog"))
+            return redirect(url_for("admin.dashboard"))
         else:
             return redirect(url_for("admin.login"))
     else:
@@ -411,7 +414,7 @@ def del_course(course_auth):
     except:
         return '', 204
     
-@app.route("/edit_course/<course_auth>", methods=["POST","GET"], strict_slashes=False)
+@app.route("/edit_course/<course_auth>", methods=["POST"], strict_slashes=False)
 def edit_course(course_auth):
     cour = Course.query.filter_by(auth=course_auth).first_or_404()
 
@@ -477,6 +480,109 @@ def edit_part(part_auth):
     c = part.course.auth
 
     return redirect(url_for('admin.single_course', course_auth=c))
+
+
+
+#camp system
+@app.route("/camp", methods=["POST","GET"], strict_slashes=False)
+def camp():
+    if request.method=="POST":
+        title = request.form.get('title',None)
+        description = request.form.get('description',None)
+        price = request.form.get('price',None)
+
+        if "status" in request.form:
+            status_b=1
+        else:
+            status_b=0
+
+        grade_bits = 0
+        for i in [1, 2, 4]:
+            if request.form.get(f'd{i}'):
+                grade_bits += i
+        c = Camp(title=title, description=description, price=price, status=status_b, grade_bits=grade_bits, auth=auth_generator(Camp))
+        db.session.add(c)
+        db.session.commit()
+        cache.delete_memoized(get_grade_camps)
+
+        return redirect(request.url)
+    else:
+        camps = Camp.query.order_by(Camp.id.desc()).all()
+        return render_template("admin/camp.html", camps=camps)
+
+@app.route("/camp/<camp_auth>", methods=["POST"], strict_slashes=False)
+def edit_camp(camp_auth):
+    title = request.form.get('title',None)
+    description = request.form.get('description',None)
+    price = request.form.get('price',None)
+
+    if "status" in request.form:
+        status_b=1
+    else:
+        status_b=0
+
+    grade_bits = 0
+    for i in [1, 2, 4]:
+        if request.form.get(f'd{i}'):
+            grade_bits += i
+
+    c = Camp.query.filter_by(auth=camp_auth).first_or_404()
+
+    c.title = title
+    c.description = description
+    c.price = price
+    c.status = status_b
+    c.grade_bits = grade_bits
+
+    db.session.commit()
+    cache.delete_memoized(get_grade_camps)
+
+    return redirect(url_for('admin.camp'))
+
+
+
+
+@app.route("/export_reservation_users/<camp_auth>")
+def export_reservation_users(camp_auth):
+    c=Camp.query.filter_by(auth=camp_auth).first_or_404()
+    # ۱. تعیین ستون‌ها به ترتیب دیتابیس و حذف ستون‌های a,b,c,d
+    exclude_columns = {"id", "password", "invite_code", "sub_invite_code", "period_code"}
+    columns = [col.name for col in User.__table__.columns if col.name not in exclude_columns]
+    query_columns = [getattr(User, col) for col in columns]
+
+    # ۲. گرفتن کاربران مستقیماً از join با Reservation و DISTINCT
+    users_data = db.session.query(*query_columns)\
+        .join(Reservation, Reservation.user_id == User.id)\
+        .filter(Reservation.camp_id == c.id)\
+        .distinct()\
+        .all()
+
+    if not users_data:
+        return "هیچ یوزری پیدا نشد", 404
+
+    # ۳. تبدیل به DataFrame با ستون‌های مرتب
+    df = pd.DataFrame(users_data, columns=columns)
+
+    # ۴. ساخت فایل اکسل در حافظه (BytesIO)
+    output = BytesIO()
+    df.to_excel(output, index=False, engine='openpyxl')
+    output.seek(0)
+
+    # ۵. ارسال فایل به کاربر
+    return send_file(
+        output,
+        download_name=f"users_in_camp_{c.title}.xlsx",
+        as_attachment=True,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+
+
+
+
+
+
+
+
 
 
 
