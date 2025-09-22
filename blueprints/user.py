@@ -36,7 +36,11 @@ from models.part import Part
 
 app = Blueprint("user" , __name__)
 
-
+#temporary
+#موقت
+@app.route("/modiran", methods=["GET"], strict_slashes=False)
+def modiran_porsline():
+    return redirect('https://survey.porsline.ir/s/oYVie60h')
 
 # nonce system
 # تولید nonce برای هر درخواست
@@ -631,13 +635,12 @@ def single_quiz(quiz_auth):
 def result():
     if current_user.completion == 0 or current_user.pay == 0:
         return abort(404)
-    print(request)
     data = request.get_json()
     quiz_id = int(data.get('quiz_id',None))
 
-    r = Result.query.filter(Result.user_id==current_user.id, Result.quiz_id==quiz_id).first_or_404()
+    r = Result.query.filter(Result.user_id==current_user.id, Result.quiz_id==quiz_id).first()
 
-    return jsonify({'result': r.score})
+    return jsonify({'result': r.score if r != None else 0})
 
 
 
