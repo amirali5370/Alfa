@@ -33,6 +33,10 @@ app.config['CACHE_REDIS_PASSWORD'] = 'R1VTat2uhplNCwVnk6HAy75r5rQbU5iV'
 app.config['CACHE_REDIS_DB'] = 0
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300
 
+app.config['CACHE_REDIS_SOCKET_TIMEOUT'] = 20          # خواندن/نوشتن
+app.config['CACHE_REDIS_SOCKET_CONNECT_TIMEOUT'] = 10  # اتصال
+app.config['CACHE_REDIS_RETRY_ON_TIMEOUT'] = True      # دوباره تلاش کن
+
 # ---------------- Session ----------------
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SECURE'] = True 
@@ -60,4 +64,4 @@ with app.app_context():
     extentions.db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

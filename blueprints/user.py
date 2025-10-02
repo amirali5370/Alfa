@@ -7,7 +7,7 @@ from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone
 import requests
-from sqlalchemy import literal
+from sqlalchemy import and_, literal
 from sqlalchemy.sql import exists
 from PIL import Image
 import os
@@ -747,16 +747,37 @@ def part(part_auth):
 
 
 
-#camps system
-@cache.memoize(timeout=0)
-def get_grade_camps(pr_code):
-    return Camp.query.filter((Camp.grade_bits.op('&')(literal(pr_code))) != 0)
+
+def get_registered_camps(user):
+    # کمپ‌هایی که کاربر ثبت‌نام کرده (بدون محدودیت status)
+    return (
+        Camp.query
+        .join(Reservation)
+        .filter(
+            Reservation.user_id == user.id,
+            (Camp.grade_bits.op('&')(literal(user.period_code))) != 0
+        )
+        .all()
+    )
 
 
-def get_user_camps(pr_code,us_id):
-    reg = get_grade_camps(pr_code).join(Reservation).filter(Reservation.user_id == us_id).all()
-    sta = get_grade_camps(pr_code).filter(~exists().where((Reservation.camp_id == Camp.id) &(Reservation.user_id == us_id)), Camp.status==1).all()
-    return reg,sta
+def get_unregistered_camps(user):
+    # کمپ‌هایی که کاربر ثبت‌نام نکرده و status==1 دارند
+    return (
+        Camp.query
+        .filter(
+            (Camp.grade_bits.op('&')(literal(user.period_code))) != 0,
+            Camp.status == 1,
+            ~exists().where(
+                (Reservation.camp_id == Camp.id) &
+                (Reservation.user_id == user.id)
+            )
+        )
+        .all()
+    )
+
+
+
 
 
 @app.route("/camp", methods=["GET","POST"], strict_slashes=False)
@@ -780,7 +801,7 @@ def camp():
             return jsonify({'result':'little'})
 
     else:
-        reg, sta = get_user_camps(pr_code=current_user.period_code, us_id=current_user.id)
+        reg, sta = get_registered_camps(current_user),get_unregistered_camps(current_user)
         return render_template("user/camp.html", reg=reg, sta=sta)
 
 

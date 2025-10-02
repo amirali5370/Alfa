@@ -11,7 +11,7 @@ from config import STATIC_SAVE_PATH
 from functions.code_generators import auth_generator, invite_generator
 from functions.datetime import gregorian_to_jalali, jalali_to_gregorian
 from extentions import db, cache
-from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_grade_camps, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
+from blueprints.user import get_all_course, get_all_quiz, get_all_webinar, get_events, get_news_page, get_news_by_link, get_pamphlet, get_parts_cached, get_quiz_and_questions
 from models.camp import Camp
 from models.course import Course
 from models.news import News
@@ -503,7 +503,6 @@ def camp():
         c = Camp(title=title, description=description, price=price, status=status_b, grade_bits=grade_bits, auth=auth_generator(Camp))
         db.session.add(c)
         db.session.commit()
-        cache.delete_memoized(get_grade_camps)
 
         return redirect(request.url)
     else:
@@ -535,7 +534,6 @@ def edit_camp(camp_auth):
     c.grade_bits = grade_bits
 
     db.session.commit()
-    cache.delete_memoized(get_grade_camps)
 
     return redirect(url_for('admin.camp'))
 

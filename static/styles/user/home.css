@@ -1,5 +1,6 @@
 #content{
     width: 100%;
+    position: relative;
 }
 #slide_co{
     /* background: #ad500d; */
@@ -25,7 +26,8 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
-    background-color: #dfe2e6;
+    /* background: linear-gradient(to right, #985d73, #62273d); */
+    background: #fff;
     padding: 0 20px 50px 20px;
     /* padding-bottom: 50px; */
 }
@@ -224,6 +226,69 @@
   .faq-answer p{
     font-size: 14px;
   }
+  #tools{
+      display: grid;
+      grid-template-columns: 216px 216px 216px 216px 216px;
+      grid-template-rows: 204px 204px;
+      margin: 75px 0;
+      column-gap: 18px;
+      row-gap: 18px;
+  }
+  .tool{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, .08);
+    width: 100%;
+    justify-content: start;
+    /* padding: 28px 0; */
+    justify-content: center;
+    gap: 20px;
+    transition: transform 0.5s;
+  }
+@media only screen and (max-width: 1200px) {
+    #tools{
+        grid-template-columns: 217.5px 217.5px 217.5px 217.5px;
+        grid-template-rows: 204px 204px 204px;
+    }
+}
+@media only screen and (max-width: 992px) {
+    #tools{
+        grid-template-columns: 216.66px 216.66px 216.66px;
+        grid-template-rows: 204px 204px 204px 204px;
+    }
+}
+@media only screen and (max-width: 768px) {
+    #tools{
+        grid-template-columns: 156.66px 156.66px 156.66px;
+        grid-template-rows: 158px 158px 158px 158px;
+    }
+    .tool{
+        gap: 10px;
+    }
+}
+@media only screen and (max-width: 575px) {
+    #tools{
+        grid-template-columns: auto auto;
+        grid-template-rows: 139px 139px 139px 139px 139px;
+        width: calc(100% - 30px);
+        margin: 75px 15px;
+        column-gap: 10px;
+        row-gap: 14px;
+    }
+}
+.tool>p{
+    color: #192032;
+    font-size: 15px;
+    font-weight: bold;
+}
+.tool:hover{
+    transform: scale(1.05);
+}
+
+
 @media only screen and (max-width: 1100px) {
     #tops {
         padding-bottom: 15px;

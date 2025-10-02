@@ -20,27 +20,39 @@ img{
     position: fixed;
     top: 0;
     height: 60px;
-    margin-top: 10px;
-    width: 75%;
-    border: 4px solid rgb(213, 140, 4);
-    border-radius: 25px;
-    background-color: white;
+    /* margin-top: 10px; */
+    width: 100% !important;
+    /* width: 75%; */
+    border-bottom: 4px solid rgb(213, 140, 4);
+    /* border-radius: 25px; */
+    background-color: #3443aa;
+    background: linear-gradient(to bottom, #3b49a4, #3443aa);
     transition: top 0.3s;
-    box-shadow:0px 0px 7px 0px rgb(213, 140, 4), inset 1px -4px 9px 1px #00000038;
+    box-shadow:0px 0px 7px 0px rgb(213, 140, 4), inset 1px -4px 9px 1px #00000017;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 10;
+}
+#nav_icon>img{
+    height: 48px;
+}
+#nav_icon{
+    display: flex;
 }
 #menu_bar{
     display: flex;
     justify-content: flex-start;
     gap: 30px;
     padding-right: 30px;
+    align-items: center;
 }
 #menu_bar>*{
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
+}
+#menu_bar>*:not(#nav_icon) {
+    align-items: center;
 }
 #menu_bar>*:hover{
     cursor: pointer;
@@ -59,7 +71,7 @@ ul{
     list-style: none;
 }
 a{
-    color: black;
+    color: rgb(255, 255, 255);
     text-decoration: none;
 }
 #user_bar{
@@ -89,7 +101,7 @@ a{
     height: 40px;
     width: 40px;
     border-radius: 40px;
-    border: 1px solid black;
+    border: 1px solid #ffffffcc;
 }
 #bell{
     height: 30px;
@@ -131,7 +143,7 @@ a{
 
 
 #footer{
-    background-color: #1a2a2a;
+    background-color: #3847a6;
     display: grid;
     grid-template-columns: auto auto auto auto;
     padding: 50px 40px 50px 40px;
@@ -263,7 +275,7 @@ select{
         padding-right: 25px;
     }
     #menu_bar>*:not(#nav_icon) {
-        font-size: 17px;
+        font-size: 19px;
     }
     #navbar{
         width: 85%;
@@ -359,7 +371,7 @@ select{
     }
     #menu_bar>*:not(#nav_icon) {
         align-items: center;
-        font-size: 15px;
+        font-size: 17px;
     }
     #navbar{
         width: 95%;
@@ -399,6 +411,9 @@ select{
     #navbar{
         height: 50px;
     }
+    #nav_icon>img{
+        height: 40px;
+    }
     #menu_bar {
         gap: 12px;
         padding-right: 9px;
@@ -410,7 +425,7 @@ select{
     }
     #menu_bar>*:not(#nav_icon) {
         align-items: center;
-        font-size: 14px;
+        font-size: 15px;
     }
     #nav_icon {
         font-size: 18px;
@@ -480,7 +495,7 @@ select{
         font-size: 14px;
     }
     #menu_bar>*:not(#nav_icon) {
-        font-size: 11px;
+        font-size: 13px;
     }
     #profile {
         height: 28px;
@@ -488,7 +503,10 @@ select{
         border-radius: 28px;
     }
     #navbar{
-        height: 40px;
+        height: 45px;
+    }
+    #nav_icon>img{
+        height: 34px;
     }
     #menu_bar{
         gap: 9px;
@@ -507,9 +525,9 @@ select{
     #coins>span {
         font-size: 11px;
     }
-    #user_bar {
+    /* #user_bar {
         gap: 5px;
-    }
+    } */
 }
 /* @media only screen and (max-width: 338px) {
     #coins_logo {
