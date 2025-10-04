@@ -2,7 +2,7 @@
 {% block head %}
     <title>خانه</title>
     <meta name="description" content="نوپویان، پیشگامان آینده، نسل آلفا؛ سامانه آموزشی و مسابقه دانش‌آموزی. دوره‌های آنلاین و منابع یادگیری ویژه دانش‌آموزان و معلمان.">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/user/home.css') }}">
     <style>
         #content{
@@ -63,61 +63,133 @@
         <path d="M0,100 C150,0 350,200 500,100 L500,150 L0,150 Z" fill="#fff"></path>
     </svg>
 </div>
+<a href="{{ url_for('user.support') }}"><img id="support_icon" src="{{ url_for('static', filename='main_img/supp.png') }}" alt=""></a>
 
+<br><br>
+
+<div class="swiper">
+    <div class="swiper-wrapper">
+      <a href="/login" class="swiper-slide slide1"></a>
+      <div class="swiper-slide slide2"></div>
+      <div class="swiper-slide slide3"></div>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+  <!-- Swiper v12 JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+<script>
+const totalSlides = document.querySelectorAll('.swiper .swiper-slide').length;
+const swiper = new Swiper('.swiper', {
+    loop: true,
+    grabCursor: true,
+    rtl: true,
+    initialSlide: totalSlides - 1,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+        reverseDirection: true, // جهت اتوپلی راست به چپ
+    },
+});
+
+</script>
 
 <div class="sec" style="display: flex; justify-content: center;">
     <div id="tools">
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
+        <a href="{{ url_for('user.course') }}" class="tool">
+            <img src="{{ url_for('static', filename='main_img/03.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
+            <p>دوره‌ها و کارگاه‌ها</p>
+        </a>
+        <a href="{{ url_for('user.blog') }}" class="tool">
+            <img src="{{ url_for('static', filename='main_img/04.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
+            <p>اخبار و اطلاعیه‌ها</p>
+        </a>
+        <a href="{{ url_for('user.camp') }}" class="tool">
+            <img src="{{ url_for('static', filename='main_img/05.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
+            <p>اردوها</p>
+        </a>
+        <a href="{{ url_for('user.event') }}" class="tool">
+            <img src="{{ url_for('static', filename='main_img/06.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
+            <p>جشنواره‌ها</p>
         </a>
         <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
+            <img src="{{ url_for('static', filename='main_img/01.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
+            <p>گنجینه نوپویان</p>
         </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
-        </a>
-        <a href="#" class="tool">
-            <img src="{{ url_for('static', filename='main_img/ic.png') }}" style="width:30%; aspect-ratio: 1/1;" alt="">
-            <p>عنوان بخش</p>
+        <a class="tool" style="cursor: pointer;">
+            <img src="{{ url_for('static', filename='main_img/07.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
+            <p>کنش‌ها<br>(به زودی)</p>
         </a>
     </div>
 </div>
-
-
 
 
 <div style="display: flex; align-items: center; flex-direction: column; margin-top: 15px;">
     <h2 id="more_me" style="display: flex; align-items: center;">بـــا <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" style=" margin: 0 8px;"> بیــشتـــر آشـــنا شویــد!</h2>
     <iframe src="https://player.vidprotect.ir/?id=6a32ef28-d7a3-4c4c-b805-8f1ada7dc4a2&amp;previous-time=30&amp;ran=bfdc7788aeae8636" style=" border:none; aspect-ratio: 2/1;" allow="fullscreen; encrypted-media *;"> </iframe>
 </div>
+<div id="stat">
+    <div class="stat_par">
+        <div class="stat_te">
+            <span>کاربران</span>
+            <span>تعداد دانش‌آموزان فعال در طرح</span>
+        </div>
+        <span class="stat_num">۲۵۰۰</span>
+    </div>
+    <div class="stat_par">
+        <div class="stat_te">
+            <span>دوره‌ها</span>
+            <span>تعداد دوره‌های موجود در طرح</span>
+        </div>
+        <span class="stat_num">۲۵۰۰</span>
+    </div>
+    <div class="stat_par">
+        <div class="stat_te">
+            <span>مدارس</span>
+            <span>تعداد مدارس شرکت کننده در طرح</span>
+        </div>
+        <span class="stat_num">۲۵۰۰</span>
+    </div>
+</div>
+<section id="faq">
+    <h2 class="faq-title">سوالات متداول</h2>
+    
+    <div class="faq-item">
+        <button class="faq-question">
+            <span>چطور می‌تونم ثبت نام کنم؟</span>
+            <span class="arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+            <p>برای ثبت نام، روی دکمه "ثبت نام" در بالای صفحه کلیک کنید و فرم مربوطه را پر کنید.</p>
+        </div>
+    </div>
+  
+    <div class="faq-item">
+        <button class="faq-question">
+            <span>آیا عضویت رایگان است؟</span>
+            <span class="arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+            <p>بله، عضویت کاملا رایگان است و هیچ هزینه‌ای ندارد.</p>
+        </div>
+    </div>
+  
+    <div class="faq-item">
+        <button class="faq-question">
+            <span>چطور با پشتیبانی تماس بگیرم؟</span>
+            <span class="arrow">▼</span>
+        </button>
+        <div class="faq-answer">
+            <p>می‌توانید از طریق بخش "تماس با ما" یا شماره تلفن درج شده در پایین سایت اقدام کنید.</p>
+        </div>
+    </div>
+</section>
 
 <script src="{{ url_for('static', filename='scripts/user/home.js') }}"></script>
+
 
 {% endblock %}

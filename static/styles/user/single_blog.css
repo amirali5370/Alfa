@@ -80,7 +80,7 @@ body {
   /* ریسپانسیو */
   @media (max-width: 768px) {
     .blog_post {
-      width: calc(100% - 60px);
+      width: calc(100% - 40px);
       padding: 20px;
     }
     .blog_title {

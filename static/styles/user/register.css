@@ -1,11 +1,13 @@
 #content {
     margin: 0;
-    padding: 0;
     min-height: 100vh;
     display: flex;
-    align-items: baseline;
     justify-content: center;
-    background: linear-gradient(135deg, #FF6A00, #0076FF);
+    flex-direction: column;
+    align-items: center;
+    /* background: linear-gradient(135deg, #FF6A00, #0076FF); */
+    /* background: linear-gradient( #303da6ec, #5a2e63ec, #9c2539ec, #8f150aec, #833b01ec, #6a1f00ec, #61232fec); */
+    background: linear-gradient(to bottom, #3b49a4c2, #3443aadb);
     width: 100%;
 }
 
@@ -19,7 +21,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin-bottom: 10px;
+    margin: 30px 0 40px;
 }
 
 .login-header {
@@ -49,6 +51,7 @@
     font-size: 15px;
     outline: none;
     align-self: center;
+    background: linear-gradient(to bottom, #3b49a408, #3443aa08);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -63,7 +66,7 @@ input , input::placeholder, select, select::placeholder{
 }
 
 .login-btn {
-    background: linear-gradient(90deg, #FF6A00, #0076FF);
+    background: linear-gradient(to bottom, #3b49a4, #3443aa);
     border: none;
     border-radius: 10px;
     padding: 8px 16px;
@@ -104,7 +107,6 @@ input , input::placeholder, select, select::placeholder{
 /* ریسپانسیو */
 @media (max-width: 450px) {
     .login-card {
-        margin: 0 15px;
         padding: 25px 20px;
     }
     .login-header { font-size: 20px; }
@@ -119,7 +121,7 @@ input , input::placeholder, select, select::placeholder{
     margin: auto;
     border: 1px solid #ccc;
     height: 44px;
-    background-color: #fff;
+    background: linear-gradient(to bottom, #3b49a408, #3443aa08);
     border-radius: 12px;
 }
 .choices__inner {
@@ -127,7 +129,6 @@ input , input::placeholder, select, select::placeholder{
     padding: 0 28px 0 0 !important;
     border: none;
     height: 100%;
-    background-color: #fff;
     display: flex;
     align-items: center;
     font-size: 15px;
@@ -139,4 +140,14 @@ input , input::placeholder, select, select::placeholder{
     .choices[data-type*=select-one] {
         width: 87%;
     }
+}
+#back{
+    top: 10px;
+    display: flex;
+    align-items: center;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 22px;
+    gap: 5px;
+    margin-top: 16px;
 }

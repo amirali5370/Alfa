@@ -15,16 +15,18 @@
 </head>
 <body>
     <div id="body_co">
-        <nav id="navbar">
-            <ul id="menu_bar">
-                <a href="{{ url_for('user.home') }}" id="nav_icon">نوپویان</a>
-                <li><a href="{{ url_for('user.blog') }}">بلاگ</a></li>
-                <li><a href="{{ url_for('user.guide') }}">راهنما</a></li>
-                <li><a href="{{ url_for('user.support') }}">پشتیبانی</a></li>
-            </ul>
-        </nav>
-
         <div id="content">
+            <a href="/"><span id="back">بازگشت 
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="18" viewBox="0 0 18 14" id="arrow">
+                    <g id="Page-1" fill="none" fill-rule="evenodd" stroke="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+                        <g id="Artboard" stroke="currentColor" stroke-width="2" transform="translate(-1669 -1321)">
+                            <g id="arrow-left" transform="translate(1670 1322)">
+                                <path id="Shape" d="M16 6H0M6 12 0 6l6-6"></path>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+            </span></a>
             <div class="login-card">
                 <div class="login-header">ورود به حساب کاربری</div>
                 <form class="log" action="#" method="post">

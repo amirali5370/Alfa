@@ -31,6 +31,7 @@ app.config['CACHE_REDIS_HOST'] = 'redis-17195.crce177.me-south-1-1.ec2.redns.red
 app.config['CACHE_REDIS_PORT'] = 17195
 app.config['CACHE_REDIS_PASSWORD'] = 'R1VTat2uhplNCwVnk6HAy75r5rQbU5iV'
 app.config['CACHE_REDIS_DB'] = 0
+app.config["CACHE_REDIS_SSL"] = True  # مهم برای Redis Cloud
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300
 
 app.config['CACHE_REDIS_SOCKET_TIMEOUT'] = 20          # خواندن/نوشتن

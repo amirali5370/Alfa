@@ -2,22 +2,25 @@
     font-family: vazir;
     margin: 0;
     padding: 0;
-    background: #f5f7fa;
+    background: #dfe2e6;
     color: #333;
-    line-height: 1.8;
     width: 100%;
   }
 
   /* هدر */
   header {
-    background: linear-gradient(90deg, #FF6A00, #0076FF);
-    color: #fff;
     text-align: center;
-    padding: 90px 10px 20px;
-    font-size: 26px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    padding: 60px 20px 0;
+    background: inherit;
+    border-bottom: 4px solid #3b49a4;
   }
+  header h1{
+    font-size: 32px;
+    font-weight: bold;
+    color: #101b65;
+    margin-top: 25px;
+  }
+
 
   /* سکشن‌ها */
   section:not(footer>section) {
@@ -29,9 +32,7 @@
   section h2 {
     font-size: 22px;
     margin-bottom: 15px;
-    background: linear-gradient(90deg, #FF6A00, #0076FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #3b49a4;
     font-weight: 700;
   }
 
@@ -65,7 +66,7 @@
     padding: 12px;
     border: none;
     border-radius: 6px;
-    background: linear-gradient(90deg, #FF6A00, #0076FF);
+    background: linear-gradient(to bottom, #3b49a4, #3443aa);
     color: #fff;
     font-size: 16px;
     font-weight: 600;
@@ -90,7 +91,6 @@
   @media (max-width: 600px) {
     header {
       font-size: 20px;
-      padding: 70px 10px 20px;
     }
     section h2 {
       font-size: 18px;
@@ -101,4 +101,5 @@
     button {
       font-size: 14px;
     }
+    header h1 { font-size: 26px; margin-top: 14px;}
   }

@@ -65,8 +65,8 @@
                     <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" style="position: relative; z-index: 2;">
                 </a>
                 <li><a href="{{ url_for('user.blog') }}">بلاگ</a></li>
+                <li><a href="#">برنامه‌ها</a></li>
                 <li><a href="{{ url_for('user.guide') }}">راهنما</a></li>
-                <li><a href="{{ url_for('user.support') }}">پشتیبانی</a></li>
             </ul>
             <div id="user_bar">
                 {% if current_user.is_authenticated %}
@@ -98,10 +98,11 @@
                 <path d="M0,100 C150,0 350,200 500,100 L500,150 L0,150 Z" fill="#3847a6"></path>
             </svg>
             <footer id="footer" style="position: relative;">
-                <section class="fot_part">
+                <section class="fot_part" style="position: relative; top: -20px;">
                     <span class="fo_name_co">
-                        <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" width="150px" style="position: absolute; right: 0px; transform: scale(1.05); filter: brightness(0) invert(1);">
-                        <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" width="150px" style="position: relative;z-index: 2;">
+                        <!-- <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" width="150px" style="position: absolute; right: 0px; transform: scale(1.05); filter: brightness(0) invert(1);">
+                        <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" width="150px" style="position: relative;z-index: 2;"> -->
+                        <img src="{{ url_for('static', filename='main_img/logo.png') }}" alt="" width="150px" style="position: relative;z-index: 2;">
                     </span>
                     <!-- 260 -->
                     <span id="fo_about_us">
@@ -110,28 +111,28 @@
                 </section>
                 <section class="fot_part">
                     <a class="fo_head">
-                        لینک های پرکاربرد
+                        لینک های مرتبط
                     </a>
                     <span class="fo_sug">
                         <a href="{{ url_for('user.guide') }}" class="fo_sug_li">
-                            راهنما
+                            کانال ایتای طرح
                         </a>
                     </span>
                     <span class="fo_sug">
                         <a href="{{ url_for('user.home') }}#tops" class="fo_sug_li">
-                            نفرات برتر
+                            کانال ایتای سازمان
                         </a>
                     </span>
                     <span class="fo_sug">
                         <a href="{{ url_for('user.home') }}#faq" class="fo_sug_li">
-                            سوالات متداول
+                            کانال ایتای موسسه نوجوان
                         </a>
                     </span>
-                    <span class="fo_sug">
+                    <!-- <span class="fo_sug">
                         <a href="{{ url_for('user.support') }}" class="fo_sug_li">
                             پشتیبانی
                         </a>
-                    </span>
+                    </span> -->
                 </section>
                 <section class="fot_part">
                     <span class="fo_head">
@@ -149,7 +150,9 @@
                         <span class="fo_num_ph" dir="ltr">Your_Email@example.com</span>
                     </span>
                 </section>
-                <section class="fot_part" style="justify-content: end;">
+                <section class="fot_part logo" style="justify-content: end;">
+                    <img style="width: 30%; filter: brightness(0) invert(1);" src="{{ url_for('static', filename='main_img/sazman.png') }}" alt="">
+                    <img style="width: 30%; filter: brightness(0) invert(1);" src="{{ url_for('static', filename='main_img/sazman.png') }}" alt="">
                     <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=654669&Code=Ip01FowEcfQ0eEuO4pKwA8nS8gOJuZDe'>
                         <img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=654669&Code=Ip01FowEcfQ0eEuO4pKwA8nS8gOJuZDe' alt='' style='cursor:pointer' code='Ip01FowEcfQ0eEuO4pKwA8nS8gOJuZDe'>
                     </a>
