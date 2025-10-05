@@ -100,7 +100,7 @@ const swiper = new Swiper('.swiper', {
 
 <div class="sec" style="display: flex; justify-content: center;">
     <div id="tools">
-        <a href="{{ url_for('user.course') }}" class="tool">
+        <a href="{{ url_for('user.treasure') }}" class="tool">
             <img src="{{ url_for('static', filename='main_img/03.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
             <p>دوره‌ها و کارگاه‌ها</p>
         </a>
@@ -116,13 +116,13 @@ const swiper = new Swiper('.swiper', {
             <img src="{{ url_for('static', filename='main_img/06.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
             <p>جشنواره‌ها</p>
         </a>
-        <a href="#" class="tool">
+        <a class="tool">
             <img src="{{ url_for('static', filename='main_img/01.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
-            <p>گنجینه نوپویان</p>
+            <p>آلبوم نوپویان<br>به زودی ...</p>
         </a>
         <a class="tool" style="cursor: pointer;">
             <img src="{{ url_for('static', filename='main_img/07.png') }}" style="width:40%; aspect-ratio: 1/1;" alt="">
-            <p>کنش‌ها<br>(به زودی)</p>
+            <p>کنش‌ها (فعالیت‌های ویژه)<br>به زودی ...</p>
         </a>
     </div>
 </div>
@@ -133,27 +133,42 @@ const swiper = new Swiper('.swiper', {
     <iframe src="https://player.vidprotect.ir/?id=6a32ef28-d7a3-4c4c-b805-8f1ada7dc4a2&amp;previous-time=30&amp;ran=bfdc7788aeae8636" style=" border:none; aspect-ratio: 2/1;" allow="fullscreen; encrypted-media *;"> </iframe>
 </div>
 <div id="stat">
+    <!-- <img src="{{ url_for('static', filename='main_img/stat.png') }}" alt="" style="width: 100%;"> -->
+
+    <span class="stst_ti">آمار طرح نوپویان</span>
     <div class="stat_par">
-        <div class="stat_te">
-            <span>کاربران</span>
-            <span>تعداد دانش‌آموزان فعال در طرح</span>
+        <div style="display: flex;">
+            <img src="{{ url_for('static', filename='main_img/stat_us.png') }}" alt="" class="stat_ic">
+            <div class="stat_te">
+                <span>کاربران</span>
+                <span>تعداد دانش‌آموزان فعال در طرح</span>
+            </div>
         </div>
         <span class="stat_num">۲۵۰۰</span>
     </div>
     <div class="stat_par">
-        <div class="stat_te">
-            <span>دوره‌ها</span>
-            <span>تعداد دوره‌های موجود در طرح</span>
+        <div style="display: flex;">
+            <img src="{{ url_for('static', filename='main_img/stat_cou.png') }}" alt="" class="stat_ic">
+            <div class="stat_te">
+                <span>دوره‌ها</span>
+                <span>تعداد دوره‌های موجود در طرح</span>
+            </div>
         </div>
         <span class="stat_num">۲۵۰۰</span>
     </div>
     <div class="stat_par">
-        <div class="stat_te">
-            <span>مدارس</span>
-            <span>تعداد مدارس شرکت کننده در طرح</span>
+        <div style="display: flex;">
+            <img src="{{ url_for('static', filename='main_img/stat_sc.png') }}" alt="" class="stat_ic">
+            <div class="stat_te">
+                <span>مدارس</span>
+                <span>تعداد مدارس شرکت کننده در طرح</span>
+            </div>
         </div>
         <span class="stat_num">۲۵۰۰</span>
     </div>
+</div>
+<div id="roadmap_wrp" style="display: flex; justify-content: center; width: 100%;">
+    <img src="{{ url_for('static', filename='main_img/roadmap.jpg') }}" alt="" style="width: 100%; max-width: 1200px;">
 </div>
 <section id="faq">
     <h2 class="faq-title">سوالات متداول</h2>

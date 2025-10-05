@@ -1,5 +1,4 @@
 const faqItems = document.querySelectorAll('.faq-item');
-console.log(faqItems);
 
 faqItems.forEach(item => {
     const question = item.querySelector('.faq-question');
@@ -7,6 +6,3 @@ faqItems.forEach(item => {
         item.classList.toggle('active');
     });
 });
-
-
-

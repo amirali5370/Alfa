@@ -1,0 +1,112 @@
+#content {
+    font-family: vazir;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    color: #333;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth; /* اسکرول نرم */
+}
+#container{
+    display: flex;
+    flex-direction: column;
+    padding: 0 min(3.5%,50px);
+}
+.course{
+    width: 85%;
+    max-width: 900px;
+    /* border: 3px #111b5e solid; */
+    margin: 14px 0;
+    padding: 10px 14px;
+    border-radius: 20px;
+    box-shadow: 0 2px 20px 6px #3443aa1f, 0 2px 20px 6px #00000014, inset 0px -2px 5px #00000036;
+    background-color: #fff;
+    transition: transform 0.75s;
+    cursor: pointer;
+    display: flex;
+    gap: 20px;
+}
+.course:hover{
+    transform: scale(1.03);
+}
+.course:nth-of-type(2n){
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+.course:nth-of-type(2n) *{
+    text-align: left;
+}
+.course:nth-of-type(2n+1){
+    align-self: flex-start;
+    flex-direction: row;
+}
+.course_pro{
+    height: 170px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+}
+.course_bio{
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+}
+.course_dis{
+    margin-bottom: 20px;
+}
+@media (max-width: 1024px) {
+    .course_pro {
+        height: 140px;
+    }
+    .course_name{
+        font-size: 22px;
+        margin: 14px 0;
+    }
+    .course_dis{
+        font-size: 14px;
+    }
+    .course_bio {
+        margin-top: 8px;
+    }
+}
+@media (max-width: 780px) {
+    .course_pro {
+        height: 120px;
+    }
+    .course_name{
+        font-size: 19px;
+        margin: 10px 0;
+    }
+    .course_dis{
+        font-size: 12px;
+    }
+    .course_bio {
+        margin-top: 4px;
+    }
+}
+@media (max-width: 575px) {
+    .course{
+        flex-direction: column !important;
+        align-items: center;
+        align-self: center !important;
+        gap: 10px;
+    }
+    .course *{
+        text-align: right !important;
+    }
+}
+#content *{
+    position: relative;
+    z-index: 2;
+}
+#gow{
+    position: fixed;
+    align-self: center;
+    opacity: 20%;
+    z-index: 1;
+    width: 100vmin;
+    height: 100vmin;
+    top: 50%;
+    transform: translateY(-50%);
+}

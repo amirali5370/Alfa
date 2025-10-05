@@ -259,16 +259,11 @@ def logout():
 
 
 
-#top users caching
-@cache.memoize(timeout=3600)
-def get_top_users():
-    return User.query.filter(User.completion == 1, User.pay == 1).order_by(User.coins.desc()).limit(9).all()
 
 @app.route("/",  strict_slashes=False)
 @limiter.limit("60 per minute")
 def home():
-    top_users = get_top_users()
-    return render_template("home.html", current_user=current_user, top_users=top_users)
+    return render_template("home.html", current_user=current_user)
 
 
 
@@ -324,6 +319,11 @@ def single_blog(news_link):
 @limiter.limit("6 per minute")
 def guide():
     return render_template("user/guide.html", current_user=current_user)
+
+@app.route("/treasure", methods = ["POST","GET"],  strict_slashes=False)
+@limiter.limit("6 per minute")
+def treasure():
+    return render_template("user/treasure.html", current_user=current_user)
 
 @app.route("/support", methods = ["POST","GET"],  strict_slashes=False)
 @limiter.limit("3 per minute")

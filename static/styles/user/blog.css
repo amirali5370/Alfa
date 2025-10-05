@@ -2,7 +2,7 @@ body {
     font-family: vazir;
     margin: 0;
     padding: 0;
-    background: #dfe2e6;
+    background: #ffffff;
     color: #333;
   }
 
@@ -122,7 +122,7 @@ body {
   .news-card {
     background: #fff;
     border-radius: 14px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 20px 14px rgba(0,0,0,0.1);
     overflow: hidden;
     display: flex;
     flex-direction: column;

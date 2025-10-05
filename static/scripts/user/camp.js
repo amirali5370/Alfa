@@ -65,7 +65,7 @@ document.querySelectorAll('button.note-btn').forEach((button)=>{
                     }
                 })
                 .catch(error => {
-                    console.log("خطا در ارتباط با سرور:", error);
+                    console.error("خطا در ارتباط با سرور:", error);
                 });
 
         };

@@ -269,11 +269,46 @@ select{
 
 .fot_part.logo {
     display: flex;
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: space-around;
+
     flex-direction: row;
     align-items: baseline;
     width: 100%;
     gap: 5%;
+    row-gap: 20px;
+}
+.jgf{
+    width: 130px; 
+}
+.app_ic{
+    display: block;
+    height: 30px;
+    width: 30px;
+}
+.app_ic > *{
+    height: 100%;
+    width: 100%;
+}
+.app_ic > svg > path{
+    height: 100%;
+    width: 100%;
+}
+.app_ic_co{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+@media only screen and (max-width: 1440px) {
+    .jgf{
+        width: 100px; 
+    }
+}
+@media only screen and (max-width: 840px) {
+    .jgf{
+        width: 120px; 
+    }
 }
 
 @media only screen and (max-width: 1440px) {
