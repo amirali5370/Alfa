@@ -871,8 +871,8 @@ def verify():
         db.session.commit()
     else:
         flash("payment_failed")
-
+        print(r.json())
         pay.status = "failed"
-        pay.error = r.json()['error'][0]
+        pay.error = r.json()['errors'][0]
         db.session.commit()
     return redirect(url_for("user.dashboard"))

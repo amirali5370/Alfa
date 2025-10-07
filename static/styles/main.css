@@ -302,12 +302,12 @@ select{
 }
 @media only screen and (max-width: 1440px) {
     .jgf{
-        width: 100px; 
+        width: 115px; 
     }
 }
 @media only screen and (max-width: 840px) {
     .jgf{
-        width: 120px; 
+        width: 100px; 
     }
 }
 

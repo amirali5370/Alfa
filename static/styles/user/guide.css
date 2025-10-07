@@ -57,12 +57,13 @@
 
   /* محتوای اصلی */
   .guide-content {
+    width: 85%;
     max-width: 900px;
     margin: 20px auto 50px auto;
     padding: 0 20px;
   }
 
-  .guide-content h2 {
+  .guide-content h2, #faq h2, #more_me{
     font-size: 22px;
     margin-top: 40px;
     margin-bottom: 15px;
@@ -87,8 +88,99 @@
     color: #444;
     font-size: 15px;
   }
-
+  #faq {
+    padding: 20px;
+    font-family: 'Vazir', sans-serif;
+    background-color: #ffffff;
+    width: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16px;
+  }
+  
+  .faq-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: #333;
+  }
+  
+  /* کارت مستقل */
+  .faq-item {
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    width: 90%;
+    max-width: 1000px;
+    box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, .20);
+    
+  }
+  
+  .faq-item:hover {
+    transform: translateY(-3px);
+  }
+  
+  .faq-question {
+    width: 100%;
+    background: #ffffff;
+    border: none;
+    outline: none;
+    padding: 15px 20px;
+    text-align: right;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+    font-family: "Vazir";
+  }
+  
+  .faq-item.active .faq-question{
+    background: #f0f0f0;
+  }
+  
+  /* فلش */
+  .arrow {
+    transition: transform 0.3s ease;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* جواب */
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.3s ease;
+    padding: 0 20px;
+  }
+  
+  .faq-answer p {
+    margin: 10px 0;
+    color: #444;
+    line-height: 1.7;
+  }
+  
+  .faq-item.active .faq-answer {
+    max-height: 300px;
+    padding: 15px 20px;
+  }
+  
+  .faq-item.active .arrow {
+    transform: rotate(-180deg);
+  }
+  .faq-answer p{
+    font-size: 14px;
+  }
   /* واکنش‌گرا */
+  @media (max-width: 768px) {
+    .faq-item{
+      width: 100%;
+  }
+  }
   @media (max-width: 600px) {
     header {
       font-size: 20px;
@@ -109,6 +201,14 @@
     }
     header h1 { font-size: 26px; margin-top: 14px;}
   }
-  #start,#rules,#answering,#scoring,#support {
+  @media (max-width: 425px) {
+  .faq-question{
+      padding: 12px 10px;
+  }
+  .faq-question{
+      font-size: 14px;
+  }
+  }
+  #more_me,#start,#rules,#answering,#scoring,#gift,#camps,#support,#faq {
     scroll-margin-top: 100px;
   }
