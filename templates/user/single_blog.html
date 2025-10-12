@@ -18,7 +18,7 @@
         <div class="thumb_wrapper">
             <img src="{{ url_for('static', filename='img/news/' ~ news.auth ~ '.jpg') }}" alt="cover" class="blog_cover">
         </div>
-        <div class="blog_content">
+        <div class="blog_content" style="white-space: pre-line;">
         {{news.content}}
         </div>
     </article>

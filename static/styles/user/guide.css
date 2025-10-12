@@ -175,6 +175,10 @@
   .faq-answer p{
     font-size: 14px;
   }
+  .guide-content p{
+    font-weight: bold;
+  }
+
   /* واکنش‌گرا */
   @media (max-width: 768px) {
     .faq-item{

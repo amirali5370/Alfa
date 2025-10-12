@@ -11,8 +11,9 @@
 {% block body %}
 <header><h1>پشتیبانی</h1></header>
 
-            <!-- فرم تماس -->
+<!-- فرم تماس -->
 <section>
+    <img id="gow" src="{{ url_for('static', filename='main_img/sup_bac.png') }}" alt="">
     <h2>تماس با ما</h2>
     <form class="log" action="#" method="post" id="support">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />

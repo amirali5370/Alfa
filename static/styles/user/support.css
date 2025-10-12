@@ -104,3 +104,17 @@
     }
     header h1 { font-size: 26px; margin-top: 14px;}
   }
+  #content *{
+    position: relative;
+    z-index: 2;
+}
+  #gow{
+    position: fixed;
+    align-self: center;
+    opacity: 20%;
+    z-index: 1;
+    width: 100vmin;
+    height: 100vmin;
+    top: 50%;
+    transform: translateY(-50%);
+}
