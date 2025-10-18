@@ -23,12 +23,12 @@ img{
     /* margin-top: 10px; */
     width: 100% !important;
     /* width: 75%; */
-    border-bottom: 4px solid rgb(213, 140, 4);
+    border-bottom: 4px solid rgb(255, 255, 255);
     /* border-radius: 25px; */
     background-color: #3443aa;
     background: linear-gradient(to bottom, #3b49a4, #3443aa);
     transition: top 0.3s;
-    box-shadow:0px 0px 7px 0px rgb(213, 140, 4), inset 1px -4px 9px 1px #00000017;
+    box-shadow:0px 0px 7px 0px #3b49a4, inset 1px -4px 9px 1px #00000017;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -269,10 +269,15 @@ select{
 
 .fot_part.logo {
     display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.logo_c{
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-content: space-around;
-
+    
     flex-direction: row;
     align-items: baseline;
     width: 100%;

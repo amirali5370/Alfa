@@ -7,9 +7,9 @@
   @font-face {
     font-family: 'a';
     src: 
-           url('../fonts/a/LalezarRegular.woff2') format('woff2'),
-           url('../fonts/a/LalezarRegular.woff') format('woff'), 
-           url('../fonts/a/LalezarRegular.ttf') format('truetype');
+           url('../fonts/a/CinemaFont.woff2') format('woff2'),
+           url('../fonts/a/CinemaFont.woff') format('woff'), 
+           url('../fonts/a/CinemaFont.ttf') format('truetype');
   }
   @font-face {
     font-family: 'vazir';
