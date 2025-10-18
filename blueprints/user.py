@@ -15,6 +15,7 @@ import random
 from functions.code_generators import invite_generator, auth_generator
 from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY, VID_API_KEY, VID_SECRET_KEY
 from functions.datetime import gregorian_to_jalali
+from functions.number import fa_to_en_digits
 from models.reservation import Reservation
 from scoring import *
 from models.user import User
@@ -147,6 +148,7 @@ def register():
 
         code = request.form.get('code',None)
         password = request.form.get('password',None)
+        password = fa_to_en_digits(password)
         invite = request.form.get('invite',None)
 
         province = request.form.get('province',None)
@@ -158,7 +160,7 @@ def register():
         sub_invite_code = invite_generator()
         auth = auth_generator(User)
 
-        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=code, invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01, province=province, city=city)
+        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=fa_to_en_digits(code), invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01, province=province, city=city)
 
         assistant = False
         if inv_link != None:
@@ -233,6 +235,8 @@ def login():
     if request.method == "POST":
         code = request.form.get('code',None)
         password = request.form.get('password',None)
+        code = fa_to_en_digits(code)
+        password = fa_to_en_digits(password)
         user = User.query.filter(User.code==code).first()
         if user == None:
             flash("کدملی یا رمز عبور اشتباه است!")
@@ -387,6 +391,7 @@ def dashboard():
         grade = int(request.form.get('grade',None))
         current_user.grade = grade
         grade_dist ={
+            3: "سوم",
             4: "چهارم",
             5: "پنجم",
             6: "ششم",
@@ -395,9 +400,16 @@ def dashboard():
             9: "نهم",
             10: "دهم",
             11: "یازدهم",
-            12: "دوزادهم"
+            12: "دوازدهم",
+            13: "فرهنگی",
+            14: "سایر"
         }
         current_user.grade_name = grade_dist[grade]
+        if grade>12:
+            grade=12
+        elif grade==3:
+            grade=4
+
         current_user.period_code = 2**((grade-1)//3 - 1)
 
         current_user.completion = 1
@@ -406,7 +418,7 @@ def dashboard():
             flash("completion_success")
         except:
             db.session.rollback()
-        return redirect(request.url)
+        return redirect(url_for('user.payment'))
     else:
         sub_invits = current_user.sent_invitations.filter_by(assistant=1).all()
         return render_template("user/dashboard.html", current_user=current_user, sub_invits=sub_invits)
@@ -876,3 +888,8 @@ def verify():
         pay.error = r.json()['errors'][0]
         db.session.commit()
     return redirect(url_for("user.dashboard"))
+
+@app.route("/download", methods=["GET"])
+def download():
+    path = f"{STATIC_SAVE_PATH}/files/sh.pdf"
+    return send_file(path, as_attachment=True, download_name=f"شیوه نامه طرح نوپویان.pdf")

@@ -27,6 +27,9 @@
         #user_bar>*:not(.log_re_nav){
             font-size: 20px;
         }
+        #login_ph_nav{
+            display: none;
+        }
         @media only screen and (max-width: 630px) {
             #user_bar *{
                 font-size: 13px ;
@@ -37,8 +40,11 @@
             }
         }
         @media only screen and (max-width: 510px) {
-            #register_nav, #log_reg{
+            #register_nav, #log_reg, #login_nav{
                 display: none;
+            }
+            #login_ph_nav{
+                display: block;
             }
         } 
         @media only screen and (max-width: 455px) {
@@ -85,6 +91,7 @@
                 </a>
                 {% else %}
                 <!-- login -->
+                <span class="log_re_nav" id="login_ph_nav"><a href="{{ url_for('user.login') }}" id="login_link">ورود / ثبت نام</a></span>
                 <span class="log_re_nav" id="login_nav"><a href="{{ url_for('user.login') }}" id="login_link">ورود به حساب</a></span>
                 <span id="log_reg" style="color: #fffffffa;">|</span>
                 <span class="log_re_nav" id="register_nav"><a href="{{ url_for('user.register') }}" id="register_link">ثبت نام</a></span>

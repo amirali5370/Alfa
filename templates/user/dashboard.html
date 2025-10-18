@@ -23,6 +23,8 @@
         لطفاً برای استفاده کامل از امکانات، اطلاعات حساب خود را تکمیل کرده و نسبت به پرداخت هزینه ثبت نام اقدام فرمائید.
     </div>
     {% endif %}
+    <div class="alert-bar">
+شروع دوره‌ها از 13 آبان    </div>
     
     {% if current_user.completion == 0 %}
     <div class="profile-complete">
@@ -73,6 +75,11 @@
                 <div class="op_grade">
 
                     <label class="radio-btn">
+                        <input type="radio" name="grade" value="3" required>
+                        <span>سوم</span>
+                    </label>
+
+                    <label class="radio-btn">
                         <input type="radio" name="grade" value="4" required>
                         <span>چهارم</span>
                     </label>
@@ -115,6 +122,16 @@
                     <label class="radio-btn">
                         <input type="radio" name="grade" value="12" required>
                         <span>دوازدهم</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="13" required>
+                        <span>فرهنگی</span>
+                    </label>
+
+                    <label class="radio-btn">
+                        <input type="radio" name="grade" value="14" required>
+                        <span>سایر</span>
                     </label>
                 </div>
             </label>

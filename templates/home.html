@@ -69,9 +69,11 @@
 
 <div class="swiper">
     <div class="swiper-wrapper">
-      <a href="/login" class="swiper-slide slide1"></a>
-      <div class="swiper-slide slide2"></div>
-      <div class="swiper-slide slide3"></div>
+      <a href="/download" class="swiper-slide slide1"><img src="{{ url_for('static', filename='main_img/slide1.jpg') }}" style="width: 100%; height: 100%;" alt=""></a>
+      <a href="https://nowpoyan.ir/blog/nowpoyan_camps" class="swiper-slide slide1"><img src="{{ url_for('static', filename='main_img/slide2.jpg') }}" style="width: 100%; height: 100%;" alt=""></a>
+      <div class="swiper-slide slide1"><img src="{{ url_for('static', filename='main_img/slide3.png') }}" style="width: 100%; height: 100%;" alt=""></div>
+      <!-- <div class="swiper-slide slide2"></div>
+      <div class="swiper-slide slide3"></div> -->
     </div>
     <div class="swiper-pagination"></div>
 </div>
@@ -132,7 +134,7 @@ const swiper = new Swiper('.swiper', {
 </div>
 <div style="display: flex; align-items: center; flex-direction: column; margin-top: 15px;">
     <h2 id="more_me" style="display: flex; align-items: center;">بـــا <img src="{{ url_for('static', filename='main_img/ic.png') }}" alt="" style=" margin: 0 8px;"> بیــشتـــر آشـــنا شویــد!</h2>
-    <iframe src="https://player.vidprotect.ir?id=b48b9a06-c502-41db-ba15-9c980f6b0d84" style=" border:none; aspect-ratio: 2/1;" allow="fullscreen; encrypted-media *;"> </iframe>
+    <iframe src="https://player.vidprotect.ir?id=7dec6dd6-2270-4ea2-ac9c-10a91123b2a5" style=" border:none; aspect-ratio: 2/1;" allow="fullscreen; encrypted-media *;"> </iframe>
 </div>
 <div id="roadmap_wrp" style="display: flex; justify-content: center; width: 100%;">
     <img src="{{ url_for('static', filename='main_img/roadmap.jpg') }}" alt="" style="width: 100%; max-width: 1200px;">
