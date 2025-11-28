@@ -71,8 +71,8 @@
                 <a href="{{ url_for('user.home') }}" id="nav_icon">
                     <img src="{{ url_for('static', filename='main_img/ic_w.png') }}" alt="" style="position: relative; z-index: 2;">
                 </a>
-                <li><a href="{{ url_for('user.home') }}">صفحه اصلی</a></li>
                 <li><a href="{{ url_for('user.guide') }}">راهنما</a></li>
+                <li><a href="{{ url_for('user.support') }}">پشتیبانی</a></li>
             </ul>
             <div id="user_bar">
                 {% if current_user.is_authenticated %}

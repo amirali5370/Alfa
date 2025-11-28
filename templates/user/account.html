@@ -32,7 +32,7 @@
             <li><span>نام خانوادگی:</span> {{current_user.last_name}}</li>
             <li><span>نام پدر:</span> {{current_user.father_name}}</li>
             <li><span>نوع کاربری:</span> {{user_type}}</li>
-            <li><span>جنسیت:</span> {{ "پسر" if current_user.gender == "male" else "دختر" }}</li>
+            <li><span>جنسیت:</span> {{ "آقا" if current_user.gender == "male" else "خانم" }}</li>
             <li><span>کد ملی:</span> {{current_user.code}}</li>
             <!-- <li><span>تاریخ تولد:</span> 1404/04/23</li> -->
             <li><span>نام مدرسه:</span> {{current_user.school_name}}</li>

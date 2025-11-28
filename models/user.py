@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     grade = Column(Integer, nullable=True, index=True)
     grade_name = Column(String, nullable=True, index=True)
     number = Column(String, nullable=True)
+    melli = Column(String, nullable=True)
     addres = Column(String, nullable=True)
     province = Column(String, nullable=True)
     city = Column(String, nullable=True)

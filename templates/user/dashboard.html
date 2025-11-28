@@ -46,17 +46,21 @@
                 نام پدر
                 <input type="text" name="father_name" placeholder="مثال: حسن" required>
             </label>
+
+            <label for="code">کدملی (از وارد کردن شماره تلفن خودداری کنید!)
+                <input type="text" name="code" placeholder="مثال : 0371234567" required inputmode="numeric" pattern="[0-9]*" maxlength="10"oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            </label>
         
             <label class="gender-field">
                 <span>جنسیت</span>
                 <div class="op_gender">
                     <label class="radio-btn">
                         <input type="radio" name="gender" value="male" required>
-                        <span>پسر</span>
+                        <span>آقا</span>
                     </label>
                     <label class="radio-btn">
                         <input type="radio" name="gender" value="female" required>
-                        <span>دختر</span>
+                        <span>خانم</span>
                     </label>
                 </div>
             </label>

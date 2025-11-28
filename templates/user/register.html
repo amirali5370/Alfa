@@ -37,16 +37,16 @@
                 <form class="log" action="#" method="post" onsubmit="return checking(event)" data-check-url="{{ url_for('user.is_repetitive') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <div class="form-group">
-                        <label for="code">کدملی</label>
-                        <input name="code" type="text" id="code" class="log" placeholder="مثال: 037xxxxxxx" required>
+                        <label for="code">کدملی (از وارد کردن شماره تلفن خودداری کنید!)</label>
+                        <input name="code" type="text" id="code" class="log" placeholder="مثال : 0371234567" required inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                     </div>
                     <div class="form-group">
-                        <label for="password">رمز عبور</label>
-                        <input name="password" type="password" id="password" class="log" placeholder="******" required>
+                        <label for="password">رمز عبور (فقط حروف انگلیسی و اعداد)</label>
+                        <input name="password" type="password" id="password" class="log" placeholder="******" required oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();">
                     </div>
                     <div class="form-group">
                         <label for="password2">تکرار رمز عبور</label>
-                        <input type="password" id="password2" class="log" placeholder="******" required>
+                        <input type="password" id="password2" class="log" placeholder="******" required oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();">
                     </div>
                     <div class="form-group">
                         <label for="province">استان</label>

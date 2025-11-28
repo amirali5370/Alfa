@@ -7,7 +7,7 @@ from passlib.hash import sha256_crypt
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timezone
 import requests
-from sqlalchemy import and_, literal
+from sqlalchemy import and_, literal, or_
 from sqlalchemy.sql import exists
 from PIL import Image
 import os
@@ -237,7 +237,12 @@ def login():
         password = request.form.get('password',None)
         code = fa_to_en_digits(code)
         password = fa_to_en_digits(password)
-        user = User.query.filter(User.code==code).first()
+        user = User.query.filter(
+            or_(
+                User.code == code,
+                User.melli == code
+            )
+        ).first()
         if user == None:
             flash("کدملی یا رمز عبور اشتباه است!")
             return redirect(request.url)      
@@ -387,6 +392,7 @@ def dashboard():
         current_user.school_name = request.form.get('school_name',None)
         current_user.number = request.form.get('number',None)
         current_user.addres = request.form.get('addres',None)
+        current_user.melli = request.form.get('code',None)
 
         grade = int(request.form.get('grade',None))
         current_user.grade = grade

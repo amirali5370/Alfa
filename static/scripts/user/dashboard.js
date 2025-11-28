@@ -1,39 +1,8 @@
-// پیام دعوت
-const ms_inv_button = document.getElementById('inv_bt'); 
-ms_inv_button.addEventListener('click', () => {
-  const message = encodeURIComponent(`سلام! این کد دعوت شما است \n ${ms_inv_button.parentNode.querySelector('.invite-code').innerText}`);
-  let smsLink;
-    if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-      smsLink = `sms:&body=${message}`;  // iOS
-    } else {
-      smsLink = `sms:?body=${message}`;  // Android
-    }
-  window.location.href = smsLink;
-});
-
-
-//پیام دعوت معاون
-const sub_inv_button = document.getElementById('inv_sub_bt');
-sub_inv_button.addEventListener('click', () => {
-
-    const phoneNumber = sub_inv_button.parentNode.querySelector('input').value; // شماره مورد نظر را اینجا وارد کن
-    const message = encodeURIComponent(`سلام! این کد دعوت معاون شما است \n ${sub_inv_button.parentNode.parentNode.querySelector('.invite-code').innerText}`);
-    let smsLink;
-    if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-      smsLink = `sms:${phoneNumber}&body=${message}`;  // iOS
-    } else {
-      smsLink = `sms:${phoneNumber}?body=${message}`;  // Android
-    }
-    window.location.href = smsLink;
-  });
-
-
-
 // کپی کد ها
 const copy_al = document.querySelector('#copy_al')
 const copy_boxs = document.querySelectorAll('.invite-code')
 copy_boxs.forEach(el => {
-    el.addEventListener("click", async () => {
+  el.addEventListener("click", async () => {
         try {
             const text = el.innerText
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -51,15 +20,15 @@ copy_boxs.forEach(el => {
               document.execCommand("copy");
               document.body.removeChild(textarea);
             }
-      
+            
             // انیمیشن موفقیت
             copy_al.style.opacity = '1';
             setTimeout(() => copy_al.style.opacity = '0', 1500);
-      
+            
           } catch (err) {
             console.error("کپی کردن متن موفق نبود:", err);
           }
-    });
+        });
 })
 
 
@@ -69,13 +38,13 @@ copy_boxs.forEach(el => {
 document.addEventListener("DOMContentLoaded", () => {
   const textarea = document.querySelector("textarea");
   if (!textarea) return;
-
+  
   const FONT_SIZE = 14;         // px
   const LINE_HEIGHT = 1.6;      // line-height
   const MAX_CHARS = 150;
   const AVG_CHAR_WIDTH = 7.5;   // px، تقریبی برای Vazir 14px
   const PADDING = 20;           // px، جمع پدینگ بالا و پایین
-
+  
   const adjustHeight = () => {
     const width = textarea.clientWidth;
     // تعداد کاراکترهایی که در هر خط جا می‌شن
@@ -85,10 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // تنظیم ارتفاع نهایی
     textarea.style.height = `${linesNeeded * LINE_HEIGHT * FONT_SIZE + PADDING}px`;
   };
-
+  
   // محاسبه اولیه
   adjustHeight();
-
+  
   // محاسبه مجدد در صورت تغییر اندازه پنجره
   window.addEventListener("resize", adjustHeight);
 });
@@ -98,8 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
 const url_switch_sub = document.querySelector("meta[name='url_of_']").getAttribute("content");
 
 document.querySelectorAll('.assistant>.btn').forEach(item => {
-	item.addEventListener('click', (e) => {
-		const csrfToken = document.querySelector("meta[name='more_of_page']").getAttribute("content");
+  item.addEventListener('click', (e) => {
+    const csrfToken = document.querySelector("meta[name='more_of_page']").getAttribute("content");
 		const invite_id = e.target.parentNode.dataset.object;
 		var data = {
 			'invite_id':invite_id,
@@ -107,9 +76,9 @@ document.querySelectorAll('.assistant>.btn').forEach(item => {
 		}
 
 		fetch(url_switch_sub, {
-			method: 'POST',
+      method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
 				'X-CSRF-TOKEN': csrfToken
 			},
 			body: JSON.stringify(data)
@@ -117,7 +86,7 @@ document.querySelectorAll('.assistant>.btn').forEach(item => {
 		.then(response => response.json())
 		.then(status => {
 			if(status.result=="200"){
-			Swal.fire({
+        Swal.fire({
 				title: 'وضعیت معاون با موفقیت تغییر کرد!',
 				html: 'حداکثر ۳ معاون فعال می‌تواند وجود داشته باشد.<br>جمعاً ۱۰ معاون (فعال یا غیرفعال) قابل تعریف است.',
 				icon: 'success',
@@ -128,8 +97,8 @@ document.querySelectorAll('.assistant>.btn').forEach(item => {
 				allowOutsideClick:false,
 			}).then((result) => {swal.close();window.location.reload();})
 		}else if(status.result=="403"){
-			Swal.fire({
-				title: 'تعداد معاونان فعال بیش از حد مجاز!',
+      Swal.fire({
+        title: 'تعداد معاونان فعال بیش از حد مجاز!',
 				html: '',
 				icon: 'error',
 				confirmButtonColor: '#dc1225',
@@ -139,11 +108,11 @@ document.querySelectorAll('.assistant>.btn').forEach(item => {
 				allowOutsideClick:false,
 			}).then((result) => {swal.close();window.location.reload();})
 		}
-		})
-		.catch(error => {console.error('Error:', error);
-			window.location.reload();
-		});
-	});
+  })
+  .catch(error => {console.error('Error:', error);
+    window.location.reload();
+  });
+});
 });
 
 
@@ -167,4 +136,35 @@ document.querySelector('#buy_coin').addEventListener('click',(e)=>{
   })
   .then(response => response.json())
   .then(data => {window.location.href = data.url;})
+
+
+  // پیام دعوت
+  const ms_inv_button = document.getElementById('inv_bt'); 
+  ms_inv_button.addEventListener('click', () => {
+    // const message = encodeURIComponent(`سلام! این کد دعوت شما است \n ${ms_inv_button.parentNode.querySelector('.invite-code').innerText}`);
+    const message = encodeURIComponent(`طرح «نوپویان» با هدف رشد استعدادهای دانش‌آموزی آغاز شده است. \n خوشحال می‌شوم شما هم همراه ما باشید. \n \n کد دعوت من: ${ms_inv_button.parentNode.querySelector('.invite-code').innerText}`);
+    let smsLink;
+      if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+        smsLink = `sms:&body=${message}`;  // iOS
+      } else {
+        smsLink = `sms:?body=${message}`;  // Android
+      }
+    window.location.href = smsLink;
+  });
+  
+  
+  //پیام دعوت معاون
+  const sub_inv_button = document.getElementById('inv_sub_bt');
+  sub_inv_button.addEventListener('click', () => {
+  
+      const phoneNumber = sub_inv_button.parentNode.querySelector('input').value; // شماره مورد نظر را اینجا وارد کن
+      const message = encodeURIComponent(`سلام! این کد دعوت معاون شما است \n ${sub_inv_button.parentNode.parentNode.querySelector('.invite-code').innerText}`);
+      let smsLink;
+      if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+        smsLink = `sms:${phoneNumber}&body=${message}`;  // iOS
+      } else {
+        smsLink = `sms:${phoneNumber}?body=${message}`;  // Android
+      }
+      window.location.href = smsLink;
+    });
 });

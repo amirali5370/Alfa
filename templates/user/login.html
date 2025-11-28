@@ -35,12 +35,12 @@
                 <form class="log" action="#" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <div class="form-group">
-                        <label for="code">کدملی</label>
-                        <input name="code" type="text" id="code" class="log" placeholder="مثال: 037xxxxxxx">
+                        <label for="code">کدملی (از وارد کردن شماره تلفن خودداری کنید!)</label>
+                        <input name="code" type="text" id="code" class="log" placeholder="مثال : 0371234567" required inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                     </div>
                     <div class="form-group">
-                        <label for="password">رمز عبور</label>
-                        <input name="password" type="password" id="password" class="log" placeholder="******">
+                        <label for="password">رمز عبور (فقط حروف انگلیسی و اعداد)</label>
+                        <input name="password" type="password" id="password" class="log" placeholder="******" required oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();">
                     </div>
                     <button type="submit" class="login-btn">ورود</button>
                 </form>
