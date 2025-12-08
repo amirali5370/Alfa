@@ -642,7 +642,7 @@ def upload_users():
 
         user_type = row['user_type'] if row['user_type'] in typs else 'student'
 
-        user = User(auth=auth, first_name=row['first_name'], last_name=row['last_name'], password=sha256_crypt.encrypt(row['password']), code=row['code'],
+        user = User(auth=auth, first_name=row['first_name'], last_name=row['last_name'], password=sha256_crypt.hash(row['password']), code=row['code'],
             user_type=user_type, province=row['province'], city=row['city'], invite_code=invite_code, sub_invite_code=sub_invite_code, coins=10)
     
         db.session.add(user)

@@ -19,3 +19,9 @@ def auth_generator(model):
         if x == None:
             break
     return code
+
+
+def password_generator():
+    string = "abcdefghijklmnopqrstuvwxyz123456789"
+    code = ''.join(random.choice(string) for x in range(6))
+    return code

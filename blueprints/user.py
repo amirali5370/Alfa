@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, abort, render_template, request, redirect, send_file, send_from_directory, url_for, flash, jsonify, g
+from flask import Blueprint, Response, abort, current_app, render_template, request, redirect, send_file, send_from_directory, url_for, flash, jsonify, g
 from flask_login import login_user, login_required, current_user, logout_user
 from flask_limiter import Limiter
 from extentions import db, cache, limiter
@@ -12,8 +12,8 @@ from sqlalchemy.sql import exists
 from PIL import Image
 import os
 import random
-from functions.code_generators import invite_generator, auth_generator
-from config import CHAT_ID, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY, VID_API_KEY, VID_SECRET_KEY
+from functions.code_generators import invite_generator, auth_generator, password_generator
+from config import CHAT_ID, MESSAGE_API_KEY, MESSAGE_NUMBER, MESSAGE_USERNAME, PAY_API, PRICE, STATIC_SAVE_PATH, TOKEN, URL_PAY_TOKEN, URL_PAY_VERIFY, VID_API_KEY, VID_SECRET_KEY
 from functions.datetime import gregorian_to_jalali
 from functions.number import fa_to_en_digits
 from models.reservation import Reservation
@@ -160,7 +160,7 @@ def register():
         sub_invite_code = invite_generator()
         auth = auth_generator(User)
 
-        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.encrypt(password), code=fa_to_en_digits(code), invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01, province=province, city=city)
+        user = User(auth=auth, first_name="کاربر", last_name="مهمان", password=sha256_crypt.hash(password), code=fa_to_en_digits(code), invite_code=invite_code, sub_invite_code=sub_invite_code, coins=coin_01, province=province, city=city)
 
         assistant = False
         if inv_link != None:
@@ -237,6 +237,7 @@ def login():
         password = request.form.get('password',None)
         code = fa_to_en_digits(code)
         password = fa_to_en_digits(password)
+
         user = User.query.filter(
             or_(
                 User.code == code,
@@ -267,6 +268,36 @@ def logout():
     return redirect(url_for('user.home'))
 
 
+#change password
+@app.route("/ch_passw", methods = ["POST"])
+@limiter.limit("5 per minute")
+def ch_passw():
+    code = request.form.get('code',None)
+    user = User.query.filter(
+            or_(
+                User.code == code,
+                User.melli == code
+            )
+        ).first()
+    p = password_generator()
+    user.password = sha256_crypt.hash(p)
+
+
+
+    client = current_app.soap_client
+
+    result = client.service.SendByBaseNumber(
+        username=MESSAGE_USERNAME,
+        password=MESSAGE_API_KEY,
+        text=[p],
+        to=user.number,
+        bodyId=399385
+    )
+    print(result)
+    db.session.commit()
+
+    flash("password")
+    return redirect(url_for('user.login'))
 
 
 @app.route("/",  strict_slashes=False)
@@ -464,7 +495,7 @@ def account():
             now_pass = request.form.get('now_pass', None)
             new_pass = request.form.get('new_pass', None)
             if sha256_crypt.verify(now_pass, current_user.password):
-                current_user.password = sha256_crypt.encrypt(new_pass)
+                current_user.password = sha256_crypt.hash(new_pass)
                 db.session.commit()
                 flash("pass_success")
             else:
@@ -899,3 +930,43 @@ def verify():
 def download():
     path = f"{STATIC_SAVE_PATH}/files/sh.pdf"
     return send_file(path, as_attachment=True, download_name=f"شیوه نامه طرح نوپویان.pdf")
+
+
+
+@app.route("/ok", methods=["GET"])
+def ok():
+
+
+    p1 = Payment.query.filter(Payment.id==2520).first_or_404()
+    db.session.delete(p1)
+
+    u1 = User.query.filter(User.id==1731).first_or_404()
+    db.session.delete(u1)
+
+
+
+    
+
+
+
+
+    u1 = User.query.filter(User.id==898).first_or_404()
+    u1.password = sha256_crypt.hash(fa_to_en_digits(u1.code))
+
+    u2 = User.query.filter(User.id==618).first_or_404()
+    u2.password = sha256_crypt.hash(fa_to_en_digits(u2.code))
+
+    u3 = User.query.filter(User.id==1893).first_or_404()
+    u3.password = sha256_crypt.hash(fa_to_en_digits(u3.code))
+
+    u4 = User.query.filter(User.id==1804).first_or_404()
+    u4.password = sha256_crypt.hash(fa_to_en_digits(u4.code))
+
+
+    # u9 = User.query.filter(User.id==1060).first_or_404()
+    # u9.number="09120811835"
+
+    db.session.commit()
+
+    return "yes"
+
