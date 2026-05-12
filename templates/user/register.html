@@ -34,6 +34,7 @@
             </span></a>
             <div class="login-card">
                 <div class="login-header">ایجاد حساب کاربری</div>
+                {% if special is not none %}
                 <form class="log" action="#" method="post" onsubmit="return checking(event)" data-check-url="{{ url_for('user.is_repetitive') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <div class="form-group">
@@ -63,15 +64,78 @@
                             <option selected disabled value="">انتخاب شهرستان</option>
                         </select>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    {% if special == "Special_1"%}
+                    <input type="hidden" name="special_type" value="Special_1" />
+                    <div class="form-group">
+                        <label for="special_code">کد مرکز خدمات</label>
+                        <input name="special_code" type="text" id="special_code" class="log" placeholder="مثال: 456123">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="relationship">نسبت با عضو</label>
+                        <select name="relationship" id="relationship" class="js-example-basic-single" required>
+                            <option selected disabled value="">انتخاب نسبت</option>
+                            <option value="fa">پدر</option>
+                            <option value="mo">مادر</option>
+                            <option value="all">هر دو</option>
+                        </select>
+                    </div>
+
+                    <script>
+                        const rElement = document.getElementById('relationship');
+                        const choice_r = new Choices(rElement, {
+                            searchEnabled: false,
+                            shouldSort: false
+
+                        });
+                    </script>
+                    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
                     <div class="form-group">
                         <label for="invite_code">کد دعوت (اختیاری)</label>
                         <input name="invite" type="text" id="invite_code" class="log" placeholder="مثال: abc123">
                     </div>
                     <button type="submit" class="login-btn">ثبت نام</button>
                 </form>
-                <div class="login-footer">
+                {% endif %}
+                <div class="login-footer"  style="display: flex; flex-direction: column; align-items: center;">
                     <a href="{{ url_for('user.login') }}{% if next is not none %}?next={{ next }}{% endif %}">قبلا اینجا حساب کاربری داشتم</a>
                     <!-- <a href="#">فراموشی رمز عبور</a> -->
+                    <br>
+                    {% if special is none %}
+                    <a href="/register?special=normal">ثبت نام اعضای معمولی</a>
+                    <br>
+                    <a href="/register?special=Special_1">ثبت نام اعضای مرکز خدمات  
+                        <span style="white-space: nowrap;">حوزه‌های علمیه</span>
+                    </a>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

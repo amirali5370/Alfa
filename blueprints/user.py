@@ -17,6 +17,7 @@ from config import CHAT_ID, MESSAGE_API_KEY, MESSAGE_NUMBER, MESSAGE_USERNAME, P
 from functions.datetime import gregorian_to_jalali
 from functions.number import fa_to_en_digits
 from models.reservation import Reservation
+from models.special1 import Special_1
 from scoring import *
 from models.user import User
 from models.invite import Invite
@@ -135,7 +136,7 @@ def robots():
 # ------------- LOGIN AND REGISTER-------------
 #register page
 @app.route("/register", methods = ["POST","GET"],  strict_slashes=False)
-# @limiter.limit("3 per hour")
+# #section of limiter.limit("3 per hour")
 def register():
     if current_user.is_authenticated:
         if next != None:
@@ -150,7 +151,7 @@ def register():
         password = request.form.get('password',None)
         password = fa_to_en_digits(password)
         invite = request.form.get('invite',None)
-
+        
         province = request.form.get('province',None)
         city = request.form.get('city',None)
 
@@ -166,11 +167,14 @@ def register():
         if inv_link != None:
             invite = inv_link
         
+
         inviter = User.query.filter_by(invite_code=invite).first()
         if inviter == None:
             inviter = User.query.filter_by(sub_invite_code=invite).first()
             assistant = True
 
+
+            
         db.session.add(user)
         try:
             db.session.commit()
@@ -186,8 +190,18 @@ def register():
             if assistant:
                 user.user_type="M"+inviter.user_type
             db.session.commit()
-        login_user(user)
+        
+        #مرکز خدمات
+        special_type = request.form.get("special_type",None)
+        if special_type == "Special_1":
+            relationship = request.form.get("relationship",None)
+            special_code = request.form.get("special_code",None)
+            sp = Special_1(auth=auth, code=fa_to_en_digits(code), relationship=relationship, special_code=special_code, user_id=user.id)
+            db.session.add(sp)
+            db.session.commit()
+        #####################################
 
+        login_user(user)
         if next != None:
             return redirect(next)
         return redirect(url_for("user.dashboard"))
@@ -196,12 +210,13 @@ def register():
             inviting = False
         else:
             inviting = True
-        return render_template("user/register.html", inviting=inviting, current_user=current_user, next=next, provinces=city_data.keys())
+        special = request.args.get('special',None)
+        return render_template("user/register.html", inviting=inviting, current_user=current_user, next=next, provinces=city_data.keys(), special=special)
     
 
 #is_repetitive API
 @app.route('/is_repetitive', methods=['POST'])
-@limiter.limit("10 per hour")
+#section of limiter.limit("10 per hour")
 def is_repetitive():
     data = request.get_json()
     code = data.get('code',None)
@@ -224,7 +239,7 @@ def get_cities():
 
 #login page
 @app.route("/login", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("10 per minute")
+#section of limiter.limit("10 per minute")
 def login():
     next = request.args.get('next',None)
     if current_user.is_authenticated:
@@ -261,7 +276,7 @@ def login():
 
 #logout link
 @app.route("/logout")
-@limiter.limit("5 per minute")
+#section of limiter.limit("5 per minute")
 def logout():
     if current_user.is_authenticated:
         logout_user()
@@ -269,39 +284,39 @@ def logout():
 
 
 #change password
-@app.route("/ch_passw", methods = ["POST"])
-@limiter.limit("5 per minute")
-def ch_passw():
-    code = request.form.get('code',None)
-    user = User.query.filter(
-            or_(
-                User.code == code,
-                User.melli == code
-            )
-        ).first()
-    p = password_generator()
-    user.password = sha256_crypt.hash(p)
+# @app.route("/ch_passw", methods = ["POST"])
+# #section of limiter.limit("5 per minute")
+# def ch_passw():
+#     code = request.form.get('code',None)
+#     user = User.query.filter(
+#             or_(
+#                 User.code == code,
+#                 User.melli == code
+#             )
+#         ).first()
+#     p = password_generator()
+#     user.password = sha256_crypt.hash(p)
 
 
 
-    client = current_app.soap_client
+#     client = current_app.soap_client
 
-    result = client.service.SendByBaseNumber(
-        username=MESSAGE_USERNAME,
-        password=MESSAGE_API_KEY,
-        text=[p],
-        to=user.number,
-        bodyId=399385
-    )
-    print(result)
-    db.session.commit()
+#     result = client.service.SendByBaseNumber(
+#         username=MESSAGE_USERNAME,
+#         password=MESSAGE_API_KEY,
+#         text=[p],
+#         to=user.number,
+#         bodyId=399385
+#     )
+#     print(result)
+#     db.session.commit()
 
-    flash("password")
-    return redirect(url_for('user.login'))
+#     flash("password")
+#     return redirect(url_for('user.login'))
 
 
 @app.route("/",  strict_slashes=False)
-@limiter.limit("60 per minute")
+#section of limiter.limit("60 per minute")
 def home():
     return render_template("home.html", current_user=current_user)
 
@@ -319,7 +334,7 @@ def get_news_by_link(link):
 
 
 @app.route("/blog", strict_slashes=False)
-@limiter.limit("60 per minute")
+#section of limiter.limit("60 per minute")
 def blog():
     page = request.args.get("page", 1, type=int)
     news, has, news_page = get_news_page(page)
@@ -327,7 +342,7 @@ def blog():
 
 
 @app.route("/api/blog", strict_slashes=False)
-@limiter.limit("200 per minute")
+#section of limiter.limit("200 per minute")
 def blog_api():
     page = request.args.get("page", 1, type=int)
     news, has, page = get_news_page(page)
@@ -356,17 +371,17 @@ def single_blog(news_link):
 
 
 @app.route("/guide", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("6 per minute")
+#section of limiter.limit("6 per minute")
 def guide():
     return render_template("user/guide.html", current_user=current_user)
 
 @app.route("/treasure", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("6 per minute")
+#section of limiter.limit("6 per minute")
 def treasure():
     return render_template("user/treasure.html", current_user=current_user)
 
 @app.route("/support", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("3 per minute")
+#section of limiter.limit("3 per minute")
 def support():
     if request.method == "POST":
         name = request.form.get('name',None)
@@ -412,7 +427,7 @@ def support():
 
 #dashboard
 @app.route("/dashboard", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("30 per minute")
+#section of limiter.limit("30 per minute")
 @login_required
 def dashboard():
     if request.method == "POST":
@@ -457,12 +472,17 @@ def dashboard():
             db.session.rollback()
         return redirect(url_for('user.payment'))
     else:
+        special = current_user.special_data.first()
+        if special:
+            amount = format(special.amount // 10, ",")
+        else:
+            amount = None
         sub_invits = current_user.sent_invitations.filter_by(assistant=1).all()
-        return render_template("user/dashboard.html", current_user=current_user, sub_invits=sub_invits)
+        return render_template("user/dashboard.html", current_user=current_user, sub_invits=sub_invits, amount=amount)
     
 #switch_sub API
 @app.route('/api/switch_sub', methods=['POST','GET'])
-@limiter.limit("60 per minute")
+#section of limiter.limit("60 per minute")
 def switch_sub():
     if not(current_user.is_authenticated) or current_user.completion == 0 or current_user.pay == 0 :
         return abort(404)
@@ -486,7 +506,7 @@ def switch_sub():
     return jsonify({'result': result})
 
 @app.route("/account", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("30 per minute")
+#section of limiter.limit("30 per minute")
 @login_required
 def account():
     if request.method == "POST":
@@ -519,7 +539,7 @@ def account():
     
 
 @app.route("/workbook",  strict_slashes=False)
-@limiter.limit("20 per minute")
+#section of limiter.limit("20 per minute")
 @login_required
 def workbook():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -529,7 +549,7 @@ def workbook():
 
 #books' file
 @app.route('/download/workbook/<workbook_auth>')
-@limiter.limit("20 per minute")
+#section of limiter.limit("20 per minute")
 @login_required
 def single_workbook(workbook_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -549,7 +569,7 @@ def get_events(pr_code):
     return News.query.filter((News.grade_bits.op('&')(literal(pr_code))) != 0).order_by(News.id.desc()).all()
 
 @app.route("/event",  strict_slashes=False)
-@limiter.limit("30 per minute")
+#section of limiter.limit("30 per minute")
 @login_required
 def event():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -566,7 +586,7 @@ def get_pamphlet(pr_code):
     return Pamphlet.query.filter((Pamphlet.grade_bits.op('&')(literal(pr_code))) != 0).order_by(Pamphlet.id.desc()).all()
 
 @app.route("/pamphlet",  strict_slashes=False)
-@limiter.limit("40 per minute")
+#section of limiter.limit("40 per minute")
 @login_required
 def pamphlet():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -575,7 +595,7 @@ def pamphlet():
     return render_template("user/pamphlet.html", current_user=current_user, pamphlets=pamphlets)
 
 @app.route('/download/pamphlet/<pamphlet_auth>')
-@limiter.limit("30 per minute")
+#section of limiter.limit("30 per minute")
 @login_required
 def single_pamphlet(pamphlet_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -603,7 +623,7 @@ def get_quiz_and_questions(quiz_auth):
 
 
 @app.route("/quiz",  strict_slashes=False)
-@limiter.limit("100 per minute")
+#section of limiter.limit("100 per minute")
 @login_required
 def quiz():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -623,7 +643,7 @@ def quiz():
 
 
 @app.route("/quiz/<quiz_auth>", methods = ["POST","GET"],  strict_slashes=False)
-@limiter.limit("20 per minute")
+#section of limiter.limit("20 per minute")
 @login_required
 def single_quiz(quiz_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -679,7 +699,7 @@ def single_quiz(quiz_auth):
 
 
 @app.route("/api/result", methods = ["POST","GET"], strict_slashes=False)
-@limiter.limit("30 per minute")
+#section of limiter.limit("30 per minute")
 @login_required
 def result():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -700,7 +720,7 @@ def get_all_webinar(pr_code):
 
 
 @app.route("/webinar",  strict_slashes=False)
-@limiter.limit("40 per minute")
+#section of limiter.limit("40 per minute")
 @login_required
 def webinar():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -734,7 +754,7 @@ def get_parts_cached(course_auth):
 
 
 @app.route("/course",  strict_slashes=False)
-@limiter.limit("100 per minute")
+#section of limiter.limit("100 per minute")
 @login_required
 def course():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -744,7 +764,7 @@ def course():
     return render_template("user/course.html", courses=courses)
 
 @app.route("/api_part", methods=["POST","GET"], strict_slashes=False)
-@limiter.limit("60 per minute")
+#section of limiter.limit("60 per minute")
 @login_required
 def get_part():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -770,7 +790,7 @@ def get_part():
 
 
 @app.route("/part/<part_auth>", methods=["GET"], strict_slashes=False)
-@limiter.limit("100 per minute")
+#section of limiter.limit("100 per minute")
 @login_required
 def part(part_auth):
     if current_user.completion == 0 or current_user.pay == 0:
@@ -830,7 +850,7 @@ def get_unregistered_camps(user):
 
 
 @app.route("/camp", methods=["GET","POST"], strict_slashes=False)
-@limiter.limit("30 per minute")
+#section of limiter.limit("30 per minute")
 @login_required
 def camp():
     if current_user.completion == 0 or current_user.pay == 0:
@@ -859,13 +879,19 @@ def camp():
 #pay system
 #payment handler
 @app.route("/payment", methods=["GET","POST"])
-@limiter.limit("5 per minute")
+#section of limiter.limit("5 per minute")
 @login_required
 def payment():
     if request.method=="GET":
         if current_user.pay != 0:
             return redirect(url_for("user.dashboard"))
-    amount = PRICE
+        
+    special = current_user.special_data.first()
+    if special:
+        amount = special.amount
+    else:
+        amount = PRICE
+        
     inApp = 0
     if request.method=="POST":
         coins = request.get_json().get('coins', None)
@@ -970,3 +996,43 @@ def ok():
 
     return "yes"
 
+
+
+
+import pandas as pd
+from flask import send_file
+from io import BytesIO
+from extentions import db
+@app.route('/export-all-data-to-excel-manual-join')
+def export_users_with_special_1_excel():
+    query = (
+        db.session.query(User, Special_1)
+        .join(Special_1, Special_1.user_id == User.id)
+        .all()
+    )
+
+    rows = []
+    for user, special in query:
+        # ایجاد یک دیکشنری واحد برای هر ردیف
+        row_data = {}
+        # اضافه کردن ستون‌های کاربر
+        for c in User.__table__.columns:
+            row_data[f"user_{c.name}"] = getattr(user, c.name)
+        # اضافه کردن ستون‌های Special_1
+        for c in Special_1.__table__.columns:
+            row_data[f"special_{c.name}"] = getattr(special, c.name)
+        rows.append(row_data)
+
+    df = pd.DataFrame(rows)
+
+    output = BytesIO()
+    # استفاده از openpyxl برای اطمینان از سازگاری بهتر با فایل‌های اکسل
+    df.to_excel(output, index=False, engine="openpyxl")
+    output.seek(0)
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="users_with_special_1.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )

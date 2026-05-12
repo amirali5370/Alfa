@@ -10,12 +10,12 @@ import config
 import extentions
 from models.user import User
 from flask_login import LoginManager
-from zeep import Client
+# from zeep import Client
 
-client = Client("http://api.payamak-panel.com/post/Send.asmx?wsdl")
+# client = Client("http://api.payamak-panel.com/post/Send.asmx?wsdl")
 
 app = Flask(__name__)
-app.soap_client = client
+# app.soap_client = client
 app.register_blueprint(general)
 app.register_blueprint(admin)
 app.register_blueprint(user)

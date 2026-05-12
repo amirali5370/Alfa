@@ -15,24 +15,24 @@ for (let i = 0; i < numberOfStars; i++) {
 }
 
 
-function c(){
-  Swal.fire({
-      title: 'رمزعبور جدید',
-      html: `<form class="log" action="/ch_passw" method="post">
-                    <input type="hidden" name="csrf_token" value="${csrfToken}" />
-                    <div class="form-group" style="display: flex;
-                      flex-direction: column;
-                      align-items: center;">
-                        <label for="code">کدملی (از وارد کردن شماره تلفن خودداری کنید!)</label>
-                        <input name="code" type="text" id="code" class="log" placeholder="مثال : 0371234567" required inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                        <button type="submit" class="login-btn" style="margin-right:40%;">دریافت رمز جدید</button>
-                    </div>
-              </form>`,
+// function c(){
+//   Swal.fire({
+//       title: 'رمزعبور جدید',
+//       html: `<form class="log" action="/ch_passw" method="post">
+//                     <input type="hidden" name="csrf_token" value="${csrfToken}" />
+//                     <div class="form-group" style="display: flex;
+//                       flex-direction: column;
+//                       align-items: center;">
+//                         <label for="code">کدملی (از وارد کردن شماره تلفن خودداری کنید!)</label>
+//                         <input name="code" type="text" id="code" class="log" placeholder="مثال : 0371234567" required inputmode="numeric" pattern="^[0-9]{10}$" maxlength="10" minlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+//                         <button type="submit" class="login-btn" style="margin-right:40%;">دریافت رمز جدید</button>
+//                     </div>
+//               </form>`,
 
-      icon: 'warning',
-      showCloseButton: true,
-      showConfirmButton: false,
-      showLoaderOnConfirm:true,
-      allowOutsideClick:false,
-  }).then((result) => {swal.close();})
-};
+//       icon: 'warning',
+//       showCloseButton: true,
+//       showConfirmButton: false,
+//       showLoaderOnConfirm:true,
+//       allowOutsideClick:false,
+//   }).then((result) => {swal.close();})
+// };

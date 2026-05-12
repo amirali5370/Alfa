@@ -164,7 +164,22 @@
         <h3>پرداخت هزینه ثبت‌نام</h3>
         {% if current_user.pay == 0 %}
         <p>هزینه ثبت‌نام شما هنوز پرداخت نشده است</p>
-        <a href="/payment" class="btn">پرداخت</a>
+        
+        {% if amount %}
+        <a href="/payment" class="btn">
+            پرداخت
+            <span style="margin: 0 5px; text-decoration-line: line-through; text-decoration-color: red; font-weight: bold;">1,700,000</span>
+            {{amount}} تومان
+        </a>
+        <p style="font-size: 12px;">به استناد تفاهم&zwnj;نامه میان سازمان دانش&zwnj;آموزی و مرکز خدمات حوزه&zwnj;های علمیه، ۹۰% تخفیف برای خانواده&zwnj;های محترم طلاب اعمال می&zwnj;شود.</p>
+        {% else %}
+        <a href="/payment" class="btn">
+            پرداخت
+            <span style="margin: 0 5px; text-decoration-line: line-through; text-decoration-color: red; font-weight: bold;">1,700,000</span>
+            450,000 تومان
+        </a>
+        {% endif %}
+
         {% else %}
         <p>هزینه ثبت‌نام شما پرداخت شده است</p>
         {% endif %}
